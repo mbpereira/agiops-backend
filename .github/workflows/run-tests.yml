@@ -36,7 +36,6 @@ jobs:
         name: tests-report # artifact name
         path: tests-report/*.trx
 
-  report:
     - uses: dorny/test-reporter@v1
       if: ${{ always() }}
       with:
