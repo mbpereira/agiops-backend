@@ -10,8 +10,8 @@ on:
 #    branches: [ "main" ]
 
 jobs:
-  build:
-
+  test:
+    
     runs-on: ubuntu-latest
 
     steps:
@@ -36,6 +36,7 @@ jobs:
         name: tests-report # artifact name
         path: tests-report
 
+  report:
     - uses: dorny/test-reporter@v1
       if: ${{ always() }}
       with:
