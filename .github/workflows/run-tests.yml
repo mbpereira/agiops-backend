@@ -30,8 +30,16 @@ jobs:
       run: dotnet test --no-build --verbosity normal --logger trx --results-directory "tests-report"
       
     - name: Upload dotnet test results
+      if: ${{ always() }}
       uses: actions/upload-artifact@v3
       with:
         name: tests-report # artifact name
         path: tests-report
+
+    - uses: dorny/test-reporter@v1
       if: ${{ always() }}
+      with:
+        artifact: tests-report           # artifact name
+        name: .NET Tests                  # Name of the check run which will be created
+        path: '*.trx'                     # Path to test results (inside artifact .zip)
+        reporter: dotnet-trx              # Format of test results
