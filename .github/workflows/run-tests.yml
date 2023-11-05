@@ -34,7 +34,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: tests-report # artifact name
-        path: tests-report
+        path: tests-report/*.trx
 
   report:
     - uses: dorny/test-reporter@v1
