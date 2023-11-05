@@ -13,3 +13,4 @@
 - monitoring and observability
   - grafana labs
   - newrelic
+- nginx
