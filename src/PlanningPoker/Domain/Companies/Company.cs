@@ -1,43 +1,44 @@
-﻿using Domain.Shared;
+﻿using Domain.Abstractions;
 using Domain.Validation;
 using FluentValidation;
 
 namespace Domain.Companys
 {
-    public class Company : BaseEntity<Company>
+    public sealed class Company : Entity<Company>
     {
         public string Name { get; private set; }
         public int OwnerId { get; private set; }
         public string? Domain { get; private set; }
 
         private Company(string name, int ownerId, string? domain = null)
+            : this(id: Constants.AutoIncrement, name, ownerId, domain)
         {
+        }
+
+        private Company(int id, string name, int ownerId, string? domain = null)
+        {
+            Id = id;
             Name = name;
             OwnerId = ownerId;
             Domain = domain;
-            ConfigureValidationRules();
+
         }
 
-        private void ConfigureValidationRules()
+        protected override void ConfigureValidationRules(Validator<Company> validator)
         {
-            Validator.RuleFor(c => c.Name)
+            validator.RuleFor(c => c.Name)
                 .NotEmpty()
                 .MinimumLength(3);
-            Validator.RuleFor(c => c.OwnerId)
+
+            validator.RuleFor(c => c.OwnerId)
                 .GreaterThan(0);
 
             if (!string.IsNullOrEmpty(Domain))
             {
-                Validator.RuleFor(c => c.Domain)
+                validator.RuleFor(c => c.Domain)
                     .NotEmpty()
                     .MinimumLength(3);
             }
-        }
-
-        private Company(int id, string name, int ownerId, string? domain = null)
-            : this(name, ownerId, domain)
-        {
-            Id = id;
         }
 
         public static Company New(string name, int ownerId, string? domain = null)
@@ -51,8 +52,5 @@ namespace Domain.Companys
         public void OwnDomain(string domain) => Domain = domain;
 
         public void ChangeOwner(int ownerId) => OwnerId = ownerId;
-
-        public override ValidationResult Validate()
-            => new(Validator.Validate(this));
     }
 }
