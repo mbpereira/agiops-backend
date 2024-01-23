@@ -9,11 +9,12 @@ namespace Domain.Games
         public string Name { get; private set; }
 
         public Game(string name)
-            : this(id: Constants.AutoIncrement, name)
+            : this(id: EntityId.AutoIncrement(), name)
         {
         }
 
-        public Game(int id, string name)
+        public Game(EntityId id, string name) 
+            : base(id)
         {
             Id = id;
             Name = name;
@@ -28,6 +29,6 @@ namespace Domain.Games
 
         public static Game New(string name) => new(name);
 
-        public static Game Load(int id, string name) => new(id, name);
+        public static Game Load(EntityId id, string name) => new(id, name);
     }
 }

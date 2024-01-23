@@ -10,11 +10,12 @@ namespace Domain.Companys
         public string Name { get; set; }
 
         private CompanyTeam(int companyId, string name)
-            : this(id: Constants.AutoIncrement, companyId, name)
+            : this(id: EntityId.AutoIncrement(), companyId, name)
         {
         }
 
-        private CompanyTeam(int id, int companyId, string name)
+        private CompanyTeam(EntityId id, int companyId, string name)
+            : base(id)
         {
             Id = id;
             Name = name;
@@ -32,6 +33,6 @@ namespace Domain.Companys
 
         public static CompanyTeam New(int companyId, string name) => new(companyId, name);
 
-        public static CompanyTeam Load(int id, int companyId, string name) => new(id, companyId, name);
+        public static CompanyTeam Load(EntityId id, int companyId, string name) => new(id, companyId, name);
     }
 }

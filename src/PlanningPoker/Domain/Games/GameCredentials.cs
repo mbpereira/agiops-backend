@@ -10,11 +10,12 @@ namespace Domain.Games
         public string Password { get; private set; }
 
         private GameCredentials(int gameId, string password)
-            : this(id: Constants.AutoIncrement, gameId, password)
+            : this(id: EntityId.AutoIncrement(), gameId, password)
         {
         }
 
-        private GameCredentials(int id, int gameId, string password)
+        private GameCredentials(EntityId id, int gameId, string password)
+            : base(id)
         {
             Id = id;
             GameId = gameId;
@@ -32,6 +33,6 @@ namespace Domain.Games
 
         public static GameCredentials New(int gameId, string password) => new(gameId, password);
 
-        public static GameCredentials Load(int id, int gameId, string password) => new(id, gameId, password);
+        public static GameCredentials Load(EntityId id, int gameId, string password) => new(id, gameId, password);
     }
 }

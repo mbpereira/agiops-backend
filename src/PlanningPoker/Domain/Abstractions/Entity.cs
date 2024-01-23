@@ -6,20 +6,21 @@ namespace Domain.Abstractions
     public abstract class Entity<TEntity> : IEntity
         where TEntity : Entity<TEntity>
     {
-        private readonly Validator<TEntity> validator;
+        private readonly Validator<TEntity> _validator;
         private readonly IList<IDomainEvent> _domainEvents = new List<IDomainEvent>();
 
-        public int Id { get; protected set; }
+        public EntityId Id { get; protected set; }
 
-        public Entity()
+        public Entity(EntityId id)
         {
-            validator = new Validator<TEntity>();
-            ConfigureValidationRules(validator);
+            Id = id;
+            _validator = new Validator<TEntity>();
+            ConfigureValidationRules(_validator);
         }
 
         protected abstract void ConfigureValidationRules(Validator<TEntity> validator);
 
-        public virtual ValidationResult Validate() => new ValidationResult(validator.Validate((TEntity)this));
+        public virtual ValidationResult Validate() => new ValidationResult(_validator.Validate((TEntity)this));
 
         public IReadOnlyList<IDomainEvent> GetDomainEvents()
             => _domainEvents.ToList();

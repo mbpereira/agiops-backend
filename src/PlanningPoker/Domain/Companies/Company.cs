@@ -11,17 +11,16 @@ namespace Domain.Companys
         public string? Domain { get; private set; }
 
         private Company(string name, int ownerId, string? domain = null)
-            : this(id: Constants.AutoIncrement, name, ownerId, domain)
+            : this(id: EntityId.AutoIncrement(), name, ownerId, domain)
         {
         }
 
-        private Company(int id, string name, int ownerId, string? domain = null)
+        private Company(EntityId id, string name, int ownerId, string? domain = null)
+            : base(id)
         {
-            Id = id;
             Name = name;
             OwnerId = ownerId;
             Domain = domain;
-
         }
 
         protected override void ConfigureValidationRules(Validator<Company> validator)
@@ -44,7 +43,7 @@ namespace Domain.Companys
         public static Company New(string name, int ownerId, string? domain = null)
             => new(name, ownerId, domain);
 
-        public static Company Load(int id, string name, int ownerId, string? domain = null)
+        public static Company Load(EntityId id, string name, int ownerId, string? domain = null)
             => new(id, name, ownerId, domain);
 
         public void ChangeName(string name) => Name = name;
