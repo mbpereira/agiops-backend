@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Abstractions;
 
 namespace Domain.Issues
 {
-    internal class UserGrade
-    {
-    }
+    public record UserGrade(EntityId userId, int grade);
 }

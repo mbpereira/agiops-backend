@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Users
+﻿namespace Domain.Users
 {
-    internal class Guest
-    {
-    }
+    public record Guest(string SessionId);
 }

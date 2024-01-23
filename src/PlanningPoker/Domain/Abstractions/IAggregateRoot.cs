@@ -1,7 +1,7 @@
 ﻿namespace Domain.Abstractions
 {
 
-    public interface IEntity
+    public interface IAggregateRoot
     {
         IReadOnlyList<IDomainEvent> GetDomainEvents();
 
