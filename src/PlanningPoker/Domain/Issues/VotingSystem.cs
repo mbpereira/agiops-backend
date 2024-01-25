@@ -1,8 +1,8 @@
-﻿using Domain.Abstractions;
-using Domain.Validation;
-using FluentValidation;
+﻿using FluentValidation;
+using PlanningPoker.Domain.Abstractions;
+using PlanningPoker.Domain.Validation;
 
-namespace Domain.Issues
+namespace PlanningPoker.Domain.Issues
 {
     public sealed class VotingSystem : AggregateRoot<VotingSystem>
     {
@@ -21,11 +21,12 @@ namespace Domain.Issues
             Revised = revised;
         }
 
-        protected override void ConfigureValidationRules(Validator<VotingSystem> validator)
+        protected override void ConfigureValidationRules(IValidationHandler<VotingSystem> validator)
         {
-            validator.RuleFor(v => v.Grades)
+            validator.CreateRuleFor(v => v.Grades)
                 .NotEmpty();
-            validator.RuleFor(v => v.Description)
+
+            validator.CreateRuleFor(v => v.Description)
                 .NotEmpty()
                 .MinimumLength(3);
         }

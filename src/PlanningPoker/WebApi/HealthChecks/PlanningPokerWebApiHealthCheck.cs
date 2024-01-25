@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace WebApi.HealthChecks;
+namespace PlanningPoker.WebApi.HealthChecks;
 
 public class PlanningPokerWebApiHealthCheck : IHealthCheck
 {

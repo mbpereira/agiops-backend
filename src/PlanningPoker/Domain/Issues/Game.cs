@@ -1,8 +1,9 @@
-﻿using Domain.Abstractions;
-using Domain.Validation;
-using FluentValidation;
+﻿using FluentValidation;
+using PlanningPoker.Domain.Abstractions;
+using PlanningPoker.Domain.Validation;
+using PlanningPoker.Domain.Validation.Extensions.FluentValidation;
 
-namespace Domain.Issues
+namespace PlanningPoker.Domain.Issues
 {
     public sealed class Game : AggregateRoot<Game>
     {
@@ -21,13 +22,13 @@ namespace Domain.Issues
             DefinePassword(password);
         }
 
-        protected override void ConfigureValidationRules(Validator<Game> validator)
+        protected override void ConfigureValidationRules(IValidationHandler<Game> validator)
         {
-            validator.RuleFor(c => c.Name)
+            validator.CreateRuleFor(c => c.Name)
                 .NotEmpty()
                 .MinimumLength(1);
 
-            validator.RuleFor(c => c.Credentials!.Password)
+            validator.CreateRuleFor(c => c.Credentials!.Password)
                 .NotEmpty()
                 .MinimumLength(6)
                 .When(g => g.Credentials is not null);

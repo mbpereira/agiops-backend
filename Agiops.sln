@@ -1,22 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34408.163
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BF768014-2FF5-4640-A45A-7AEEF1611215}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{595B42E3-C04A-4D34-A889-A7E973621914}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PlanningPoker", "PlanningPoker", "{FCA43316-6E54-4024-8BD3-5DE2039FDEB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "src\PlanningPoker\Domain\Domain.csproj", "{6A628865-E8DF-4A0E-8A8F-621911BAD109}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanningPoker.Domain", "src\PlanningPoker\Domain\PlanningPoker.Domain.csproj", "{6A628865-E8DF-4A0E-8A8F-621911BAD109}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "src\PlanningPoker\Infrastructure\Infrastructure.csproj", "{56CC7F0B-FB93-47A2-8FDA-F1E9C64A223E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanningPoker.Infrastructure", "src\PlanningPoker\Infrastructure\PlanningPoker.Infrastructure.csproj", "{56CC7F0B-FB93-47A2-8FDA-F1E9C64A223E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "src\PlanningPoker\Application\Application.csproj", "{931AAFD7-46FA-4CAC-9CF9-39F5DD3898A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanningPoker.Application", "src\PlanningPoker\Application\PlanningPoker.Application.csproj", "{931AAFD7-46FA-4CAC-9CF9-39F5DD3898A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "src\PlanningPoker\WebApi\WebApi.csproj", "{A11F92D5-BB4F-4F6C-B318-AAD6153BA463}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanningPoker.WebApi", "src\PlanningPoker\WebApi\PlanningPoker.WebApi.csproj", "{A11F92D5-BB4F-4F6C-B318-AAD6153BA463}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PlanningPoker", "PlanningPoker", "{E9DE87C8-8FDC-426C-817E-0F673E6AB711}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "tests\PlanningPoker\UnitTests\UnitTests.csproj", "{E177614C-5F60-401D-A07C-EFD27EE3B2F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanningPoker.UnitTests", "tests\PlanningPoker\UnitTests\PlanningPoker.UnitTests.csproj", "{D5C08AB2-0707-45DD-8F0A-F5205AB37B18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,10 +43,13 @@ Global
 		{A11F92D5-BB4F-4F6C-B318-AAD6153BA463}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A11F92D5-BB4F-4F6C-B318-AAD6153BA463}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A11F92D5-BB4F-4F6C-B318-AAD6153BA463}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E177614C-5F60-401D-A07C-EFD27EE3B2F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E177614C-5F60-401D-A07C-EFD27EE3B2F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E177614C-5F60-401D-A07C-EFD27EE3B2F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E177614C-5F60-401D-A07C-EFD27EE3B2F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5C08AB2-0707-45DD-8F0A-F5205AB37B18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5C08AB2-0707-45DD-8F0A-F5205AB37B18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5C08AB2-0707-45DD-8F0A-F5205AB37B18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5C08AB2-0707-45DD-8F0A-F5205AB37B18}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FCA43316-6E54-4024-8BD3-5DE2039FDEB4} = {BF768014-2FF5-4640-A45A-7AEEF1611215}
@@ -52,6 +58,9 @@ Global
 		{931AAFD7-46FA-4CAC-9CF9-39F5DD3898A5} = {FCA43316-6E54-4024-8BD3-5DE2039FDEB4}
 		{A11F92D5-BB4F-4F6C-B318-AAD6153BA463} = {FCA43316-6E54-4024-8BD3-5DE2039FDEB4}
 		{E9DE87C8-8FDC-426C-817E-0F673E6AB711} = {595B42E3-C04A-4D34-A889-A7E973621914}
-		{E177614C-5F60-401D-A07C-EFD27EE3B2F9} = {E9DE87C8-8FDC-426C-817E-0F673E6AB711}
+		{D5C08AB2-0707-45DD-8F0A-F5205AB37B18} = {E9DE87C8-8FDC-426C-817E-0F673E6AB711}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C9C9D2F9-582A-4D06-800B-13A121AF750F}
 	EndGlobalSection
 EndGlobal

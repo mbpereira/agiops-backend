@@ -1,8 +1,8 @@
-﻿using Domain.Abstractions;
-using Domain.Validation;
-using FluentValidation;
+﻿using FluentValidation;
+using PlanningPoker.Domain.Abstractions;
+using PlanningPoker.Domain.Validation;
 
-namespace Domain.Issues
+namespace PlanningPoker.Domain.Issues
 {
     public sealed class Issue : AggregateRoot<Issue>
     {
@@ -35,12 +35,12 @@ namespace Domain.Issues
             _grades.Add(new UserGrade(new EntityId(userId), grade));
         }
 
-        protected override void ConfigureValidationRules(Validator<Issue> validator)
+        protected override void ConfigureValidationRules(IValidationHandler<Issue> validator)
         {
-            validator.RuleFor(i => i.GameId)
+            validator.CreateRuleFor(i => i.GameId)
                 .GreaterThan(0);
 
-            validator.RuleFor(i => i.Name)
+            validator.CreateRuleFor(i => i.Name)
                 .NotEmpty()
                 .MinimumLength(3);
         }

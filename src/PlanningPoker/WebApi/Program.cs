@@ -1,4 +1,4 @@
-using WebApi.HealthChecks;
+using PlanningPoker.WebApi.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 

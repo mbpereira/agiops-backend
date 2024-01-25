@@ -1,12 +1,12 @@
-﻿using Domain.Validation;
+﻿using PlanningPoker.Domain.Validation;
 
-namespace Domain.Abstractions
+namespace PlanningPoker.Domain.Abstractions
 {
 
     public abstract class Entity<TEntity>
         where TEntity : Entity<TEntity>
     {
-        private readonly Validator<TEntity> _validator;
+        private readonly IValidationHandler<TEntity> _validator;
 
         public EntityId Id { get; private set; }
 
@@ -17,9 +17,9 @@ namespace Domain.Abstractions
             ConfigureValidationRules(_validator);
         }
 
-        protected abstract void ConfigureValidationRules(Validator<TEntity> validator);
+        protected abstract void ConfigureValidationRules(IValidationHandler<TEntity> validator);
 
         public virtual ValidationResult Validate()
-            => new(_validator.Validate((TEntity)this));
+            => _validator.Handle((TEntity)this);
     }
 }

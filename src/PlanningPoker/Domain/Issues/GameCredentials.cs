@@ -1,4 +1,4 @@
-﻿namespace Domain.Issues
+﻿namespace PlanningPoker.Domain.Issues
 {
     public sealed record GameCredentials(string Password);
 }

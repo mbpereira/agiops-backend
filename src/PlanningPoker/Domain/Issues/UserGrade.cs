@@ -1,6 +1,6 @@
-﻿using Domain.Abstractions;
+﻿using PlanningPoker.Domain.Abstractions;
 
-namespace Domain.Issues
+namespace PlanningPoker.Domain.Issues
 {
     public sealed record UserGrade(EntityId UerId, decimal Grade);
 }

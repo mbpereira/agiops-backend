@@ -1,8 +1,8 @@
-﻿using Domain.Abstractions;
-using Domain.Validation;
-using FluentValidation;
+﻿using FluentValidation;
+using PlanningPoker.Domain.Abstractions;
+using PlanningPoker.Domain.Validation;
 
-namespace Domain.Users
+namespace PlanningPoker.Domain.Users
 {
     public sealed class User : AggregateRoot<User>
     {
@@ -18,17 +18,17 @@ namespace Domain.Users
             IdentifyUser(email);
         }
 
-        protected override void ConfigureValidationRules(Validator<User> validator)
+        protected override void ConfigureValidationRules(IValidationHandler<User> validator)
         {
-            validator.RuleFor(u => u.Email!.Value)
+            validator.CreateRuleFor(u => u.Email!.Value)
                 .EmailAddress()
                 .When(u => u.Guest is null);
 
-            validator.RuleFor(u => u.Guest)
+            validator.CreateRuleFor(u => u.Guest)
                  .Null()
                  .When(u => u.Email is not null);
 
-            validator.RuleFor(u => u.Name)
+            validator.CreateRuleFor(u => u.Name)
                 .NotEmpty()
                 .MinimumLength(3);
         }

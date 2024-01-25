@@ -1,4 +1,4 @@
-﻿namespace Domain.Abstractions
+﻿namespace PlanningPoker.Domain.Abstractions
 {
     public abstract class AggregateRoot<T> : Entity<T>, IAggregateRoot where T : AggregateRoot<T>
     {
