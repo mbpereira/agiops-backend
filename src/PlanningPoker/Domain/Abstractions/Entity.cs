@@ -13,11 +13,14 @@ namespace PlanningPoker.Domain.Abstractions
         public Entity(EntityId id)
         {
             Id = id;
-            
+            _validatorHandler = GetValidator();
+        }
+
+        private Validator<TEntity> GetValidator()
+        {
             var validator = new Validator<TEntity>();
-            _validatorHandler = validator;
-            
             ConfigureValidationRules(validator);
+            return validator;
         }
 
         protected abstract void ConfigureValidationRules(IValidationRuleFactory<TEntity> validator);
