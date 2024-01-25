@@ -18,17 +18,17 @@ namespace PlanningPoker.Domain.Users
             IdentifyUser(email);
         }
 
-        protected override void ConfigureValidationRules(IValidationHandler<User> validator)
+        protected override void ConfigureValidationRules(IValidationRuleFactory<User> validator)
         {
-            validator.CreateRuleFor(u => u.Email!.Value)
+            validator.CreateFor(u => u.Email!.Value)
                 .EmailAddress()
                 .When(u => u.Guest is null);
 
-            validator.CreateRuleFor(u => u.Guest)
+            validator.CreateFor(u => u.Guest)
                  .Null()
                  .When(u => u.Email is not null);
 
-            validator.CreateRuleFor(u => u.Name)
+            validator.CreateFor(u => u.Name)
                 .NotEmpty()
                 .MinimumLength(3);
         }

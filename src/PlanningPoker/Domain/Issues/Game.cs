@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Validation;
-using PlanningPoker.Domain.Validation.Extensions.FluentValidation;
 
 namespace PlanningPoker.Domain.Issues
 {
@@ -22,13 +21,13 @@ namespace PlanningPoker.Domain.Issues
             DefinePassword(password);
         }
 
-        protected override void ConfigureValidationRules(IValidationHandler<Game> validator)
+        protected override void ConfigureValidationRules(IValidationRuleFactory<Game> validator)
         {
-            validator.CreateRuleFor(c => c.Name)
+            validator.CreateFor(c => c.Name)
                 .NotEmpty()
                 .MinimumLength(1);
 
-            validator.CreateRuleFor(c => c.Credentials!.Password)
+            validator.CreateFor(c => c.Credentials!.Password)
                 .NotEmpty()
                 .MinimumLength(6)
                 .When(g => g.Credentials is not null);

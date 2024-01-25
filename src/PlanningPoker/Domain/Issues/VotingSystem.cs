@@ -21,12 +21,12 @@ namespace PlanningPoker.Domain.Issues
             Revised = revised;
         }
 
-        protected override void ConfigureValidationRules(IValidationHandler<VotingSystem> validator)
+        protected override void ConfigureValidationRules(IValidationRuleFactory<VotingSystem> validator)
         {
-            validator.CreateRuleFor(v => v.Grades)
+            validator.CreateFor(v => v.Grades)
                 .NotEmpty();
 
-            validator.CreateRuleFor(v => v.Description)
+            validator.CreateFor(v => v.Description)
                 .NotEmpty()
                 .MinimumLength(3);
         }

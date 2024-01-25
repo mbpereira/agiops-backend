@@ -35,12 +35,12 @@ namespace PlanningPoker.Domain.Issues
             _grades.Add(new UserGrade(new EntityId(userId), grade));
         }
 
-        protected override void ConfigureValidationRules(IValidationHandler<Issue> validator)
+        protected override void ConfigureValidationRules(IValidationRuleFactory<Issue> validator)
         {
-            validator.CreateRuleFor(i => i.GameId)
+            validator.CreateFor(i => i.GameId)
                 .GreaterThan(0);
 
-            validator.CreateRuleFor(i => i.Name)
+            validator.CreateFor(i => i.Name)
                 .NotEmpty()
                 .MinimumLength(3);
         }
