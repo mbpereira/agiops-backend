@@ -8,7 +8,7 @@ namespace Domain.Abstractions
     {
         private readonly Validator<TEntity> _validator;
 
-        public EntityId Id { get; protected set; }
+        public EntityId Id { get; private set; }
 
         public Entity(EntityId id)
         {

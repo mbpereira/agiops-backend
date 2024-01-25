@@ -21,7 +21,6 @@ namespace Domain.Issues
         public Game(EntityId id, string name, int ownerId, string? password = null)
             : base(id)
         {
-            Id = id;
             Name = name;
             OwnerId = ownerId;
             DefinePassword(password);
