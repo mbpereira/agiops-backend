@@ -9,20 +9,20 @@ namespace Domain.Issues
         private readonly IList<int> _grades = new List<int>();
         public IReadOnlyCollection<int> Grades => _grades.AsReadOnly();
         public string Description { get; private set; }
-        public int OwnerId { get; private set; }
+        public int UserId { get; private set; }
         public bool Shared { get; private set; }
         public bool Revised { get; private set; }
 
-        private VotingSystem(EntityId id, string description, int ownerId, bool shared, bool revised) : base(id)
+        private VotingSystem(EntityId id, string description, int userId, bool shared, bool revised) : base(id)
         {
             Description = description;
-            OwnerId = ownerId;
+            UserId = userId;
             Shared = shared;
             Revised = revised;
         }
 
-        private VotingSystem(string description, int ownerId, bool shared)
-            : this(EntityId.AutoIncrement(), description, ownerId, shared, revised: false)
+        private VotingSystem(string description, int userId, bool shared)
+            : this(EntityId.AutoIncrement(), description, userId, shared, revised: false)
         {
         }
 
@@ -35,8 +35,8 @@ namespace Domain.Issues
                 .MinimumLength(3);
         }
 
-        public static VotingSystem Load(EntityId id, string description, int ownerId, bool shared, bool revised) => new(id, description, ownerId, shared, revised);
-        public static VotingSystem New(string description, int ownerId, bool shared) => new(description, ownerId, shared);
+        public static VotingSystem Load(EntityId id, string description, int userId, bool shared, bool revised) => new(id, description, userId, shared, revised);
+        public static VotingSystem New(string description, int userId, bool shared) => new(description, userId, shared);
 
         public void AddGrade(int grade) => _grades.Add(grade);
         public void ClearGrades() => _grades.Clear();

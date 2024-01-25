@@ -13,16 +13,16 @@ namespace Domain.Issues
         public int UserId { get; private set; }
         public GameCredentials? Credentials { get; private set; }
 
-        public Game(string name, int ownerId, string? password = null)
-            : this(id: EntityId.AutoIncrement(), name, ownerId, password)
+        public Game(string name, int userId, string? password = null)
+            : this(id: EntityId.AutoIncrement(), name, userId, password)
         {
         }
 
-        public Game(EntityId id, string name, int ownerId, string? password = null)
+        public Game(EntityId id, string name, int userId, string? password = null)
             : base(id)
         {
             Name = name;
-            UserId = ownerId;
+            UserId = userId;
             DefinePassword(password);
         }
 
@@ -45,8 +45,8 @@ namespace Domain.Issues
                 : new GameCredentials(password);
         }
 
-        public static Game New(string name, int ownerId, string? password = null) => new(name, ownerId, password);
+        public static Game New(string name, int userId, string? password = null) => new(name, userId, password);
 
-        public static Game Load(EntityId id, string name, int ownerId, string password) => new(id, name, ownerId, password);
+        public static Game Load(EntityId id, string name, int userId, string password) => new(id, name, userId, password);
     }
 }
