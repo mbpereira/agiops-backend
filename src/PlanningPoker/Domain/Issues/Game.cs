@@ -8,9 +8,9 @@ namespace Domain.Issues
     {
         public string Name { get; private set; }
         /// <summary>
-        /// same as userId
+        /// game owner
         /// </summary>
-        public int OwnerId { get; private set; }
+        public int UserId { get; private set; }
         public GameCredentials? Credentials { get; private set; }
 
         public Game(string name, int ownerId, string? password = null)
@@ -22,7 +22,7 @@ namespace Domain.Issues
             : base(id)
         {
             Name = name;
-            OwnerId = ownerId;
+            UserId = ownerId;
             DefinePassword(password);
         }
 
