@@ -34,13 +34,13 @@ namespace Domain.Users
 
         protected override void ConfigureValidationRules(Validator<User> validator)
         {
-            if (Guest is not null)
-                validator.RuleFor(u => u.Email!.Value)
-                    .EmailAddress();
-            
-            if (Email is not null)
-                validator.RuleFor(u => u.Guest)
-                     .Null();
+            validator.RuleFor(u => u.Email!.Value)
+                .EmailAddress()
+                .When(u => u.Guest is null);
+
+            validator.RuleFor(u => u.Guest)
+                 .Null()
+                 .When(u => u.Email is not null);
 
             validator.RuleFor(u => u.Name)
                 .NotEmpty()

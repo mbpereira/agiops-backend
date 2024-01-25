@@ -33,12 +33,10 @@ namespace Domain.Issues
                 .NotEmpty()
                 .MinimumLength(1);
 
-            if (Credentials is not null)
-            {
-                validator.RuleFor(c => c.Credentials!.Password)
-                    .NotEmpty()
-                    .MinimumLength(6);
-            }
+            validator.RuleFor(c => c.Credentials!.Password)
+                .NotEmpty()
+                .MinimumLength(6)
+                .When(g => g.Credentials is not null);
         }
 
         public void DefinePassword(string? password = null)

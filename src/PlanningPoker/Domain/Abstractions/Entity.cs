@@ -14,14 +14,12 @@ namespace Domain.Abstractions
         {
             Id = id;
             _validator = new Validator<TEntity>();
+            ConfigureValidationRules(_validator);
         }
 
         protected abstract void ConfigureValidationRules(Validator<TEntity> validator);
 
         public virtual ValidationResult Validate()
-        {
-            ConfigureValidationRules(_validator);
-            return new ValidationResult(_validator.Validate((TEntity)this));
-        }
+            => new(_validator.Validate((TEntity)this));
     }
 }
