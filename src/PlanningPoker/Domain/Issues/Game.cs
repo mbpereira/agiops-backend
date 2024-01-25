@@ -4,21 +4,16 @@ using FluentValidation;
 
 namespace Domain.Issues
 {
-    public class Game : AggregateRoot<Game>
+    public sealed class Game : AggregateRoot<Game>
     {
         public string Name { get; private set; }
         /// <summary>
         /// game owner
         /// </summary>
-        public int UserId { get; private set; }
+        public EntityId UserId { get; private set; }
         public GameCredentials? Credentials { get; private set; }
 
-        public Game(string name, int userId, string? password = null)
-            : this(id: EntityId.AutoIncrement(), name, userId, password)
-        {
-        }
-
-        public Game(EntityId id, string name, int userId, string? password = null)
+        private Game(EntityId id, string name, EntityId userId, string? password = null)
             : base(id)
         {
             Name = name;
@@ -45,8 +40,8 @@ namespace Domain.Issues
                 : new GameCredentials(password);
         }
 
-        public static Game New(string name, int userId, string? password = null) => new(name, userId, password);
+        public static Game New(string name, int userId, string? password = null) => new(EntityId.AutoIncrement(), name, new EntityId(userId), password);
 
-        public static Game Load(EntityId id, string name, int userId, string password) => new(id, name, userId, password);
+        public static Game Load(int id, string name, int userId, string password) => new(new EntityId(id), name, new EntityId(userId), password);
     }
 }

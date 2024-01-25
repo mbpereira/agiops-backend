@@ -1,7 +1,11 @@
 ﻿namespace Domain.Abstractions
 {
-    public record EntityId(int Value)
+    public sealed record EntityId
     {
-        public static EntityId AutoIncrement() => new(Value: 0);
+        public int Value { get; private set; }
+
+        internal EntityId(int value) { Value = value; }
+
+        public static EntityId AutoIncrement() => new(value: 0);
     }
 }

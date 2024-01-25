@@ -2,5 +2,5 @@
 
 namespace Domain.Issues
 {
-    public record UserGrade(EntityId userId, int grade);
+    public sealed record UserGrade(EntityId UerId, decimal Grade);
 }

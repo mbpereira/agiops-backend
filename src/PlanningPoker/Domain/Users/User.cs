@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace Domain.Users
 {
-    public class User : AggregateRoot<User>
+    public sealed class User : AggregateRoot<User>
     {
         public string Name { get; private set; }
         public Email? Email { get; private set; }
@@ -12,24 +12,10 @@ namespace Domain.Users
 
         public bool IsGuest => Guest is not null;
 
-        private User(EntityId id, string name, string email) : base(EntityId.AutoIncrement())
+        private User(EntityId id, string name, string? email) : base(id)
         {
             Name = name;
             IdentifyUser(email);
-        }
-
-        private User(string name, string email) : this(EntityId.AutoIncrement(), name, email)
-        {
-            Name = name;
-            IdentifyUser(email);
-        }
-
-        private User(string name)
-            : base(EntityId.AutoIncrement())
-        {
-            Name = name;
-            Email = null;
-            Guest = new Guest(Guid.NewGuid().ToString());
         }
 
         protected override void ConfigureValidationRules(Validator<User> validator)
@@ -47,16 +33,22 @@ namespace Domain.Users
                 .MinimumLength(3);
         }
 
-        private void IdentifyUser(string email)
+        private void IdentifyUser(string? email)
         {
-            Email = new Email(email);
-            Guest = null;
+            if (email is not null)
+            {
+                Email = new Email(email);
+                Guest = null;
+                return;
+            }
+
+            Guest = new Guest(Guid.NewGuid().ToString());
         }
 
-        public static User New(string name, string email) => new(name, email);
+        public static User New(string name, string email) => new(EntityId.AutoIncrement(), name, email);
 
-        public static User NewGuest(string name) => new(name);
+        public static User NewGuest(string name) => new(EntityId.AutoIncrement(), name, email: null);
 
-        public static User Load(EntityId id, string name, string email) => new(id, name, email);
+        public static User Load(int id, string name, string email) => new(new EntityId(id), name, email);
     }
 }

@@ -1,4 +1,4 @@
 ﻿namespace Domain.Issues
 {
-    public record GameCredentials(string Password);
+    public sealed record GameCredentials(string Password);
 }

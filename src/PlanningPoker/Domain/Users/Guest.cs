@@ -1,4 +1,4 @@
 ﻿namespace Domain.Users
 {
-    public record Guest(string SessionId);
+    public sealed record Guest(string SessionId);
 }
