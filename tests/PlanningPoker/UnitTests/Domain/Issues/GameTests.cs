@@ -52,7 +52,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         }
 
         [Fact]
-        public void ShouldReturnIsValidAsTrueWhenProvidedIsValid()
+        public void ShouldReturnIsValidAsTrueWhenProvidedDataIsValid()
         {
             var game = Game.New(_faker.Random.String2(length: 1), _faker.Random.Int(), _faker.Random.String2(length: 6));
 
