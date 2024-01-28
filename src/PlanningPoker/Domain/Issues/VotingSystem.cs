@@ -29,6 +29,9 @@ namespace PlanningPoker.Domain.Issues
             validator.CreateFor(v => v.Description)
                 .NotEmpty()
                 .MinimumLength(3);
+
+            validator.CreateFor(v => v.UserId!.Value, propertyName: nameof(UserId))
+                .GreaterThan(0);
         }
 
         public static VotingSystem New(string description, int userId, bool shared) => new(EntityId.AutoIncrement(), description, new EntityId(userId), shared, revised: false);
@@ -36,7 +39,7 @@ namespace PlanningPoker.Domain.Issues
         public void AddGrade(int grade) => _grades.Add(grade);
         public void ClearGrades() => _grades.Clear();
         public void ChangeDescription(string description) => Description = description;
-        public void Share(bool share) => Shared = share;
+        public void Share(bool shared) => Shared = shared;
         public void Revise(bool revised) => Revised = revised;
     }
 }

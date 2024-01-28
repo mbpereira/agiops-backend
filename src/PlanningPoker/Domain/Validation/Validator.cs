@@ -14,6 +14,10 @@ namespace PlanningPoker.Domain.Validation
             => RuleFor(expression)
                 .WithPropertyName(BuildPropertyName);
 
+        public IRuleBuilderInitial<T, TProperty> CreateFor<TProperty>(Expression<Func<T, TProperty>> expression, string propertyName)
+            => RuleFor(expression)
+                .WithPropertyName(original => BuildPropertyName(propertyName));
+
         public ValidationResult Handle(T instance)
         {
             var result = Validate(instance);
