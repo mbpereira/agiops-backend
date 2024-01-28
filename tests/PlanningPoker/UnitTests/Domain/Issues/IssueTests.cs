@@ -15,6 +15,14 @@ namespace PlanningPoker.UnitTests.Domain.Issues
             _faker = new();
         }
 
+        [Fact]
+        public void ShouldReturnAutoIncrementAsIdWhenNewIssueIsCreated()
+        {
+            var issue = GetValidIssue();
+
+            issue.Id.Should().Be(EntityId.AutoIncrement());
+        }
+
         [Theory]
         [InlineData(null)]
         [InlineData("")]
@@ -29,7 +37,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
 
             var validationResult = issue.Validate();
 
-            using var assertionScope = new AssertionScope();
+            using var _ = new AssertionScope();
             validationResult.IsValid.Should().BeFalse();
             validationResult.Errors.Should().BeEquivalentTo(expectedErrros);
         }

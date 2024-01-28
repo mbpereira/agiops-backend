@@ -42,7 +42,5 @@ namespace PlanningPoker.Domain.Users
         public static User New(string name, string email) => new(EntityId.AutoIncrement(), name, email, sessionId: null);
 
         public static User NewGuest(string name) => new(EntityId.AutoIncrement(), name, email: null, sessionId: Guid.NewGuid().ToString());
-
-        public static User Load(int id, string name, string? email, string? sessionId) => new(new EntityId(id), name, email, sessionId);
     }
 }

@@ -41,7 +41,5 @@ namespace PlanningPoker.Domain.Issues
         }
 
         public static Game New(string name, int userId, string? password = null) => new(EntityId.AutoIncrement(), name, new EntityId(userId), password);
-
-        public static Game Load(int id, string name, int userId, string password) => new(new EntityId(id), name, new EntityId(userId), password);
     }
 }

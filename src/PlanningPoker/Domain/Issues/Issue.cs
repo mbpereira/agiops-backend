@@ -27,8 +27,6 @@ namespace PlanningPoker.Domain.Issues
 
         public static Issue New(int gameId, string name, string? description = null, string? link = null) => new(EntityId.AutoIncrement(), gameId, name, description, link);
 
-        public static Issue Load(int id, int gameId, string name, string? description = null, string? link = null) => new(new EntityId(id), gameId, name, description, link);
-
         public void RegisterGrade(int userId, decimal grade)
         {
             if (userId == 0) throw new DomainException("Provided user id is not valid.");

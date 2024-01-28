@@ -31,8 +31,6 @@ namespace PlanningPoker.Domain.Issues
                 .MinimumLength(3);
         }
 
-        public static VotingSystem Load(int id, string description, int userId, bool shared, bool revised) => new(new EntityId(id), description, new EntityId(userId), shared, revised);
-
         public static VotingSystem New(string description, int userId, bool shared) => new(EntityId.AutoIncrement(), description, new EntityId(userId), shared, revised: false);
 
         public void AddGrade(int grade) => _grades.Add(grade);
