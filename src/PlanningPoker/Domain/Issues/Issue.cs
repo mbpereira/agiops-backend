@@ -31,6 +31,8 @@ namespace PlanningPoker.Domain.Issues
 
         public void RegisterGrade(int userId, decimal grade)
         {
+            if (userId == 0) throw new DomainException("Provided user id is not valid.");
+
             _grades.RemoveAll(g => g.UerId.Value == userId);
             _grades.Add(new UserGrade(new EntityId(userId), grade));
         }

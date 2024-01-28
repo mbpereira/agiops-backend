@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Issues;
 
 namespace PlanningPoker.UnitTests.Domain.Issues
@@ -20,6 +21,14 @@ namespace PlanningPoker.UnitTests.Domain.Issues
             var game = Game.New(_faker.Random.String2(length: 5), _faker.Random.Int());
 
             game.Credentials.Should().BeNull();
+        }
+
+        [Fact]
+        public void ShouldReturnAutoIncrementAsIdWhenNewGameIsCreated()
+        {
+            var game = Game.New(_faker.Random.String2(length: 5), _faker.Random.Int());
+
+            game.Id.Should().Be(EntityId.AutoIncrement());
         }
 
         [Fact]
