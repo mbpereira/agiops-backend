@@ -12,29 +12,23 @@ namespace PlanningPoker.Domain.Users
 
         public bool IsGuest => Guest is not null;
 
-        private User(EntityId id, string name, string? email) : base(id)
+        private User(EntityId id, string name, string? email, string? sessionId) : base(id)
         {
             Name = name;
-            IdentifyUser(email);
+            IdentifyUser(email, sessionId);
         }
 
         protected override void ConfigureValidationRules(IValidationRuleFactory<User> validator)
         {
-            validator.CreateFor(u => u.Email!.Value)
-                .EmailAddress()
-                .When(u => u.Guest is null);
-
-            validator.CreateFor(u => u.Guest)
-                 .Null()
-                 .When(u => u.Email is not null);
-
             validator.CreateFor(u => u.Name)
                 .NotEmpty()
                 .MinimumLength(3);
         }
 
-        private void IdentifyUser(string? email)
+        private void IdentifyUser(string? email, string? sessionId)
         {
+            if (email is null && sessionId is null) throw new DomainException("Email or Session Id must be defined.");
+
             if (email is not null)
             {
                 Email = new Email(email);
@@ -42,13 +36,13 @@ namespace PlanningPoker.Domain.Users
                 return;
             }
 
-            Guest = new Guest(Guid.NewGuid().ToString());
+            Guest = new Guest(sessionId!);
         }
 
-        public static User New(string name, string email) => new(EntityId.AutoIncrement(), name, email);
+        public static User New(string name, string email) => new(EntityId.AutoIncrement(), name, email, sessionId: null);
 
-        public static User NewGuest(string name) => new(EntityId.AutoIncrement(), name, email: null);
+        public static User NewGuest(string name) => new(EntityId.AutoIncrement(), name, email: null, sessionId: Guid.NewGuid().ToString());
 
-        public static User Load(int id, string name, string email) => new(new EntityId(id), name, email);
+        public static User Load(int id, string name, string? email, string? sessionId) => new(new EntityId(id), name, email, sessionId);
     }
 }
