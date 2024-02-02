@@ -56,7 +56,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
             var validationResult = game.Validate();
 
             using var _ = new AssertionScope();
-            validationResult.IsValid.Should().BeFalse();
+            validationResult.Success.Should().BeFalse();
             validationResult.Errors.Should().BeEquivalentTo(expectedErrors);
         }
 
@@ -67,7 +67,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
 
             var validationResult = game.Validate();
 
-            validationResult.IsValid.Should().BeTrue();
+            validationResult.Success.Should().BeTrue();
         }
     }
 }

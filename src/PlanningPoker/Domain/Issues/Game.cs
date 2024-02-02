@@ -7,13 +7,10 @@ namespace PlanningPoker.Domain.Issues
     public sealed class Game : AggregateRoot<Game>
     {
         public string Name { get; private set; }
-        /// <summary>
-        /// game owner
-        /// </summary>
         public EntityId UserId { get; private set; }
         public GameCredentials? Credentials { get; private set; }
 
-        private Game(EntityId id, string name, EntityId userId, string? password = null)
+        public Game(EntityId id, string name, EntityId userId, string? password = null)
             : base(id)
         {
             Name = name;
@@ -41,5 +38,6 @@ namespace PlanningPoker.Domain.Issues
         }
 
         public static Game New(string name, int userId, string? password = null) => new(EntityId.AutoIncrement(), name, new EntityId(userId), password);
+        public static Game New(int id, string name, int userId, string? password = null) => new(new EntityId(id), name, new EntityId(userId), password);
     }
 }

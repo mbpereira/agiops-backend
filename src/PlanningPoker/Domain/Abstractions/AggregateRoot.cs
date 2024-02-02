@@ -4,9 +4,11 @@
     {
         private readonly IList<IDomainEvent> _domainEvents = new List<IDomainEvent>();
 
-        public AggregateRoot(EntityId id) : base(id)
+        protected AggregateRoot(EntityId id) : base(id)
         {
         }
+
+        protected AggregateRoot() : base(EntityId.AutoIncrement()) { }
 
         public IReadOnlyList<IDomainEvent> GetDomainEvents()
             => _domainEvents.ToList();

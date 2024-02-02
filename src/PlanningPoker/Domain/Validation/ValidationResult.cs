@@ -4,7 +4,7 @@
     {
         public IReadOnlyCollection<Error> Errors { get; } = new List<Error>();
 
-        public bool IsValid => Errors.Count == 0;
+        public bool Success => Errors.Count == 0;
 
         public ValidationResult(IEnumerable<Error> errors)
         {

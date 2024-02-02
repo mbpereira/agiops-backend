@@ -1,8 +1,8 @@
 ﻿using PlanningPoker.Domain.Validation;
 
-namespace PlanningPoker.UnitTests.Application.CreateGame
+namespace PlanningPoker.Application.Abstractions
 {
-    public record CommandResult<TResponse> : BaseCommandResult
+    public record CommandResult<TResponse> : BaseCommandResult where TResponse : class
     {
         public TResponse? Data { get; private set; }
 
@@ -11,12 +11,12 @@ namespace PlanningPoker.UnitTests.Application.CreateGame
             Data = data;
         }
 
-        public static CommandResult<T> Success<T>(T data) =>
+        public static CommandResult<TResponse> Success(TResponse data) =>
             new(data, CommandStatus.Success, Enumerable.Empty<Error>());
 
-        public static CommandResult<T> Fail<T>(
+        public static CommandResult<TResponse> Fail(
             IEnumerable<Error> errors,
-            CommandStatus status = CommandStatus.ValidationFailed) where T : class
+            CommandStatus status = CommandStatus.ValidationFailed)
                 => new(null, status, errors);
     }
 

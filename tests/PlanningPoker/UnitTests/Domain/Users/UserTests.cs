@@ -25,7 +25,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
 
             using var _ = new AssertionScope();
             validationResult.Errors.Should().BeEquivalentTo(expectedErrors);
-            validationResult.IsValid.Should().BeFalse();
+            validationResult.Success.Should().BeFalse();
         }
 
         [Fact]

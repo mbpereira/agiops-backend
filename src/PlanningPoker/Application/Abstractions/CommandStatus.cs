@@ -1,4 +1,4 @@
-﻿namespace PlanningPoker.UnitTests.Application.CreateGame
+﻿namespace PlanningPoker.Application.Abstractions
 {
     public enum CommandStatus
     {
