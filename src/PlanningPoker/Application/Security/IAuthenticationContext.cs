@@ -1,5 +1,4 @@
-﻿
-namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
+﻿namespace PlanningPoker.Application.Security
 {
     public interface IAuthenticationContext
     {

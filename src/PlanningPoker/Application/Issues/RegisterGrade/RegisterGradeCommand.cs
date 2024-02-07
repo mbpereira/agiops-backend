@@ -2,7 +2,7 @@
 using PlanningPoker.Application.Abstractions;
 using PlanningPoker.Domain.Validation;
 
-namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
+namespace PlanningPoker.Application.Issues.RegisterGrade
 {
     public class RegisterGradeCommand : Command<RegisterGradeCommand>
     {

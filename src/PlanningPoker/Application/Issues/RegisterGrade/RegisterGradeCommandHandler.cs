@@ -1,7 +1,8 @@
 ﻿using PlanningPoker.Application.Abstractions;
+using PlanningPoker.Application.Security;
 using PlanningPoker.Domain.Abstractions;
 
-namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
+namespace PlanningPoker.Application.Issues.RegisterGrade
 {
     public class RegisterGradeCommandHandler
     {
