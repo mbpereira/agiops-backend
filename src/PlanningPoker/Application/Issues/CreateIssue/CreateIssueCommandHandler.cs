@@ -2,7 +2,7 @@
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Issues;
 
-namespace PlanningPoker.UnitTests.Application.Issues.CreateIssue
+namespace PlanningPoker.Application.Issues.CreateIssue
 {
     public class CreateIssueCommandHandler
     {

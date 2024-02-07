@@ -3,6 +3,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using NSubstitute;
 using PlanningPoker.Application.Abstractions;
+using PlanningPoker.Application.Issues.CreateIssue;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Issues;
 
