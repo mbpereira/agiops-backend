@@ -4,7 +4,7 @@ using PlanningPoker.Domain.Issues;
 
 namespace PlanningPoker.Application.Issues.CreateIssue
 {
-    public class CreateIssueCommandHandler
+    public class CreateIssueCommandHandler : ICommandHandler<CreateIssueCommand, CreateIssueResult>
     {
         private readonly IUnitOfWork _uow;
 

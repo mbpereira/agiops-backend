@@ -4,7 +4,7 @@ using PlanningPoker.Domain.Abstractions;
 
 namespace PlanningPoker.Application.Issues.RegisterGrade
 {
-    public class RegisterGradeCommandHandler
+    public class RegisterGradeCommandHandler : ICommandHandler<RegisterGradeCommand>
     {
         private readonly IUnitOfWork _uow;
         private readonly IAuthenticationContext _authenticationContext;

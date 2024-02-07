@@ -4,7 +4,7 @@ using PlanningPoker.Domain.Issues;
 
 namespace PlanningPoker.Application.Issues.CreateGame
 {
-    public class CreateGameCommandHandler
+    public class CreateGameCommandHandler : ICommandHandler<CreateGameCommand, CreateGameResult>
     {
         private readonly IUnitOfWork _uow;
 
