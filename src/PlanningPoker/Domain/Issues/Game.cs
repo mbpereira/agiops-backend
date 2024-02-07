@@ -20,11 +20,11 @@ namespace PlanningPoker.Domain.Issues
 
         protected override void ConfigureValidationRules(IValidationRuleFactory<Game> validator)
         {
-            validator.CreateFor(c => c.Name)
+            validator.CreateRuleFor(c => c.Name)
                 .NotEmpty()
                 .MinimumLength(1);
 
-            validator.CreateFor(c => c.Credentials!.Password)
+            validator.CreateRuleFor(c => c.Credentials!.Password)
                 .NotEmpty()
                 .MinimumLength(6)
                 .When(g => g.Credentials is not null);

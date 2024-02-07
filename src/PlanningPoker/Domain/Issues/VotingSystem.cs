@@ -23,14 +23,14 @@ namespace PlanningPoker.Domain.Issues
 
         protected override void ConfigureValidationRules(IValidationRuleFactory<VotingSystem> validator)
         {
-            validator.CreateFor(v => v.Grades)
+            validator.CreateRuleFor(v => v.Grades)
                 .NotEmpty();
 
-            validator.CreateFor(v => v.Description)
+            validator.CreateRuleFor(v => v.Description)
                 .NotEmpty()
                 .MinimumLength(3);
 
-            validator.CreateFor(v => v.UserId!.Value, propertyName: nameof(UserId))
+            validator.CreateRuleFor(v => v.UserId!.Value, propertyName: nameof(UserId))
                 .GreaterThan(0);
         }
 

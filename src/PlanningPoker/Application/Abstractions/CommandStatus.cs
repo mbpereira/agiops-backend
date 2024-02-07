@@ -3,6 +3,7 @@
     public enum CommandStatus
     {
         Success = 1,
-        ValidationFailed = 2
+        ValidationFailed = 2,
+        RecordNotFound = 3
     }
 }

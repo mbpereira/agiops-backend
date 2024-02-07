@@ -20,7 +20,7 @@ namespace PlanningPoker.Domain.Users
 
         protected override void ConfigureValidationRules(IValidationRuleFactory<User> validator)
         {
-            validator.CreateFor(u => u.Name)
+            validator.CreateRuleFor(u => u.Name)
                 .NotEmpty()
                 .MinimumLength(3);
         }

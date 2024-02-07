@@ -42,13 +42,14 @@ namespace PlanningPoker.Application.Abstractions
         }
 
         public static CommandResult Success() =>
-            new CommandResult(
-                CommandStatus.Success,
-                Enumerable.Empty<Error>());
+            new(CommandStatus.Success, Enumerable.Empty<Error>());
 
         public static CommandResult Fail(
             IEnumerable<Error> errors,
             CommandStatus status = CommandStatus.ValidationFailed) =>
-                new CommandResult(status, errors);
+                new(status, errors);
+
+        public static CommandResult Fail(CommandStatus status) =>
+                new(status, Enumerable.Empty<Error>());
     }
 }

@@ -27,7 +27,7 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
         [InlineData(null, "abcde")]
         public async Task ShouldReturnValidationFailedWhenProvidedDataIsNotValid(string invalidName, string invalidPassword)
         {
-            var command = new CreateGameCommand(Name: invalidName, UserId: 0, Password: invalidPassword);
+            var command = new CreateGameCommand(name: invalidName, userId: 0, password: invalidPassword);
 
             var commandResult = await _handler.HandleAsync(command);
 
@@ -39,9 +39,9 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
         {
             var expectedGame = GetValidGame();
             var command = new CreateGameCommand(
-                Name: expectedGame.Name,
-                UserId: expectedGame.UserId.Value,
-                Password: expectedGame.Credentials!.Password);
+                name: expectedGame.Name,
+                userId: expectedGame.UserId.Value,
+                password: expectedGame.Credentials!.Password);
             _uow.Games.AddAsync(Arg.Any<Game>()).Returns(expectedGame);
 
             var commandResult = await _handler.HandleAsync(command);

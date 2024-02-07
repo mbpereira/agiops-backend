@@ -29,8 +29,8 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateIssue
         public async Task ShouldReturnsValidationFailedWhenProvidedDataIsNotValid(string? invalidName)
         {
             var command = new CreateIssueCommand(
-                    GameId: 0,
-                    Name: invalidName!
+                    gameId: 0,
+                    name: invalidName!
                 );
 
             var result = await _handler.HandleAsync(command);
@@ -43,10 +43,10 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateIssue
         {
             var expectedIssue = Issue.New(_faker.Random.Int(min: 1), _faker.Random.Int(min: 1), _faker.Random.String2(length: 10), _faker.Random.Word(), _faker.Internet.Url());
             var command = new CreateIssueCommand(
-                GameId: expectedIssue.GameId,
-                Name: expectedIssue.Name,
-                Description: expectedIssue.Description,
-                Link: expectedIssue.Link
+                gameId: expectedIssue.GameId,
+                name: expectedIssue.Name,
+                description: expectedIssue.Description,
+                link: expectedIssue.Link
             );
             _uow.Issues.AddAsync(Arg.Any<Issue>())
                 .Returns(expectedIssue);

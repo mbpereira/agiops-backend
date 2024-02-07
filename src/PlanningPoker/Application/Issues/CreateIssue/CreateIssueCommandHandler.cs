@@ -26,10 +26,7 @@ namespace PlanningPoker.Application.Issues.CreateIssue
 
             await _uow.SaveChangesAsync();
 
-            return CommandResult<CreateIssueResult>.Success(new CreateIssueResult
-            {
-                Id = createdIssue.Id.Value,
-            });
+            return CommandResult<CreateIssueResult>.Success(new CreateIssueResult(createdIssue.Id.Value));
         }
     }
 }

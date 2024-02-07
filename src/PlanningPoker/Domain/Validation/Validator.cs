@@ -4,17 +4,17 @@ using System.Linq.Expressions;
 
 namespace PlanningPoker.Domain.Validation
 {
-    public class Validator<T> : AbstractValidator<T>, IValidationHandler<T>, IValidationRuleFactory<T>
+    public class Validator<T> : AbstractValidator<T>, IValidator<T>
     {
         private readonly string _className = typeof(T).Name;
 
         private string BuildPropertyName(string originalPropertyName) => $"{_className}.{originalPropertyName}";
 
-        public IRuleBuilderInitial<T, TProperty> CreateFor<TProperty>(Expression<Func<T, TProperty>> expression)
+        public IRuleBuilderInitial<T, TProperty> CreateRuleFor<TProperty>(Expression<Func<T, TProperty>> expression)
             => RuleFor(expression)
                 .WithPropertyName(BuildPropertyName);
 
-        public IRuleBuilderInitial<T, TProperty> CreateFor<TProperty>(Expression<Func<T, TProperty>> expression, string propertyName)
+        public IRuleBuilderInitial<T, TProperty> CreateRuleFor<TProperty>(Expression<Func<T, TProperty>> expression, string propertyName)
             => RuleFor(expression)
                 .WithPropertyName(original => BuildPropertyName(propertyName));
 
