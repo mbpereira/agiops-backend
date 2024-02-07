@@ -4,6 +4,6 @@ namespace PlanningPoker.Domain.Abstractions
 {
     public interface IRepository<T>
     {
-        Task<Game> AddAsync(T entity);
+        Task<T> AddAsync(T entity);
     }
 }

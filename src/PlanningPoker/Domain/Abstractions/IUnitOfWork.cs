@@ -4,7 +4,8 @@ namespace PlanningPoker.Domain.Abstractions
 {
     public interface IUnitOfWork
     {
-        IGameRepository Games { get; }
+        IGamesRepository Games { get; }
+        IIssuesRepository Issues { get; }
         Task<bool> SaveChangesAsync();
         Task BeginTransactionAsync();
         Task CommitTransactionAsync();
