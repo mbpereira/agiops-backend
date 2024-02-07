@@ -16,7 +16,6 @@ permissions:
 
 jobs:
   test:
-    
     runs-on: ubuntu-latest
 
     steps:
@@ -25,6 +24,7 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 7.0.x
+
     - name: Restore dependencies
       run: dotnet restore
       
