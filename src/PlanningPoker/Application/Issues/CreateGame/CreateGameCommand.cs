@@ -8,10 +8,9 @@ namespace PlanningPoker.Application.Issues.CreateGame
         public string Name { get; }
         public string? Password { get; }
 
-        public CreateGameCommand(string name, int userId, string? password = null)
+        public CreateGameCommand(string name, string? password = null)
         {
             Name = name;
-            UserId = userId;
             Password = password;
         }
 

@@ -4,6 +4,7 @@ using FluentAssertions.Execution;
 using NSubstitute;
 using PlanningPoker.Application.Abstractions;
 using PlanningPoker.Application.Issues.CreateIssue;
+using PlanningPoker.Application.Security.Tenant;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Issues;
 
@@ -13,13 +14,17 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateIssue
     {
         private readonly Faker _faker;
         private readonly IUnitOfWork _uow;
+        private readonly ITenantContext _tenantContext;
         private readonly CreateIssueCommandHandler _handler;
 
         public CreateIssueCommandHandlerTests()
         {
             _faker = new();
+            _tenantContext = Substitute.For<ITenantContext>();
             _uow = Substitute.For<IUnitOfWork>();
-            _handler = new CreateIssueCommandHandler(_uow);
+            _tenantContext.GetCurrentTenantAsync()
+                .Returns(new TenantInformation(Id: _faker.Random.Int(min: 1)));
+            _handler = new CreateIssueCommandHandler(_uow, _tenantContext);
         }
 
         [Theory]

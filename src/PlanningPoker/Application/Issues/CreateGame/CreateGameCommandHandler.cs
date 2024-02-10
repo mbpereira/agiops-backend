@@ -1,4 +1,5 @@
 ﻿using PlanningPoker.Application.Abstractions;
+using PlanningPoker.Application.Security;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Issues;
 
@@ -7,15 +8,19 @@ namespace PlanningPoker.Application.Issues.CreateGame
     public class CreateGameCommandHandler : ICommandHandler<CreateGameCommand, CreateGameResult>
     {
         private readonly IUnitOfWork _uow;
+        private readonly ISecurityContext _security;
 
-        public CreateGameCommandHandler(IUnitOfWork uow)
+        public CreateGameCommandHandler(IUnitOfWork uow, ISecurityContext authenticationContext)
         {
             _uow = uow;
+            _security = authenticationContext;
         }
 
         public async Task<CommandResult<CreateGameResult>> HandleAsync(CreateGameCommand command)
         {
-            var game = Game.New(command.Name, command.UserId, command.Password);
+            var context = await _security.GetSecurityInformationAsync();
+
+            var game = Game.New(context.Tenant.Id, command.Name, context.User.Id, command.Password);
 
             var validationResult = game.Validate();
 

@@ -4,7 +4,7 @@ using FluentAssertions;
 using NSubstitute;
 using PlanningPoker.Application.Abstractions;
 using PlanningPoker.Application.Issues.RegisterGrade;
-using PlanningPoker.Application.Security;
+using PlanningPoker.Application.Security.Authentication;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Issues;
 
@@ -51,6 +51,8 @@ namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
             var expectedIssue = GetValidIssue();
             _uow.Issues.GetByIdAsync(Arg.Any<EntityId>())
                 .Returns(expectedIssue);
+            _authenticationContext.GetCurrentUserAsync()
+                .Returns(new UserInformation(Id: 0));
             var command = new RegisterGradeCommand(issueId: _faker.Random.Int(min: 1), grade: _faker.Random.Decimal());
             var act = async () => await _handler.HandleAsync(command);
 

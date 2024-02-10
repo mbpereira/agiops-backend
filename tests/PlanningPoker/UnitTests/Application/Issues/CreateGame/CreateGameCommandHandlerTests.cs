@@ -4,6 +4,7 @@ using FluentAssertions.Execution;
 using NSubstitute;
 using PlanningPoker.Application.Abstractions;
 using PlanningPoker.Application.Issues.CreateGame;
+using PlanningPoker.Application.Security;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Issues;
 
@@ -13,21 +14,30 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
     {
         private readonly Faker _faker;
         private readonly IUnitOfWork _uow;
+        private readonly ISecurityContext _authenticationContext;
         private readonly CreateGameCommandHandler _handler;
 
         public CreateGameCommandHandlerTests()
         {
-            _uow = Substitute.For<IUnitOfWork>();
+            _authenticationContext = Substitute.For<ISecurityContext>();
             _faker = new();
-            _handler = new(_uow);
+            _authenticationContext.GetSecurityInformationAsync()
+                .Returns(GetSecurityInformation());
+            _uow = Substitute.For<IUnitOfWork>();
+            _handler = new(_uow, _authenticationContext);
         }
+
+        private SecurityInformation GetSecurityInformation()
+            => new(
+                new(Id: _faker.Random.Int(min: 1)),
+                new(Id: _faker.Random.Int(min: 1)));
 
         [Theory]
         [InlineData("", null)]
         [InlineData(null, "abcde")]
         public async Task ShouldReturnValidationFailedWhenProvidedDataIsNotValid(string invalidName, string invalidPassword)
         {
-            var command = new CreateGameCommand(name: invalidName, userId: 0, password: invalidPassword);
+            var command = new CreateGameCommand(name: invalidName, password: invalidPassword);
 
             var commandResult = await _handler.HandleAsync(command);
 
@@ -40,7 +50,6 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
             var expectedGame = GetValidGame();
             var command = new CreateGameCommand(
                 name: expectedGame.Name,
-                userId: expectedGame.UserId.Value,
                 password: expectedGame.Credentials!.Password);
             _uow.Games.AddAsync(Arg.Any<Game>()).Returns(expectedGame);
 

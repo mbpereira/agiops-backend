@@ -1,5 +1,6 @@
 ﻿using PlanningPoker.Application.Abstractions;
 using PlanningPoker.Application.Security;
+using PlanningPoker.Application.Security.Authentication;
 using PlanningPoker.Domain.Abstractions;
 
 namespace PlanningPoker.Application.Issues.RegisterGrade
@@ -29,7 +30,7 @@ namespace PlanningPoker.Application.Issues.RegisterGrade
 
             var userInformation = await _authenticationContext.GetCurrentUserAsync();
 
-            issue.RegisterGrade(userInformation?.Id ?? 0, command.Grade);
+            issue.RegisterGrade(userInformation.Id, command.Grade);
 
             await _uow.Issues.ChangeAsync(issue);
             await _uow.SaveChangesAsync();
