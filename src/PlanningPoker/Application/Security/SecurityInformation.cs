@@ -1,5 +1,5 @@
-﻿using PlanningPoker.Application.Security.Authentication;
-using PlanningPoker.Application.Security.Tenant;
+﻿using PlanningPoker.Application.Security.Tenant;
+using PlanningPoker.Application.Security.User;
 
 namespace PlanningPoker.Application.Security
 {

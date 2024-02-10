@@ -4,7 +4,7 @@ using FluentAssertions;
 using NSubstitute;
 using PlanningPoker.Application.Abstractions;
 using PlanningPoker.Application.Issues.RegisterGrade;
-using PlanningPoker.Application.Security.Authentication;
+using PlanningPoker.Application.Security.User;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Issues;
 
@@ -14,13 +14,13 @@ namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
     {
         private readonly Faker _faker;
         private readonly IUnitOfWork _uow;
-        private readonly IAuthenticationContext _authenticationContext;
+        private readonly IUserContext _authenticationContext;
         private readonly RegisterGradeCommandHandler _handler;
 
         public RegisterGradeCommandHandlerTests()
         {
             _faker = new Faker();
-            _authenticationContext = Substitute.For<IAuthenticationContext>();
+            _authenticationContext = Substitute.For<IUserContext>();
             _uow = Substitute.For<IUnitOfWork>();
             _handler = new RegisterGradeCommandHandler(_uow, _authenticationContext);
         }

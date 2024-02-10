@@ -1,6 +1,6 @@
 ﻿using PlanningPoker.Application.Abstractions;
 using PlanningPoker.Application.Security;
-using PlanningPoker.Application.Security.Authentication;
+using PlanningPoker.Application.Security.User;
 using PlanningPoker.Domain.Abstractions;
 
 namespace PlanningPoker.Application.Issues.RegisterGrade
@@ -8,9 +8,9 @@ namespace PlanningPoker.Application.Issues.RegisterGrade
     public class RegisterGradeCommandHandler : ICommandHandler<RegisterGradeCommand>
     {
         private readonly IUnitOfWork _uow;
-        private readonly IAuthenticationContext _authenticationContext;
+        private readonly IUserContext _authenticationContext;
 
-        public RegisterGradeCommandHandler(IUnitOfWork uow, IAuthenticationContext authenticationContext)
+        public RegisterGradeCommandHandler(IUnitOfWork uow, IUserContext authenticationContext)
         {
             _uow = uow;
             _authenticationContext = authenticationContext;
