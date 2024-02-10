@@ -28,7 +28,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [InlineData("")]
         public void ShouldReturnExpectedErrorsWhenProvidedDataIsNotValid(string name)
         {
-            var issue = Issue.New(gameId: 0, name);
+            var issue = Issue.New(tenantId: 0, gameId: 0, name);
             var expectedErrros = new[]
             {
                 new { Code = "Issue.GameId" },
@@ -80,6 +80,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
 
         private Issue GetValidIssue()
             => Issue.New(
+                tenantId: _faker.Random.Int(min: 1),
                 gameId: _faker.Random.Int(),
                 name: _faker.Random.String2(length: 10),
                 description: _faker.Random.String2(length: 10),

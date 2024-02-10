@@ -41,7 +41,7 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateIssue
         [Fact]
         public async Task ShouldReturnGeneratedIdWhenIssueWasCreated()
         {
-            var expectedIssue = Issue.New(_faker.Random.Int(min: 1), _faker.Random.Int(min: 1), _faker.Random.String2(length: 10), _faker.Random.Word(), _faker.Internet.Url());
+            Issue expectedIssue = GetValidIssue();
             var command = new CreateIssueCommand(
                 gameId: expectedIssue.GameId,
                 name: expectedIssue.Name,
@@ -57,5 +57,14 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateIssue
             result.Data!.Id.Should().Be(expectedIssue.Id.Value);
             result.Status.Should().Be(CommandStatus.Success);
         }
+
+        private Issue GetValidIssue()
+            => Issue.New(
+                id: _faker.Random.Int(min: 1),
+                tenantId: _faker.Random.Int(min: 1),
+                gameId: _faker.Random.Int(min: 1),
+                name: _faker.Random.String2(length: 10),
+                description: _faker.Random.Word(),
+                link: _faker.Internet.Url());
     }
 }

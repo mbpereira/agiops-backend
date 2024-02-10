@@ -48,8 +48,7 @@ namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
         [Fact]
         public async Task ShouldThrowsExceptionWhenCurrentUserIdIsNotValid()
         {
-            var expectedIssue = Issue.New(
-                _faker.Random.Int(min: 1), _faker.Random.Int(min: 1), _faker.Random.String2(length: 10), _faker.Internet.Url(), _faker.Internet.Url());
+            var expectedIssue = GetValidIssue();
             _uow.Issues.GetByIdAsync(Arg.Any<EntityId>())
                 .Returns(expectedIssue);
             var command = new RegisterGradeCommand(issueId: _faker.Random.Int(min: 1), grade: _faker.Random.Decimal());
@@ -63,8 +62,7 @@ namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
         [Fact]
         public async Task ShouldReturnsSuccessWhenGradeIsRegistered()
         {
-            var expectedIssue = Issue.New(
-                _faker.Random.Int(min: 1), _faker.Random.Int(min: 1), _faker.Random.String2(length: 10), _faker.Internet.Url(), _faker.Internet.Url());
+            var expectedIssue = GetValidIssue();
             _uow.Issues.GetByIdAsync(Arg.Any<EntityId>())
                 .Returns(expectedIssue);
             _authenticationContext.GetCurrentUserAsync()
@@ -75,5 +73,14 @@ namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
 
             result.Status.Should().Be(CommandStatus.Success);
         }
+
+        private Issue GetValidIssue()
+            => Issue.New(
+                id: _faker.Random.Int(min: 1),
+                tenantId: _faker.Random.Int(min: 1),
+                gameId: _faker.Random.Int(min: 1),
+                name: _faker.Random.String2(length: 10),
+                description: _faker.Random.String2(length: 10),
+                link: _faker.Internet.Url());
     }
 }

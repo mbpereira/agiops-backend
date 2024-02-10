@@ -18,15 +18,18 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [Fact]
         public void ShouldReturnCredentialsAsNullWhenPasswordIsNotDefined()
         {
-            var game = Game.New(_faker.Random.String2(length: 5), _faker.Random.Int());
+            var game = GetGame();
 
             game.Credentials.Should().BeNull();
         }
 
+        private Game GetGame(string? password = null)
+            => Game.New(_faker.Random.Int(min: 1), name: _faker.Random.String2(length: 5), userId: _faker.Random.Int(), password);
+
         [Fact]
         public void ShouldReturnAutoIncrementAsIdWhenNewGameIsCreated()
         {
-            var game = Game.New(_faker.Random.String2(length: 5), _faker.Random.Int());
+            var game = GetGame();
 
             game.Id.Should().Be(EntityId.AutoIncrement());
         }
@@ -36,7 +39,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         {
             var password = _faker.Random.String2(length: 25);
 
-            var game = Game.New(_faker.Random.String2(length: 5), _faker.Random.Int(), password);
+            var game = GetGame(password);
 
             game.Credentials!.Password.Should().Be(password);
         }
@@ -46,7 +49,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [InlineData("")]
         public void ShouldReturnValidationErrorsWhenProvidedDataIsNotValid(string? name)
         {
-            var game = Game.New(name!, 0, _faker.Random.String2(length: 2));
+            var game = Game.New(tenantId: 0, name!, userId: 0, password: _faker.Random.String2(length: 2));
             var expectedErrors = new[]
             {
                 new { Code = "Game.Name" },
@@ -63,7 +66,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [Fact]
         public void ShouldReturnIsValidAsTrueWhenProvidedDataIsValid()
         {
-            var game = Game.New(_faker.Random.String2(length: 1), _faker.Random.Int(), _faker.Random.String2(length: 6));
+            var game = GetGame(password: _faker.Random.String2(length: 6));
 
             var validationResult = game.Validate();
 

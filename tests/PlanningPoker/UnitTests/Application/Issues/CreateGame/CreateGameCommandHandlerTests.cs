@@ -52,6 +52,7 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
         }
 
         private Game GetValidGame() => Game.New(
+            tenantId: _faker.Random.Int(min: 1),
             id: _faker.Random.Int(min: 1, max: 100),
             name: _faker.Random.String2(length: 10),
             userId: _faker.Random.Int(min: 1, max: 100),

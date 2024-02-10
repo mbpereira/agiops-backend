@@ -20,7 +20,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [InlineData("te")]
         public void ShouldReturnExpectedErrrors(string invalidDescription)
         {
-            var votingSystem = VotingSystem.New(invalidDescription, userId: 0, shared: false);
+            var votingSystem = VotingSystem.New(tenantId: 0, invalidDescription, userId: 0);
             var expectedErrors = new[]
             {
                 new { Code = "VotingSystem.Description" },
@@ -37,17 +37,20 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [Fact]
         public void ShouldRegisterGrade()
         {
-            var votingSystem = VotingSystem.New(description: _faker.Random.String2(length: 10), userId: _faker.Random.Int(), shared: false);
+            VotingSystem votingSystem = GetValidVotingSystem();
 
             votingSystem.AddGrade(_faker.Random.Int());
 
             votingSystem.Grades.Count.Should().Be(1);
         }
 
+        private VotingSystem GetValidVotingSystem()
+            => VotingSystem.New(tenantId: _faker.Random.Int(min: 1), description: _faker.Random.String2(length: 10), userId: _faker.Random.Int());
+
         [Fact]
         public void ShouldClearGrades()
         {
-            var votingSystem = VotingSystem.New(description: _faker.Random.String2(length: 10), userId: _faker.Random.Int(), shared: false);
+            var votingSystem = GetValidVotingSystem();
             votingSystem.AddGrade(_faker.Random.Int());
 
             votingSystem.ClearGrades();
@@ -59,31 +62,11 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         public void ShouldChangeDescription()
         {
             var newDescription = _faker.Random.String2(length: 10);
-            var votingSystem = VotingSystem.New(description: _faker.Random.String2(length: 10), userId: _faker.Random.Int(), shared: false);
+            var votingSystem = GetValidVotingSystem();
 
             votingSystem.ChangeDescription(newDescription);
 
             votingSystem.Description.Should().Be(newDescription);
-        }
-
-        [Fact]
-        public void ShouldSetRevised()
-        {
-            var votingSystem = VotingSystem.New(description: _faker.Random.String2(length: 10), userId: _faker.Random.Int(), shared: false);
-
-            votingSystem.Revise(revised: true);
-
-            votingSystem.Revised.Should().BeTrue();
-        }
-
-        [Fact]
-        public void ShouldSetShared()
-        {
-            var votingSystem = VotingSystem.New(description: _faker.Random.String2(length: 10), userId: _faker.Random.Int(), shared: false);
-
-            votingSystem.Share(shared: true);
-
-            votingSystem.Shared.Should().BeTrue();
         }
     }
 }

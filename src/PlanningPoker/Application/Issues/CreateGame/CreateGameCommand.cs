@@ -6,7 +6,6 @@ namespace PlanningPoker.Application.Issues.CreateGame
     public class CreateGameCommand : Command<CreateGameCommand>
     {
         public string Name { get; }
-        public int UserId { get; }
         public string? Password { get; }
 
         public CreateGameCommand(string name, int userId, string? password = null)

@@ -4,17 +4,19 @@ using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Domain.Issues
 {
-    public sealed class Game : AggregateRoot<Game>
+    public sealed class Game : AggregateRoot<Game>, ITenantable
     {
         public string Name { get; private set; }
         public EntityId UserId { get; private set; }
         public GameCredentials? Credentials { get; private set; }
+        public EntityId TenantId { get; private set; }
 
-        public Game(EntityId id, string name, EntityId userId, string? password = null)
+        public Game(EntityId id, EntityId tenantId, string name, EntityId userId, string? password = null)
             : base(id)
         {
             Name = name;
             UserId = userId;
+            TenantId = tenantId;
             DefinePassword(password);
         }
 
@@ -37,7 +39,9 @@ namespace PlanningPoker.Domain.Issues
                 : new GameCredentials(password);
         }
 
-        public static Game New(string name, int userId, string? password = null) => new(EntityId.AutoIncrement(), name, new EntityId(userId), password);
-        public static Game New(int id, string name, int userId, string? password = null) => new(new EntityId(id), name, new EntityId(userId), password);
+        public static Game New(int tenantId, string name, int userId, string? password = null) 
+            => new(EntityId.AutoIncrement(), new EntityId(tenantId), name, new EntityId(userId), password);
+        public static Game New(int id, int tenantId, string name, int userId, string? password = null) 
+            => new(new EntityId(id), new EntityId(tenantId), name, new EntityId(userId), password);
     }
 }

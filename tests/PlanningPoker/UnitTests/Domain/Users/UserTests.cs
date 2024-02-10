@@ -15,7 +15,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [InlineData("")]
         public void ShouldReturnExpectedErrors(string invalidName)
         {
-            var user = User.New(invalidName, email: _faker.Internet.Email());
+            var user = User.New(tenantId: 0, invalidName, email: _faker.Internet.Email());
             var expectedErrors = new[]
             {
                 new { Code = "User.Name" }
@@ -31,7 +31,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [Fact]
         public void ShouldSetEmailAsNullAndSetSessionIdWhenCreatingGuest()
         {
-            var user = User.NewGuest(name: _faker.Random.String2(length: 10));
+            var user = User.NewGuest(tenantId: _faker.Random.Int(min: 1), name: _faker.Random.String2(length: 10));
 
             using var _ = new AssertionScope();
             user.Email.Should().BeNull();
@@ -44,7 +44,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         {
             var email = _faker.Internet.Email();
 
-            var user = User.New(name: _faker.Random.String2(length: 10), email);
+            var user = User.New(tenantId: _faker.Random.Int(min: 1), name: _faker.Random.String2(length: 10), email);
 
             using var _ = new AssertionScope();
             user.Guest.Should().BeNull();
@@ -56,7 +56,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         public void ShouldThrowExceptionWhenEmailIsNotSet()
         {
             var name = _faker.Random.String2(length: 5);
-            var act = () => User.New(name: name, email: null!);
+            var act = () => User.New(tenantId: _faker.Random.Int(min: 1), name: name, email: null!);
 
             var ex = act.Should().Throw<DomainException>();
 
