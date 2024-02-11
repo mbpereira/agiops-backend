@@ -37,7 +37,7 @@ namespace PlanningPoker.Domain.Issues
         {
             if (userId <= 0) throw new DomainException("Provided user id is not valid.");
 
-            _grades.RemoveAll(g => g.UerId.Value == userId);
+            _grades.RemoveAll(g => g.UserId.Value == userId);
             _grades.Add(new UserGrade(new EntityId(userId), grade));
         }
 

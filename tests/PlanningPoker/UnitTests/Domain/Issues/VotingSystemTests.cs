@@ -37,7 +37,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [Fact]
         public void ShouldRegisterGrade()
         {
-            VotingSystem votingSystem = GetValidVotingSystem();
+            var votingSystem = GetValidVotingSystem();
 
             votingSystem.AddGrade(_faker.Random.Int());
 
