@@ -44,9 +44,6 @@ namespace PlanningPoker.UnitTests.Domain.Issues
             votingSystem.Grades.Count.Should().Be(1);
         }
 
-        private VotingSystem GetValidVotingSystem()
-            => VotingSystem.New(tenantId: _faker.Random.Int(min: 1), description: _faker.Random.String2(length: 10), userId: _faker.Random.Int());
-
         [Fact]
         public void ShouldClearGrades()
         {
@@ -68,5 +65,8 @@ namespace PlanningPoker.UnitTests.Domain.Issues
 
             votingSystem.Description.Should().Be(newDescription);
         }
+
+        private VotingSystem GetValidVotingSystem()
+            => VotingSystem.New(tenantId: _faker.Random.Int(min: 1), description: _faker.Random.String2(length: 10), userId: _faker.Random.Int());
     }
 }
