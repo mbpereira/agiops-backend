@@ -64,6 +64,14 @@ namespace PlanningPoker.UnitTests.Domain.Users
             => Invite.New(tenantId: _faker.Random.Int(min: 1), to: _faker.Person.Email, role: _faker.PickRandom<Role>());
 
         private Invite LoadValidInvite()
-            => Invite.Load(id: _faker.Random.Int(min: 1), tenantId: _faker.Random.Int(min: 1), to: _faker.Person.Email, role: _faker.PickRandom<Role>());
+            => Invite.Load(id:
+                _faker.Random.Int(min: 1),
+                tenantId: _faker.Random.Int(min: 1),
+                to: _faker.Person.Email,
+                role: _faker.PickRandom<Role>(),
+                token: Guid.NewGuid(),
+                createdAtUtc: DateTime.UtcNow,
+                sentAtUtc: DateTime.UtcNow,
+                expiresAtUtc: DateTime.UtcNow.AddMinutes(30));
     }
 }

@@ -7,6 +7,7 @@ using PlanningPoker.Application.Users;
 using PlanningPoker.Application.Users.SendInvite;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Users;
+using PlanningPoker.UnitTests.Domain.Users.Extensions;
 
 namespace PlanningPoker.UnitTests.Application.Users.SendInvite
 {
@@ -46,7 +47,7 @@ namespace PlanningPoker.UnitTests.Application.Users.SendInvite
         [Fact]
         public async Task ShouldAddInviteAndReturnsSuccess()
         {
-            var expectedInvite = Invite.Load(id: _faker.Random.Int(min: 1), tenantId: _tenant.Id, to: _faker.Person.Email, role: _faker.PickRandom<Role>());
+            var expectedInvite = _faker.ValidInvite();
             var command = new SendInviteCommand(expectedInvite.To.Value, _faker.PickRandom<Role>());
             _invites.AddAsync(Arg.Any<Invite>())
                 .Returns(expectedInvite);

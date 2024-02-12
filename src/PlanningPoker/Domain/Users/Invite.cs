@@ -7,24 +7,29 @@ namespace PlanningPoker.Domain.Users
 {
     public class Invite : AggregateRoot<Invite>, ITenantable
     {
-        public Email To { get; private set; }
+        public EntityId TenantId { get; private set; }
         public Guid Token { get; private set; }
+        public Role Role { get; private set; }
+        public Email To { get; private set; }
         public DateTime CreatedAtUtc { get; private set; }
         public DateTime SentAtUtc { get; private set; }
         public DateTime ExpiresAtUtc { get; private set; }
-        public EntityId TenantId { get; private set; }
-        public Role Role { get; private set; }
 
         private Invite(EntityId id, EntityId tenantId, Email to, Role role)
+            : this(id, tenantId, to, role, token: Guid.NewGuid(), createdAtUtc: DateTime.UtcNow, sentAtUtc: DateTime.UtcNow, expiresAtUtc: DateTime.UtcNow.AddMinutes(30))
+        {
+        }
+
+        public Invite(EntityId id, EntityId tenantId, Email to, Role role, Guid token, DateTime createdAtUtc, DateTime sentAtUtc, DateTime expiresAtUtc)
             : base(id)
         {
-            To = to;
-            Token = Guid.NewGuid();
             TenantId = tenantId;
-            CreatedAtUtc = DateTime.UtcNow;
-            SentAtUtc = CreatedAtUtc;
-            ExpiresAtUtc = SentAtUtc.AddMinutes(30);
+            Token = token;
             Role = role;
+            To = to;
+            CreatedAtUtc = createdAtUtc;
+            SentAtUtc = sentAtUtc;
+            ExpiresAtUtc = expiresAtUtc;
         }
 
         protected override void ConfigureValidationRules(IValidationRuleFactory<Invite> validator)
@@ -49,6 +54,22 @@ namespace PlanningPoker.Domain.Users
             return invite;
         }
 
-        public static Invite Load(int id, int tenantId, string to, Role role) => new(new EntityId(id), new EntityId(tenantId), new Email(to), role);
+        public static Invite Load(
+            int id,
+            int tenantId,
+            string to,
+            Role role,
+            Guid token,
+            DateTime createdAtUtc,
+            DateTime sentAtUtc,
+            DateTime expiresAtUtc) => 
+                new(new EntityId(id),
+                    new EntityId(tenantId),
+                    new Email(to),
+                    role,
+                    token,
+                    createdAtUtc,
+                    sentAtUtc,
+                    expiresAtUtc);
     }
 }
