@@ -9,7 +9,7 @@ namespace PlanningPoker.Domain.Abstractions
         IIssuesRepository Issues { get; }
         ITenantsRepository Tenants { get; }
         IAccessGrantsRepository AccessGrants { get; set; }
-
+        IInvitesRepository Invites { get; }
         Task<bool> SaveChangesAsync();
         Task BeginTransactionAsync();
         Task CommitTransactionAsync();

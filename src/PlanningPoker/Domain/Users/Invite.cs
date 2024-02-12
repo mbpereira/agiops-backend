@@ -12,8 +12,9 @@ namespace PlanningPoker.Domain.Users
         public DateTime CreatedAtUtc { get; private set; }
         public DateTime ExpiresAtUtc { get; private set; }
         public EntityId TenantId { get; private set; }
+        public Role Role { get; private set; }
 
-        private Invite(EntityId id, EntityId tenantId, Email to)
+        private Invite(EntityId id, EntityId tenantId, Email to, Role role)
             : base(id)
         {
             To = to;
@@ -21,6 +22,7 @@ namespace PlanningPoker.Domain.Users
             TenantId = tenantId;
             CreatedAtUtc = DateTime.UtcNow;
             ExpiresAtUtc = CreatedAtUtc.AddMinutes(30);
+            Role = role;
             RaiseDomainEvent(new InviteCreated(Token, To, ExpiresAtUtc));
         }
 
@@ -32,7 +34,7 @@ namespace PlanningPoker.Domain.Users
                 .EmailAddress();
         }
 
-        public static Invite New(int tenantId, string to) => new(EntityId.AutoIncrement(), new EntityId(tenantId), new Email(to));
-        public static Invite New(int id, int tenantId, string to) => new(new EntityId(id), new EntityId(tenantId), new Email(to));
+        public static Invite New(int tenantId, string to, Role role) => new(EntityId.AutoIncrement(), new EntityId(tenantId), new Email(to), role);
+        public static Invite New(int id, int tenantId, string to, Role role) => new(new EntityId(id), new EntityId(tenantId), new Email(to), role);
     }
 }

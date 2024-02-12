@@ -31,10 +31,10 @@ namespace PlanningPoker.Domain.Users
                 .GreaterThan(0);
         }
 
-        public static AccessGrant New(int userId, int tenantId, Resources resource, GrantScope scope) =>
+        public static AccessGrant New(int userId, int tenantId, Resources resource, GrantScopes scope) =>
             new(EntityId.AutoIncrement(), userId, tenantId, new(resource, scope));
 
-        public static AccessGrant New(int id, int userId, int tenantId, Resources resource, GrantScope scope, int recordId) =>
+        public static AccessGrant New(int id, int userId, int tenantId, Resources resource, GrantScopes scope, int recordId) =>
             new(id, userId, tenantId, new(resource, scope, new(recordId)));
     }
 }

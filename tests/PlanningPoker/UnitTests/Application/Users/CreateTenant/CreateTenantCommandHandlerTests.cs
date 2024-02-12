@@ -60,7 +60,7 @@ namespace PlanningPoker.UnitTests.Application.Users.CreateTenant
             result.Status.Should().Be(CommandStatus.Success);
             await _accessGrants.Received().AddAsync(Arg.Is<IList<AccessGrant>>(accessGrants =>
                 accessGrants.Select(grant => grant.Grant.Resource).All(resource => resource == Resources.Tenant) &&
-                TenantScopes.Admin.All(scope => accessGrants.Any(accessGrant => accessGrant.Grant.Scope == scope)) &&
+                TenantScopes.GetByRole(Role.Admin).All(scope => accessGrants.Any(accessGrant => accessGrant.Grant.Scope == scope)) &&
                 accessGrants.All(accessGrant =>
                     accessGrant.TenantId.Value == expectedTenant.Id &&
                     accessGrant.UserId.Value == exoectedUser.Id)

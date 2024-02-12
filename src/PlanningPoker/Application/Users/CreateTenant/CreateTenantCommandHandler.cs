@@ -51,7 +51,7 @@ namespace PlanningPoker.Application.Users.CreateTenant
         private async Task CreateAccessGrantsAsync(int tenantId, int userId)
         {
             var accessGrants = TenantScopes
-                .Admin
+                .GetByRole(Role.Admin)
                 .Select(scope => AccessGrant.New(userId, tenantId, Resources.Tenant, scope))
                 .ToList();
 

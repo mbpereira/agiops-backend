@@ -20,7 +20,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [InlineData("abcd")]
         public void ShouldReturnExpectedErrorsWhenProvidedDataIsNotValid(string invalidEmail)
         {
-            var invite = Invite.New(tenantId: _faker.Random.Int(min: 1), to: invalidEmail);
+            var invite = Invite.New(tenantId: _faker.Random.Int(min: 1), to: invalidEmail, _faker.PickRandom<Role>());
 
             var validationResult = invite.Validate();
 
@@ -44,6 +44,6 @@ namespace PlanningPoker.UnitTests.Domain.Users
         }
 
         private Invite GetValidInvite()
-            => Invite.New(tenantId: _faker.Random.Int(min: 1), to: _faker.Person.Email);
+            => Invite.New(tenantId: _faker.Random.Int(min: 1), to: _faker.Person.Email, role: _faker.PickRandom<Role>());
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace PlanningPoker.Domain.Users
 {
-    public enum GrantScope
+    public enum GrantScopes
     {
         Create = 1,
         Edit = 2,

@@ -6,8 +6,14 @@ namespace PlanningPoker.Domain.Users
 {
     public static class TenantScopes
     {
-        public static GrantScope[] Admin => new[] { GrantScope.Delete, GrantScope.View, GrantScope.Archive, GrantScope.Edit };
-        public static GrantScope[] Viewer => new[] { GrantScope.View };
+        private static GrantScopes[] Admin => new[] { GrantScopes.Delete, GrantScopes.View, GrantScopes.Archive, GrantScopes.Edit };
+        private static GrantScopes[] Viewer => new[] { GrantScopes.View };
+
+        public static GrantScopes[] GetByRole(Role role)
+        {
+            if (Role.Admin.Equals(role)) return Admin;
+            return Viewer;
+        }
     }
 
     public class Tenant : AggregateRoot<Tenant>
