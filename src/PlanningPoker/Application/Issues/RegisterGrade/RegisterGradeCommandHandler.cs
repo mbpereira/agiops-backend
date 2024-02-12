@@ -1,5 +1,4 @@
 ﻿using PlanningPoker.Application.Abstractions;
-using PlanningPoker.Application.Security;
 using PlanningPoker.Application.Security.User;
 using PlanningPoker.Domain.Abstractions;
 

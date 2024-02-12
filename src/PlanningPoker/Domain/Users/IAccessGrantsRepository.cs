@@ -1,6 +1,6 @@
 ﻿using PlanningPoker.Domain.Abstractions;
 
-namespace PlanningPoker.Domain.AccessGrants
+namespace PlanningPoker.Domain.Users
 {
     public interface IAccessGrantsRepository : IRepository<AccessGrant>
     {

@@ -1,4 +1,4 @@
-﻿namespace PlanningPoker.Domain.AccessGrants
+﻿namespace PlanningPoker.Domain.Users
 {
     public enum Resources
     {
