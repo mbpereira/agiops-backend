@@ -2,11 +2,11 @@
 {
     public interface ICommandHandler<TCommand>
     {
-        public abstract Task<CommandResult> HandleAsync(TCommand request);
+        Task<CommandResult> HandleAsync(TCommand request);
     }
 
     public interface ICommandHandler<TCommand, TCommandResult> where TCommandResult : class
     {
-        public abstract Task<CommandResult<TCommandResult>> HandleAsync(TCommand command);
+        Task<CommandResult<TCommandResult>> HandleAsync(TCommand command);
     }
 }

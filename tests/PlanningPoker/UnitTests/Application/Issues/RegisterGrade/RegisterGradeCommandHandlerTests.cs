@@ -4,7 +4,7 @@ using FluentAssertions;
 using NSubstitute;
 using PlanningPoker.Application.Abstractions;
 using PlanningPoker.Application.Issues.RegisterGrade;
-using PlanningPoker.Application.Security.User;
+using PlanningPoker.Application.Users;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Issues;
 

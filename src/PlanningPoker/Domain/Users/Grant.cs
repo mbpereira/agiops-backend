@@ -2,5 +2,5 @@
 
 namespace PlanningPoker.Domain.Users
 {
-    public record Grant(Resources Resources, GrantScope Scope, EntityId? RecordId = null);
+    public record Grant(Resources Resource, GrantScope Scope, EntityId? RecordId = null);
 }

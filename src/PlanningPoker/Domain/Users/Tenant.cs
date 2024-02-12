@@ -4,6 +4,12 @@ using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Domain.Users
 {
+    public static class TenantScopes
+    {
+        public static GrantScope[] Admin => new[] { GrantScope.Delete, GrantScope.View, GrantScope.Archive, GrantScope.Edit };
+        public static GrantScope[] Viewer => new[] { GrantScope.View };
+    }
+
     public class Tenant : AggregateRoot<Tenant>
     {
         public string Name { get; private set; }

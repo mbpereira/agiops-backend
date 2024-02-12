@@ -1,4 +1,4 @@
-﻿namespace PlanningPoker.Application.Security.User
+﻿namespace PlanningPoker.Application.Users
 {
     public interface IUserContext
     {

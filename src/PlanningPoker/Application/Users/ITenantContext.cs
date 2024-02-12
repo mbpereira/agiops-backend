@@ -1,4 +1,4 @@
-﻿namespace PlanningPoker.Application.Security.Tenant
+﻿namespace PlanningPoker.Application.Users
 {
     public interface ITenantContext
     {

@@ -1,5 +1,5 @@
 ﻿using PlanningPoker.Application.Abstractions;
-using PlanningPoker.Application.Security.User;
+using PlanningPoker.Application.Users;
 using PlanningPoker.Domain.Abstractions;
 
 namespace PlanningPoker.Application.Issues.RegisterGrade
