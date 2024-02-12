@@ -38,7 +38,7 @@ namespace PlanningPoker.UnitTests.Application.Users.RenewInvite
         [Fact]
         public async Task ShouldUpdateSentAtUtcAndExpiresAtUtcDate()
         {
-            var expectedInvite = _faker.ValidInvite();
+            var expectedInvite = _faker.LoadValidInvite();
             var command = new RenewInviteCommand(expectedInvite.Id.Value);
             var sentAtUtc = expectedInvite.SentAtUtc;
             var expiresAtUtc = expectedInvite.ExpiresAtUtc;

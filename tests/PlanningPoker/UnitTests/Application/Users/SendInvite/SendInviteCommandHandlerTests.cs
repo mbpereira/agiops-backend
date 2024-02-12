@@ -47,7 +47,7 @@ namespace PlanningPoker.UnitTests.Application.Users.SendInvite
         [Fact]
         public async Task ShouldAddInviteAndReturnsSuccess()
         {
-            var expectedInvite = _faker.ValidInvite(tenantId: _tenant.Id);
+            var expectedInvite = _faker.LoadValidInvite(tenantId: _tenant.Id);
             var command = new SendInviteCommand(expectedInvite.To.Value, expectedInvite.Role);
             _invites.AddAsync(Arg.Any<Invite>())
                 .Returns(expectedInvite);

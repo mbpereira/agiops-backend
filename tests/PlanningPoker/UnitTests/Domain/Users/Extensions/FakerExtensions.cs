@@ -11,7 +11,11 @@ namespace PlanningPoker.UnitTests.Domain.Users.Extensions
 
         public static string ValidEmail(this Faker faker) => faker.Person.Email;
 
-        public static Invite ValidInvite(this Faker faker, int? tenantId = null, InviteStatus? status = null, DateTime? expiresAtUtc = null)
+        public static string InvalidEmail(this Faker faker) => faker.PickRandomParam(new string[] { null!, "", " ", faker.Random.String() });
+
+        public static Invite NewInvalidInvite(this Faker faker) => Invite.New(tenantId: faker.Random.Int(min: 1), to: faker.InvalidEmail(), faker.PickRandom<Role>());
+
+        public static Invite LoadValidInvite(this Faker faker, int? tenantId = null, InviteStatus? status = null, DateTime? expiresAtUtc = null)
             => Invite.Load(
                 id: faker.ValidId(),
                 tenantId: tenantId ?? faker.ValidId(),

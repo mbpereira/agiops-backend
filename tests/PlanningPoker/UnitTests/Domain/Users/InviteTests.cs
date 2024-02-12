@@ -17,13 +17,10 @@ namespace PlanningPoker.UnitTests.Domain.Users
             _faker = new();
         }
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("abcd")]
-        public void New_ShouldReturnExpectedErrorsWhenProvidedDataIsNotValid(string invalidEmail)
+        [Fact]
+        public void New_ShouldReturnExpectedErrorsWhenProvidedDataIsNotValid()
         {
-            var invite = Invite.New(tenantId: _faker.Random.Int(min: 1), to: invalidEmail, _faker.PickRandom<Role>());
+            var invite = _faker.NewInvalidInvite();
 
             var validationResult = invite.Validate();
 
@@ -51,7 +48,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [Fact]
         public async Task Renew_ShouldRegisterInviteRenewedEventAndRefreshExpiresAtUtcDate()
         {
-            var invite = _faker.ValidInvite();
+            var invite = _faker.LoadValidInvite();
             var expiresAt = invite.ExpiresAtUtc;
             var sentAt = invite.SentAtUtc;
             await Task.Delay(TimeSpan.FromSeconds(1));
@@ -69,7 +66,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [InlineData(InviteStatus.Inactive)]
         public void Accept_ShouldThrowExceptionWhenCurrentStatusIsNotOpen(InviteStatus status)
         {
-            var invite = _faker.ValidInvite(status: status);
+            var invite = _faker.LoadValidInvite(status: status);
             var act = () => invite.Accept();
 
             var ex = act.Should().Throw<DomainException>();
@@ -80,7 +77,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [Fact]
         public void Accept_ShouldThrowExceptionWhenInviteHasExpired()
         {
-            var invite = _faker.ValidInvite(expiresAtUtc: DateTime.UtcNow.AddDays(-30));
+            var invite = _faker.LoadValidInvite(expiresAtUtc: DateTime.UtcNow.AddDays(-30));
             var act = () => invite.Accept();
 
             var ex = act.Should().Throw<DomainException>();
