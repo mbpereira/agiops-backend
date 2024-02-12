@@ -3,7 +3,7 @@ using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Validation;
 using System.Diagnostics.CodeAnalysis;
 
-namespace PlanningPoker.Domain.Security.AccessGrant
+namespace PlanningPoker.Domain.AccessGrants
 {
     public sealed class AccessGrant : AggregateRoot<AccessGrant>, ITenantable
     {

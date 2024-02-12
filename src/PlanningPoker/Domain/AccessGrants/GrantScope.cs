@@ -1,4 +1,4 @@
-﻿namespace PlanningPoker.Domain.Security.AccessGrant
+﻿namespace PlanningPoker.Domain.AccessGrants
 {
     public enum GrantScope
     {
