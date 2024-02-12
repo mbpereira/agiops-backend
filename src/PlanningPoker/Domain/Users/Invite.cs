@@ -10,6 +10,7 @@ namespace PlanningPoker.Domain.Users
         public Email To { get; private set; }
         public Guid Token { get; private set; }
         public DateTime CreatedAtUtc { get; private set; }
+        public DateTime SentAtUtc { get; private set; }
         public DateTime ExpiresAtUtc { get; private set; }
         public EntityId TenantId { get; private set; }
         public Role Role { get; private set; }
@@ -21,9 +22,9 @@ namespace PlanningPoker.Domain.Users
             Token = Guid.NewGuid();
             TenantId = tenantId;
             CreatedAtUtc = DateTime.UtcNow;
-            ExpiresAtUtc = CreatedAtUtc.AddMinutes(30);
+            SentAtUtc = CreatedAtUtc;
+            ExpiresAtUtc = SentAtUtc.AddMinutes(30);
             Role = role;
-            RaiseDomainEvent(new InviteCreated(Token, To, ExpiresAtUtc));
         }
 
         protected override void ConfigureValidationRules(IValidationRuleFactory<Invite> validator)
@@ -34,7 +35,20 @@ namespace PlanningPoker.Domain.Users
                 .EmailAddress();
         }
 
-        public static Invite New(int tenantId, string to, Role role) => new(EntityId.AutoIncrement(), new EntityId(tenantId), new Email(to), role);
-        public static Invite New(int id, int tenantId, string to, Role role) => new(new EntityId(id), new EntityId(tenantId), new Email(to), role);
+        public void Renew()
+        {
+            SentAtUtc = DateTime.UtcNow;
+            ExpiresAtUtc = SentAtUtc.AddMinutes(30);
+            RaiseDomainEvent(new InviteRenewed(Token, To, ExpiresAtUtc));
+        }
+
+        public static Invite New(int tenantId, string to, Role role)
+        {
+            var invite = new Invite(EntityId.AutoIncrement(), new EntityId(tenantId), new Email(to), role);
+            invite.RaiseDomainEvent(new InviteCreated(invite.Token, invite.To, invite.ExpiresAtUtc));
+            return invite;
+        }
+
+        public static Invite Load(int id, int tenantId, string to, Role role) => new(new EntityId(id), new EntityId(tenantId), new Email(to), role);
     }
 }

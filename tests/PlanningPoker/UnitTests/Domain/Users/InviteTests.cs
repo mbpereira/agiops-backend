@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using PlanningPoker.Domain.Users;
 using PlanningPoker.Domain.Users.Events;
 
@@ -30,7 +31,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [Fact]
         public void ShouldSetExpiresAtUtcTo30MinutesAfterNow()
         {
-            var invite = GetValidInvite();
+            var invite = GetNewValidInvite();
 
             invite.ExpiresAtUtc.Should().Be(invite.CreatedAtUtc.AddMinutes(30));
         }
@@ -38,12 +39,31 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [Fact]
         public void ShouldRegisterInviteCreatedEvent()
         {
-            var invite = GetValidInvite();
+            var invite = GetNewValidInvite();
 
             invite.GetDomainEvents().Should().BeEquivalentTo(new[] { new InviteCreated(invite.Token, invite.To, invite.ExpiresAtUtc) });
         }
 
-        private Invite GetValidInvite()
+        [Fact]
+        public async Task ShouldRegisterInviteRenewedEventAndRefreshExpiresAtUtcDate()
+        {
+            var invite = LoadValidInvite();
+            var expiresAt = invite.ExpiresAtUtc;
+            var sentAt = invite.SentAtUtc;
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            invite.Renew();
+
+            using var _ = new AssertionScope();
+            invite.GetDomainEvents().Should().BeEquivalentTo(new[] { new InviteRenewed(invite.Token, invite.To, invite.ExpiresAtUtc) });
+            invite.SentAtUtc.Should().BeAfter(sentAt);
+            invite.ExpiresAtUtc.Should().BeAfter(expiresAt);
+        }
+
+        private Invite GetNewValidInvite()
             => Invite.New(tenantId: _faker.Random.Int(min: 1), to: _faker.Person.Email, role: _faker.PickRandom<Role>());
+
+        private Invite LoadValidInvite()
+            => Invite.Load(id: _faker.Random.Int(min: 1), tenantId: _faker.Random.Int(min: 1), to: _faker.Person.Email, role: _faker.PickRandom<Role>());
     }
 }
