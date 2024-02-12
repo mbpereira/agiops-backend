@@ -2,7 +2,7 @@
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Users;
 
-namespace PlanningPoker.Application.Users.SendInviteCommand
+namespace PlanningPoker.Application.Users.SendInvite
 {
     public class SendInviteCommandHandler : ICommandHandler<SendInviteCommand>
     {

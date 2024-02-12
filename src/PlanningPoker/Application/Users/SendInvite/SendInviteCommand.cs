@@ -2,7 +2,7 @@
 using PlanningPoker.Domain.Users;
 using PlanningPoker.Domain.Validation;
 
-namespace PlanningPoker.Application.Users.SendInviteCommand
+namespace PlanningPoker.Application.Users.SendInvite
 {
     public class SendInviteCommand : Command<SendInviteCommand>
     {
