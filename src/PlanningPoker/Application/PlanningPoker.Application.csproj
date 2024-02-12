@@ -10,4 +10,8 @@
       <ProjectReference Include="..\Domain\PlanningPoker.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Users\RegisterTenantMember\" />
+    </ItemGroup>
+
 </Project>

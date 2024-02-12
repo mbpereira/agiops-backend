@@ -12,9 +12,10 @@ namespace PlanningPoker.Domain.Users
         public Grant Grant { get; private set; }
 
         private AccessGrant(
+            [NotNull] EntityId id,
             [NotNull] EntityId userId,
             [NotNull] EntityId tenantId,
-            [NotNull] Grant grant)
+            [NotNull] Grant grant) : base(id)
         {
             UserId = userId;
             TenantId = tenantId;
@@ -31,9 +32,9 @@ namespace PlanningPoker.Domain.Users
         }
 
         public static AccessGrant New(int userId, int tenantId, Resources resource, GrantScope scope) =>
-            new(userId, tenantId, new(resource, scope));
+            new(EntityId.AutoIncrement(), userId, tenantId, new(resource, scope));
 
-        public static AccessGrant New(int userId, int tenantId, Resources resource, GrantScope scope, int recordId) =>
-            new(userId, tenantId, new(resource, scope, new(recordId)));
+        public static AccessGrant New(int id, int userId, int tenantId, Resources resource, GrantScope scope, int recordId) =>
+            new(id, userId, tenantId, new(resource, scope, new(recordId)));
     }
 }

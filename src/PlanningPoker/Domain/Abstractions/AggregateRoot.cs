@@ -8,8 +8,6 @@
         {
         }
 
-        protected AggregateRoot() : base(EntityId.AutoIncrement()) { }
-
         public IReadOnlyList<IDomainEvent> GetDomainEvents()
             => _domainEvents.ToList();
 
