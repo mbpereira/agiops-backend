@@ -11,15 +11,16 @@ namespace PlanningPoker.UnitTests.Domain.Users.Extensions
 
         public static string ValidEmail(this Faker faker) => faker.Person.Email;
 
-        public static Invite ValidInvite(this Faker faker)
+        public static Invite ValidInvite(this Faker faker, int? tenantId = null, InviteStatus? status = null, DateTime? expiresAtUtc = null)
             => Invite.Load(
                 id: faker.ValidId(),
-                tenantId: faker.ValidId(),
+                tenantId: tenantId ?? faker.ValidId(),
                 to: faker.Person.Email,
                 role: faker.PickRandom<Role>(),
                 token: Guid.NewGuid(),
                 createdAtUtc: DateTime.UtcNow,
                 sentAtUtc: DateTime.UtcNow,
-                expiresAtUtc: DateTime.UtcNow.AddMinutes(30));
+                expiresAtUtc: expiresAtUtc ?? DateTime.UtcNow.AddMinutes(Invite.ExpirationTimeInMinutes),
+                status: status ?? InviteStatus.Open);
     }
 }

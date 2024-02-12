@@ -47,8 +47,8 @@ namespace PlanningPoker.UnitTests.Application.Users.SendInvite
         [Fact]
         public async Task ShouldAddInviteAndReturnsSuccess()
         {
-            var expectedInvite = _faker.ValidInvite();
-            var command = new SendInviteCommand(expectedInvite.To.Value, _faker.PickRandom<Role>());
+            var expectedInvite = _faker.ValidInvite(tenantId: _tenant.Id);
+            var command = new SendInviteCommand(expectedInvite.To.Value, expectedInvite.Role);
             _invites.AddAsync(Arg.Any<Invite>())
                 .Returns(expectedInvite);
 
@@ -58,7 +58,8 @@ namespace PlanningPoker.UnitTests.Application.Users.SendInvite
             result.Status.Should().Be(CommandStatus.Success);
             await _invites.Received().AddAsync(Arg.Is<Invite>(i =>
                 i.To.Value == expectedInvite.To.Value &&
-                i.TenantId.Value == expectedInvite.TenantId.Value));
+                i.TenantId.Value == expectedInvite.TenantId.Value &&
+                i.Role == expectedInvite.Role));
         }
     }
 }

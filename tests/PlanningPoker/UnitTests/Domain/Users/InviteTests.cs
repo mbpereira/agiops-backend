@@ -1,8 +1,10 @@
 ﻿using Bogus;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Users;
 using PlanningPoker.Domain.Users.Events;
+using PlanningPoker.UnitTests.Domain.Users.Extensions;
 
 namespace PlanningPoker.UnitTests.Domain.Users
 {
@@ -19,7 +21,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [InlineData(null)]
         [InlineData("")]
         [InlineData("abcd")]
-        public void ShouldReturnExpectedErrorsWhenProvidedDataIsNotValid(string invalidEmail)
+        public void New_ShouldReturnExpectedErrorsWhenProvidedDataIsNotValid(string invalidEmail)
         {
             var invite = Invite.New(tenantId: _faker.Random.Int(min: 1), to: invalidEmail, _faker.PickRandom<Role>());
 
@@ -29,15 +31,17 @@ namespace PlanningPoker.UnitTests.Domain.Users
         }
 
         [Fact]
-        public void ShouldSetExpiresAtUtcTo30MinutesAfterNow()
+        public void New_ShouldSetExpiresAtUtcTo30MinutesAfterNow()
         {
             var invite = GetNewValidInvite();
 
-            invite.ExpiresAtUtc.Should().Be(invite.CreatedAtUtc.AddMinutes(30));
+            var diff = (int)(invite.ExpiresAtUtc - invite.CreatedAtUtc).TotalMinutes;
+
+            diff.Should().Be(Invite.ExpirationTimeInMinutes);
         }
 
         [Fact]
-        public void ShouldRegisterInviteCreatedEvent()
+        public void New_ShouldRegisterInviteCreatedEvent()
         {
             var invite = GetNewValidInvite();
 
@@ -45,9 +49,9 @@ namespace PlanningPoker.UnitTests.Domain.Users
         }
 
         [Fact]
-        public async Task ShouldRegisterInviteRenewedEventAndRefreshExpiresAtUtcDate()
+        public async Task Renew_ShouldRegisterInviteRenewedEventAndRefreshExpiresAtUtcDate()
         {
-            var invite = LoadValidInvite();
+            var invite = _faker.ValidInvite();
             var expiresAt = invite.ExpiresAtUtc;
             var sentAt = invite.SentAtUtc;
             await Task.Delay(TimeSpan.FromSeconds(1));
@@ -60,18 +64,31 @@ namespace PlanningPoker.UnitTests.Domain.Users
             invite.ExpiresAtUtc.Should().BeAfter(expiresAt);
         }
 
+        [Theory]
+        [InlineData(InviteStatus.Accepted)]
+        [InlineData(InviteStatus.Inactive)]
+        public void Accept_ShouldThrowExceptionWhenCurrentStatusIsNotOpen(InviteStatus status)
+        {
+            var invite = _faker.ValidInvite(status: status);
+            var act = () => invite.Accept();
+
+            var ex = act.Should().Throw<DomainException>();
+
+            ex.Which.Message.Should().Be("This invitation has already been accepted or is inactive.");
+        }
+
+        [Fact]
+        public void Accept_ShouldThrowExceptionWhenInviteHasExpired()
+        {
+            var invite = _faker.ValidInvite(expiresAtUtc: DateTime.UtcNow.AddDays(-30));
+            var act = () => invite.Accept();
+
+            var ex = act.Should().Throw<DomainException>();
+
+            ex.Which.Message.Should().Be("This invitation has expired.");
+        }
+
         private Invite GetNewValidInvite()
             => Invite.New(tenantId: _faker.Random.Int(min: 1), to: _faker.Person.Email, role: _faker.PickRandom<Role>());
-
-        private Invite LoadValidInvite()
-            => Invite.Load(id:
-                _faker.Random.Int(min: 1),
-                tenantId: _faker.Random.Int(min: 1),
-                to: _faker.Person.Email,
-                role: _faker.PickRandom<Role>(),
-                token: Guid.NewGuid(),
-                createdAtUtc: DateTime.UtcNow,
-                sentAtUtc: DateTime.UtcNow,
-                expiresAtUtc: DateTime.UtcNow.AddMinutes(30));
     }
 }
