@@ -24,7 +24,7 @@ namespace PlanningPoker.UnitTests.Domain.Users.Extensions
                 token: Guid.NewGuid(),
                 createdAtUtc: DateTime.UtcNow,
                 sentAtUtc: DateTime.UtcNow,
-                expiresAtUtc: expiresAtUtc ?? DateTime.UtcNow.AddMinutes(Invitation.ExpirationTimeInMinutes),
+                expiresAtUtc: expiresAtUtc ?? DateTime.UtcNow.AddMinutes(InvitationConstants.ExpirationTimeInMinutes),
                 status: status ?? InvitationStatus.Open);
     }
 }

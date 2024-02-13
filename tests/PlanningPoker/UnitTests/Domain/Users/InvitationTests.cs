@@ -1,9 +1,7 @@
 ﻿using Bogus;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Users;
-using PlanningPoker.Domain.Users.Events;
 using PlanningPoker.UnitTests.Domain.Users.Extensions;
 
 namespace PlanningPoker.UnitTests.Domain.Users
@@ -34,7 +32,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
 
             var diff = (int)(invitation.ExpiresAtUtc - invitation.CreatedAtUtc).TotalMinutes;
 
-            diff.Should().Be(Invitation.ExpirationTimeInMinutes);
+            diff.Should().Be(InvitationConstants.ExpirationTimeInMinutes);
         }
 
         [Fact]
@@ -59,6 +57,29 @@ namespace PlanningPoker.UnitTests.Domain.Users
             invitation.GetDomainEvents().Should().BeEquivalentTo(new[] { new InvitationRenewed(invitation.Token, invitation.To, invitation.ExpiresAtUtc) });
             invitation.SentAtUtc.Should().BeAfter(sentAt);
             invitation.ExpiresAtUtc.Should().BeAfter(expiresAt);
+        }
+
+        [Theory]
+        [InlineData(InvitationStatus.Accepted)]
+        [InlineData(InvitationStatus.Inactive)]
+        public void Validate_ShouldReturnFinalizedInvitationErrorWhenTryingToRenewAnAcceptedOrInactiveInvitation(InvitationStatus status)
+        {
+            var expectedErrors = new[]
+{
+                new
+                {
+                    Code = "Invitation.Renew",
+                    Message = "This invitation has already been accepted or is inactive."
+                }
+            };
+            var invitation = _faker.LoadValidInvitation(status: status);
+            invitation.Renew();
+
+            var validationResult = invitation.Validate();
+
+            using var _ = new AssertionScope();
+            validationResult.IsValid.Should().BeFalse();
+            validationResult.Errors.Should().BeEquivalentTo(expectedErrors);
         }
 
         [Theory]
