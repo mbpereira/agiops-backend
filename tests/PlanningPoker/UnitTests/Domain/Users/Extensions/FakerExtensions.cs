@@ -13,10 +13,10 @@ namespace PlanningPoker.UnitTests.Domain.Users.Extensions
 
         public static string InvalidEmail(this Faker faker) => faker.PickRandomParam(new string[] { null!, "", " ", faker.Random.String() });
 
-        public static Invite NewInvalidInvite(this Faker faker) => Invite.New(tenantId: faker.Random.Int(min: 1), to: faker.InvalidEmail(), faker.PickRandom<Role>());
+        public static Invitation NewInvalidInvitation(this Faker faker) => Invitation.New(tenantId: faker.Random.Int(min: 1), to: faker.InvalidEmail(), faker.PickRandom<Role>());
 
-        public static Invite LoadValidInvite(this Faker faker, int? tenantId = null, InviteStatus? status = null, DateTime? expiresAtUtc = null)
-            => Invite.Load(
+        public static Invitation LoadValidInvitation(this Faker faker, int? tenantId = null, InvitationStatus? status = null, DateTime? expiresAtUtc = null)
+            => Invitation.Load(
                 id: faker.ValidId(),
                 tenantId: tenantId ?? faker.ValidId(),
                 to: faker.Person.Email,
@@ -24,7 +24,7 @@ namespace PlanningPoker.UnitTests.Domain.Users.Extensions
                 token: Guid.NewGuid(),
                 createdAtUtc: DateTime.UtcNow,
                 sentAtUtc: DateTime.UtcNow,
-                expiresAtUtc: expiresAtUtc ?? DateTime.UtcNow.AddMinutes(Invite.ExpirationTimeInMinutes),
-                status: status ?? InviteStatus.Open);
+                expiresAtUtc: expiresAtUtc ?? DateTime.UtcNow.AddMinutes(Invitation.ExpirationTimeInMinutes),
+                status: status ?? InvitationStatus.Open);
     }
 }

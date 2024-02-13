@@ -2,18 +2,18 @@
 using PlanningPoker.Application.Abstractions;
 using PlanningPoker.Domain.Validation;
 
-namespace PlanningPoker.Application.Users.RenewInvite
+namespace PlanningPoker.Application.Users.RenewInvitation
 {
-    public class RenewInviteCommand : Command<RenewInviteCommand>
+    public class RenewInvitationCommand : Command<RenewInvitationCommand>
     {
         public int Id { get; private set; }
 
-        public RenewInviteCommand(int id)
+        public RenewInvitationCommand(int id)
         {
             Id = id;
         }
 
-        protected override void ConfigureValidationRules(IValidationRuleFactory<RenewInviteCommand> validator)
+        protected override void ConfigureValidationRules(IValidationRuleFactory<RenewInvitationCommand> validator)
         {
             validator.CreateRuleFor(c => c.Id)
                 .GreaterThan(0);

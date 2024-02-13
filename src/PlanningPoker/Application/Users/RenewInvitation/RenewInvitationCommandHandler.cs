@@ -1,32 +1,32 @@
 ﻿using PlanningPoker.Application.Abstractions;
 using PlanningPoker.Domain.Abstractions;
 
-namespace PlanningPoker.Application.Users.RenewInvite
+namespace PlanningPoker.Application.Users.RenewInvitation
 {
-    public class RenewInviteCommandHandler : ICommandHandler<RenewInviteCommand>
+    public class RenewInvitationCommandHandler : ICommandHandler<RenewInvitationCommand>
     {
         private readonly IUnitOfWork _uow;
 
-        public RenewInviteCommandHandler(IUnitOfWork uow)
+        public RenewInvitationCommandHandler(IUnitOfWork uow)
         {
             _uow = uow;
         }
 
-        public async Task<CommandResult> HandleAsync(RenewInviteCommand command)
+        public async Task<CommandResult> HandleAsync(RenewInvitationCommand command)
         {
             var validationResult = command.Validate();
 
             if (!validationResult.Success)
                 return CommandResult.Fail(validationResult.Errors, CommandStatus.ValidationFailed);
 
-            var invite = await _uow.Invites.GetByIdAsync(command.Id);
+            var invitation = await _uow.Invitations.GetByIdAsync(command.Id);
 
-            if (invite is null)
+            if (invitation is null)
                 return CommandResult.Fail(CommandStatus.RecordNotFound);
 
-            invite.Renew();
+            invitation.Renew();
 
-            await _uow.Invites.ChangeAsync(invite);
+            await _uow.Invitations.ChangeAsync(invitation);
             await _uow.SaveChangesAsync();
 
             return CommandResult.Success();

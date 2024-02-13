@@ -7,11 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Domain\PlanningPoker.Domain.csproj" />
+      <Compile Remove="Users\AcceptInvitation\**" />
+      <EmbeddedResource Remove="Users\AcceptInvitation\**" />
+      <None Remove="Users\AcceptInvitation\**" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Users\AcceptInvite\" />
+      <ProjectReference Include="..\Domain\PlanningPoker.Domain.csproj" />
     </ItemGroup>
 
 </Project>

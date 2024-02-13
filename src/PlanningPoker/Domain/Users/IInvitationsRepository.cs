@@ -2,7 +2,7 @@
 
 namespace PlanningPoker.Domain.Users
 {
-    public interface IInvitesRepository : IRepository<Invite>
+    public interface IInvitationsRepository : IRepository<Invitation>
     {
     }
 }

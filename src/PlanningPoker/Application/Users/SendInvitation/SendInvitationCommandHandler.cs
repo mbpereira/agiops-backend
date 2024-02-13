@@ -2,31 +2,31 @@
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Users;
 
-namespace PlanningPoker.Application.Users.SendInvite
+namespace PlanningPoker.Application.Users.SendInvitation
 {
-    public class SendInviteCommandHandler : ICommandHandler<SendInviteCommand>
+    public class SendInvitationCommandHandler : ICommandHandler<SendInvitationCommand>
     {
         private readonly ITenantContext _tenantContext;
         private readonly IUnitOfWork _uow;
 
-        public SendInviteCommandHandler(IUnitOfWork uow, ITenantContext tenantContext)
+        public SendInvitationCommandHandler(IUnitOfWork uow, ITenantContext tenantContext)
         {
             _uow = uow;
             _tenantContext = tenantContext;
         }
 
-        public async Task<CommandResult> HandleAsync(SendInviteCommand command)
+        public async Task<CommandResult> HandleAsync(SendInvitationCommand command)
         {
             var tenant = await _tenantContext.GetCurrentTenantAsync();
 
-            var invite = Invite.New(tenant.Id, command.To, command.Role);
+            var invitation = Invitation.New(tenant.Id, command.To, command.Role);
 
-            var validationResult = invite.Validate();
+            var validationResult = invitation.Validate();
 
             if (!validationResult.Success)
                 return CommandResult.Fail(validationResult.Errors, CommandStatus.ValidationFailed);
 
-            await _uow.Invites.AddAsync(invite);
+            await _uow.Invitations.AddAsync(invitation);
             await _uow.SaveChangesAsync();
 
             return CommandResult.Success();

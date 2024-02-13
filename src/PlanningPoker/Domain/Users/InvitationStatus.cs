@@ -1,6 +1,6 @@
 ﻿namespace PlanningPoker.Domain.Users
 {
-    public enum InviteStatus
+    public enum InvitationStatus
     {
         Open = 1,
         Accepted = 2,

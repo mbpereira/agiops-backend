@@ -4,31 +4,31 @@ using FluentAssertions.Execution;
 using NSubstitute;
 using PlanningPoker.Application.Abstractions;
 using PlanningPoker.Application.Users;
-using PlanningPoker.Application.Users.SendInvite;
+using PlanningPoker.Application.Users.SendInvitation;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Users;
 using PlanningPoker.UnitTests.Domain.Users.Extensions;
 
-namespace PlanningPoker.UnitTests.Application.Users.SendInvite
+namespace PlanningPoker.UnitTests.Application.Users.SendInvitation
 {
-    public class SendInviteCommandHandlerTests
+    public class SendInvitationCommandHandlerTests
     {
         private readonly Faker _faker;
         private readonly ITenantContext _tenantContext;
-        private readonly IInvitesRepository _invites;
+        private readonly IInvitationsRepository _invitations;
         private readonly TenantInformation _tenant;
-        private readonly SendInviteCommandHandler _handler;
+        private readonly SendInvitationCommandHandler _handler;
 
-        public SendInviteCommandHandlerTests()
+        public SendInvitationCommandHandlerTests()
         {
             _faker = new();
             _tenant = new TenantInformation(Id: _faker.Random.Int(min: 1));
-            _invites = Substitute.For<IInvitesRepository>();
+            _invitations = Substitute.For<IInvitationsRepository>();
             _tenantContext = Substitute.For<ITenantContext>();
             _tenantContext.GetCurrentTenantAsync().Returns(_tenant);
             var uow = Substitute.For<IUnitOfWork>();
-            uow.Invites.Returns(_invites);
-            _handler = new SendInviteCommandHandler(uow, _tenantContext);
+            uow.Invitations.Returns(_invitations);
+            _handler = new SendInvitationCommandHandler(uow, _tenantContext);
         }
 
         [Theory]
@@ -37,7 +37,7 @@ namespace PlanningPoker.UnitTests.Application.Users.SendInvite
         [InlineData("abc")]
         public async Task ShouldReturnValidationErrorWhenProvidedDataIsNotValid(string invalidEmail)
         {
-            var command = new SendInviteCommand(to: invalidEmail, _faker.PickRandom<Role>());
+            var command = new SendInvitationCommand(to: invalidEmail, _faker.PickRandom<Role>());
 
             var result = await _handler.HandleAsync(command);
 
@@ -45,21 +45,21 @@ namespace PlanningPoker.UnitTests.Application.Users.SendInvite
         }
 
         [Fact]
-        public async Task ShouldAddInviteAndReturnsSuccess()
+        public async Task ShouldAddInvitationAndReturnsSuccess()
         {
-            var expectedInvite = _faker.LoadValidInvite(tenantId: _tenant.Id);
-            var command = new SendInviteCommand(expectedInvite.To.Value, expectedInvite.Role);
-            _invites.AddAsync(Arg.Any<Invite>())
-                .Returns(expectedInvite);
+            var expectedInvitation = _faker.LoadValidInvitation(tenantId: _tenant.Id);
+            var command = new SendInvitationCommand(expectedInvitation.To.Value, expectedInvitation.Role);
+            _invitations.AddAsync(Arg.Any<Invitation>())
+                .Returns(expectedInvitation);
 
             var result = await _handler.HandleAsync(command);
 
             using var _ = new AssertionScope();
             result.Status.Should().Be(CommandStatus.Success);
-            await _invites.Received().AddAsync(Arg.Is<Invite>(i =>
-                i.To.Value == expectedInvite.To.Value &&
-                i.TenantId.Value == expectedInvite.TenantId.Value &&
-                i.Role == expectedInvite.Role));
+            await _invitations.Received().AddAsync(Arg.Is<Invitation>(i =>
+                i.To.Value == expectedInvitation.To.Value &&
+                i.TenantId.Value == expectedInvitation.TenantId.Value &&
+                i.Role == expectedInvitation.Role));
         }
     }
 }

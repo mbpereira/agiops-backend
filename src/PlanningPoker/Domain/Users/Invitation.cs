@@ -5,7 +5,7 @@ using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Domain.Users
 {
-    public class Invite : AggregateRoot<Invite>, ITenantable
+    public class Invitation : AggregateRoot<Invitation>, ITenantable
     {
         public const int ExpirationTimeInMinutes = 30;
 
@@ -16,20 +16,20 @@ namespace PlanningPoker.Domain.Users
         public DateTime CreatedAtUtc { get; private set; }
         public DateTime SentAtUtc { get; private set; }
         public DateTime ExpiresAtUtc { get; private set; }
-        public InviteStatus Status { get; private set; }
+        public InvitationStatus Status { get; private set; }
         public DateTime? UpdatedAtUtc { get; private set; } = null;
 
-        private Invite(EntityId id, EntityId tenantId, Email to, Role role)
+        private Invitation(EntityId id, EntityId tenantId, Email to, Role role)
             : this(id, tenantId, to, role,
                   token: Guid.NewGuid(),
                   createdAtUtc: DateTime.UtcNow,
                   sentAtUtc: DateTime.UtcNow,
                   expiresAtUtc: DateTime.UtcNow.AddMinutes(ExpirationTimeInMinutes),
-                  status: InviteStatus.Open)
+                  status: InvitationStatus.Open)
         {
         }
 
-        public Invite(EntityId id, EntityId tenantId, Email to, Role role, Guid token, DateTime createdAtUtc, DateTime sentAtUtc, DateTime expiresAtUtc, InviteStatus status, DateTime? updatedAtUtc = null)
+        public Invitation(EntityId id, EntityId tenantId, Email to, Role role, Guid token, DateTime createdAtUtc, DateTime sentAtUtc, DateTime expiresAtUtc, InvitationStatus status, DateTime? updatedAtUtc = null)
             : base(id)
         {
             TenantId = tenantId;
@@ -43,7 +43,7 @@ namespace PlanningPoker.Domain.Users
             UpdatedAtUtc = updatedAtUtc;
         }
 
-        protected override void ConfigureValidationRules(IValidationRuleFactory<Invite> validator)
+        protected override void ConfigureValidationRules(IValidationRuleFactory<Invitation> validator)
         {
             validator.CreateRuleFor(i => i.To.Value, nameof(To))
                 .NotEmpty()
@@ -55,29 +55,29 @@ namespace PlanningPoker.Domain.Users
         {
             SentAtUtc = DateTime.UtcNow;
             ExpiresAtUtc = SentAtUtc.AddMinutes(ExpirationTimeInMinutes);
-            RaiseDomainEvent(new InviteRenewed(Token, To, ExpiresAtUtc));
+            RaiseDomainEvent(new InvitationRenewed(Token, To, ExpiresAtUtc));
         }
 
         public void Accept()
         {
-            if (Status != InviteStatus.Open)
+            if (Status != InvitationStatus.Open)
                 throw new DomainException("This invitation has already been accepted or is inactive.");
 
             if (DateTime.UtcNow > ExpiresAtUtc)
                 throw new DomainException("This invitation has expired.");
 
             UpdatedAtUtc = DateTime.UtcNow;
-            Status = InviteStatus.Accepted;
+            Status = InvitationStatus.Accepted;
         }
 
-        public static Invite New(int tenantId, string to, Role role)
+        public static Invitation New(int tenantId, string to, Role role)
         {
-            var invite = new Invite(EntityId.AutoIncrement(), new EntityId(tenantId), new Email(to), role);
-            invite.RaiseDomainEvent(new InviteCreated(invite.Token, invite.To, invite.ExpiresAtUtc));
-            return invite;
+            var invitation = new Invitation(EntityId.AutoIncrement(), new EntityId(tenantId), new Email(to), role);
+            invitation.RaiseDomainEvent(new InvitationCreated(invitation.Token, invitation.To, invitation.ExpiresAtUtc));
+            return invitation;
         }
 
-        public static Invite Load(
+        public static Invitation Load(
             int id,
             int tenantId,
             string to,
@@ -86,7 +86,7 @@ namespace PlanningPoker.Domain.Users
             DateTime createdAtUtc,
             DateTime sentAtUtc,
             DateTime expiresAtUtc,
-            InviteStatus status,
+            InvitationStatus status,
             DateTime? updatedAtUtc = null) =>
                 new(new EntityId(id),
                     new EntityId(tenantId),

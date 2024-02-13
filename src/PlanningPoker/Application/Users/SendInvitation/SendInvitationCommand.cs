@@ -2,20 +2,20 @@
 using PlanningPoker.Domain.Users;
 using PlanningPoker.Domain.Validation;
 
-namespace PlanningPoker.Application.Users.SendInvite
+namespace PlanningPoker.Application.Users.SendInvitation
 {
-    public class SendInviteCommand : Command<SendInviteCommand>
+    public class SendInvitationCommand : Command<SendInvitationCommand>
     {
         public string To { get; private set; }
         public Role Role { get; private set; }
 
-        public SendInviteCommand(string to, Role role)
+        public SendInvitationCommand(string to, Role role)
         {
             To = to;
             Role = role;
         }
 
-        protected override void ConfigureValidationRules(IValidationRuleFactory<SendInviteCommand> validator)
+        protected override void ConfigureValidationRules(IValidationRuleFactory<SendInvitationCommand> validator)
         {
         }
     }

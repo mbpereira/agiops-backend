@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Users\AcceptInvite\" />
+    <Folder Include="Application\Users\AcceptInvitation\" />
   </ItemGroup>
 
 </Project>
