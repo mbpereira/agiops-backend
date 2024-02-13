@@ -1,14 +1,39 @@
-﻿namespace PlanningPoker.Domain.Validation
+﻿using System.Collections.Immutable;
+
+namespace PlanningPoker.Domain.Validation
 {
-    public record ValidationResult
+    public interface IValidationResult
     {
-        public IReadOnlyCollection<Error> Errors { get; } = new List<Error>();
+        IImmutableSet<Error> Errors { get; }
+        bool IsValid { get; }
+    }
 
-        public bool Success => Errors.Count == 0;
+    public record ValidationResult : IValidationResult
+    {
+        private ISet<Error> _errors;
+        public IImmutableSet<Error> Errors => _errors.ToImmutableHashSet();
 
-        public ValidationResult(IEnumerable<Error> errors)
+        public bool IsValid => Errors.Count == 0;
+
+        public ValidationResult(ISet<Error> errors)
         {
-            Errors = errors.ToList();
+            _errors = errors.ToHashSet();
+        }
+
+        public ValidationResult()
+        {
+            _errors = new HashSet<Error>();
+        }
+
+        public void AddError(string code, string message)
+        {
+            _errors.Add(new Error(code, message));
+        }
+
+        public void Merge(ValidationResult validationResult)
+        {
+            foreach (var error in validationResult.Errors)
+                AddError(error.Code, error.Message);
         }
     }
 }

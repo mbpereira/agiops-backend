@@ -61,10 +61,16 @@ namespace PlanningPoker.Domain.Users
         public void Accept()
         {
             if (Status != InvitationStatus.Open)
-                throw new DomainException("This invitation has already been accepted or is inactive.");
+            {
+                AddError(nameof(Accept), "This invitation has already been accepted or is inactive.");
+                return;
+            }
 
             if (DateTime.UtcNow > ExpiresAtUtc)
-                throw new DomainException("This invitation has expired.");
+            {
+                AddError(nameof(Accept), "This invitation has expired.");
+                return;
+            }
 
             UpdatedAtUtc = DateTime.UtcNow;
             Status = InvitationStatus.Accepted;

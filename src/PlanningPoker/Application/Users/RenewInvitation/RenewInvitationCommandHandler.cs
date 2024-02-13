@@ -16,7 +16,7 @@ namespace PlanningPoker.Application.Users.RenewInvitation
         {
             var validationResult = command.Validate();
 
-            if (!validationResult.Success)
+            if (!validationResult.IsValid)
                 return CommandResult.Fail(validationResult.Errors, CommandStatus.ValidationFailed);
 
             var invitation = await _uow.Invitations.GetByIdAsync(command.Id);

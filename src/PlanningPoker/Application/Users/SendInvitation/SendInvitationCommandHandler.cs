@@ -23,7 +23,7 @@ namespace PlanningPoker.Application.Users.SendInvitation
 
             var validationResult = invitation.Validate();
 
-            if (!validationResult.Success)
+            if (!validationResult.IsValid)
                 return CommandResult.Fail(validationResult.Errors, CommandStatus.ValidationFailed);
 
             await _uow.Invitations.AddAsync(invitation);

@@ -25,7 +25,7 @@ namespace PlanningPoker.Domain.Validation
                 .Errors
                 .GroupBy(e => e.PropertyName)
                 .Select(e => new Error(e.Key, string.Join("; ", e.Select(g => g.ErrorMessage))))
-                .ToList();
+                .ToHashSet();
             return new ValidationResult(errors);
         }
     }

@@ -38,7 +38,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
             var validationResult = issue.Validate();
 
             using var _ = new AssertionScope();
-            validationResult.Success.Should().BeFalse();
+            validationResult.IsValid.Should().BeFalse();
             validationResult.Errors.Should().BeEquivalentTo(expectedErrros);
         }
 

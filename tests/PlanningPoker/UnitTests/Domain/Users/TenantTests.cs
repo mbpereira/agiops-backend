@@ -37,7 +37,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
 
             var validationResult = tenant.Validate();
 
-            validationResult.Success.Should().BeTrue();
+            validationResult.IsValid.Should().BeTrue();
         }
     }
 }

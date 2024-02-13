@@ -19,7 +19,7 @@ namespace PlanningPoker.Application.Issues.RegisterGrade
         {
             var validationResult = command.Validate();
 
-            if (!validationResult.Success)
+            if (!validationResult.IsValid)
                 return CommandResult.Fail(validationResult.Errors, CommandStatus.ValidationFailed);
 
             var issue = await _uow.Issues.GetByIdAsync(command.IssueId);

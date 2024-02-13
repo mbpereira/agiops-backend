@@ -64,25 +64,45 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [Theory]
         [InlineData(InvitationStatus.Accepted)]
         [InlineData(InvitationStatus.Inactive)]
-        public void Accept_ShouldThrowExceptionWhenCurrentStatusIsNotOpen(InvitationStatus status)
+        public void Validate_ShouldReturnFinalizedInvitationErrorWhenTryingToAcceptAnAcceptedOrInactiveInvitation(InvitationStatus status)
         {
+            var expectedErrors = new[]
+            {
+                new
+                {
+                    Code = "Invitation.Accept",
+                    Message = "This invitation has already been accepted or is inactive."
+                }
+            };
             var invitation = _faker.LoadValidInvitation(status: status);
-            var act = () => invitation.Accept();
+            invitation.Accept();
 
-            var ex = act.Should().Throw<DomainException>();
+            var validationResult = invitation.Validate();
 
-            ex.Which.Message.Should().Be("This invitation has already been accepted or is inactive.");
+            using var _ = new AssertionScope();
+            validationResult.IsValid.Should().BeFalse();
+            validationResult.Errors.Should().BeEquivalentTo(expectedErrors);
         }
 
         [Fact]
-        public void Accept_ShouldThrowExceptionWhenInvitationHasExpired()
+        public void Validate_ShouldReturnExpiredInvitationErrorWhenTryingToAcceptExpiredInvitation()
         {
+            var expectedErrors = new[]
+{
+                new
+                {
+                    Code = "Invitation.Accept",
+                    Message = "This invitation has expired."
+                }
+            };
             var invitation = _faker.LoadValidInvitation(expiresAtUtc: DateTime.UtcNow.AddDays(-30));
-            var act = () => invitation.Accept();
+            invitation.Accept();
 
-            var ex = act.Should().Throw<DomainException>();
+            var validationResult = invitation.Validate();
 
-            ex.Which.Message.Should().Be("This invitation has expired.");
+            using var _ = new AssertionScope();
+            validationResult.IsValid.Should().BeFalse();
+            validationResult.Errors.Should().BeEquivalentTo(expectedErrors);
         }
 
         private Invitation GetNewValidInvitation()

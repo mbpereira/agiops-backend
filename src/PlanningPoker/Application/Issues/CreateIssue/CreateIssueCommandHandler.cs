@@ -24,7 +24,7 @@ namespace PlanningPoker.Application.Issues.CreateIssue
 
             var validationResult = issue.Validate();
 
-            if (!validationResult.Success)
+            if (!validationResult.IsValid)
                 return CommandResult<CreateIssueResult>.Fail(validationResult.Errors, CommandStatus.ValidationFailed);
 
             var createdIssue = await _uow.Issues.AddAsync(issue);
