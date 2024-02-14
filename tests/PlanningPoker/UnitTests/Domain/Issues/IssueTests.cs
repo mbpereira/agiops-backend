@@ -70,7 +70,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         }
 
         [Fact]
-        public void ShouldThrowExceptionWhenProvidedUserIdIsNotValid()
+        public void ShouldReturnsErrorWhenProvidedUserIdIsNotValid()
         {
             var issue = GetValidIssue();
 

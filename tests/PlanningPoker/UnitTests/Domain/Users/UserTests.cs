@@ -52,7 +52,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         }
 
         [Fact]
-        public void ShouldThrowExceptionWhenEmailIsNotSet()
+        public void ShouldReturnsErrorWhenEmailIsNotSet()
         {
             var name = _faker.Random.String2(length: 5);
             

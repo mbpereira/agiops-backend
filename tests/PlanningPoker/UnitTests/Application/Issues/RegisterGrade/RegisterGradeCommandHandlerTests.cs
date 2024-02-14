@@ -47,7 +47,7 @@ namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
         }
 
         [Fact]
-        public async Task ShouldThrowsExceptionWhenCurrentUserIdIsNotValid()
+        public async Task ShouldReturnsErrorWhenCurrentUserIdIsNotValid()
         {
             var expectedIssue = GetValidIssue();
             _uow.Issues.GetByIdAsync(Arg.Any<EntityId>())
