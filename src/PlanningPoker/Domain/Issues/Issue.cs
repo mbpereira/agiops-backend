@@ -8,19 +8,19 @@ namespace PlanningPoker.Domain.Issues
     {
         public EntityId GameId { get; private set; } = EntityId.Blank();
         public string Name { get; private set; } = string.Empty;
-        public string? Link { get; private set; }
         public string? Description { get; private set; }
+        public string? Link { get; private set; }
         private readonly List<UserGrade> _grades;
         public IReadOnlyCollection<UserGrade> Grades => _grades.AsReadOnly();
         public decimal Average => Grades.Average(g => g.Grade);
 
-        private Issue(int id, int tenantId, int gameId, string name, string? description = null, string? link = null) : base(id, tenantId)
+        private Issue(int id, int tenantId, int gameId, string name, string? description = null, string? link = null, List<UserGrade>? grades = null) : base(id, tenantId)
         {
             DefineGame(gameId);
             DefineName(name);
             Link = link;
             Description = description;
-            _grades = new List<UserGrade>(capacity: 9);
+            _grades = grades ?? new List<UserGrade>();
         }
 
         public void RegisterGrade(int userId, decimal grade)
@@ -65,7 +65,7 @@ namespace PlanningPoker.Domain.Issues
 
         public static Issue New(int tenantId, int gameId, string name, string? description = null, string? link = null)
             => new(EntityId.AutoIncrement(), tenantId, gameId, name, description, link);
-        public static Issue New(int id, int tenantId, int gameId, string name, string? description = null, string? link = null)
-            => new(id, tenantId, gameId, name, description, link);
+        public static Issue Load(int id, int tenantId, int gameId, string name, string? description = null, string? link = null, List<UserGrade>? grades = null)
+            => new(id, tenantId, gameId, name, description, link, grades);
     }
 }

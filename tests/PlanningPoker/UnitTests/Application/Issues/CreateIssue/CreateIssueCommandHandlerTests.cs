@@ -64,7 +64,7 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateIssue
         }
 
         private Issue GetValidIssue()
-            => Issue.New(
+            => Issue.Load(
                 id: _faker.Random.Int(min: 1),
                 tenantId: _faker.Random.Int(min: 1),
                 gameId: _faker.Random.Int(min: 1),
