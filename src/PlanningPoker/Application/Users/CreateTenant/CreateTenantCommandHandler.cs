@@ -24,9 +24,7 @@ namespace PlanningPoker.Application.Users.CreateTenant
 
             var tenantId = await CreateTenantAsync(tenant);
 
-            var userId = await GetCurrentUserIdAsync();
-
-            await CreateAccessGrantsAsync(tenantId, userId);
+            await CreateAccessGrantsAsync(tenantId);
 
             return CommandResult<CreateTenantResult>.Success(new CreateTenantResult(tenantId));
         }
@@ -46,16 +44,23 @@ namespace PlanningPoker.Application.Users.CreateTenant
             return createdTenant.Id.Value;
         }
 
-        private async Task CreateAccessGrantsAsync(int tenantId, int userId)
+        private async Task CreateAccessGrantsAsync(int tenantId)
         {
-            var accessGrants = TenantScopes
-                .GetByRole(Role.Admin)
-                .Select(scope => AccessGrant.New(userId, tenantId, Resources.Tenant, scope))
-                .ToList();
+            var accessGrants = await GetAccessGrantsAsync(tenantId);
 
             await _uow.AccessGrants.AddAsync(accessGrants);
 
             await _uow.SaveChangesAsync();
+        }
+
+        private async Task<IList<AccessGrant>> GetAccessGrantsAsync(int tenantId)
+        {
+            var userId = await GetCurrentUserIdAsync();
+
+            return TenantScopes
+                .GetByRole(Role.Admin)
+                .Select(scope => AccessGrant.New(userId, tenantId, Resources.Tenant, scope))
+                .ToList();
         }
     }
 }
