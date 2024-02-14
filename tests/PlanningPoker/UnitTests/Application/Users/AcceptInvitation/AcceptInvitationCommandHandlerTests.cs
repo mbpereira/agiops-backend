@@ -18,6 +18,7 @@ namespace PlanningPoker.UnitTests.Application.Users.AcceptInvitation
         private readonly IAccessGrantsRepository _grants;
         private readonly IUserContext _userContext;
         private readonly AcceptInvitationCommandHandler _handler;
+        private readonly UserInformation _userInformation;
 
         public AcceptInvitationCommandHandlerTests()
         {
@@ -28,6 +29,8 @@ namespace PlanningPoker.UnitTests.Application.Users.AcceptInvitation
             uow.Invitations.Returns(_invitations);
             uow.AccessGrants.Returns(_grants);
             _userContext = Substitute.For<IUserContext>();
+            _userInformation = new UserInformation(Id: _faker.ValidId());
+            _userContext.GetCurrentUserAsync().Returns(_userInformation);
             _handler = new AcceptInvitationCommandHandler(uow, _userContext);
         }
 
@@ -106,13 +109,11 @@ namespace PlanningPoker.UnitTests.Application.Users.AcceptInvitation
         [InlineData(Role.Contributor)]
         public async Task ShouldRegisterUserThatAcceptedInvitationInInvitationTenant(Role role)
         {
-            var userInformation = new UserInformation(Id: _faker.ValidId());
             var expectedScopes = TenantScopes.GetByRole(role);
             var expectedInvitation = _faker.LoadValidInvitation(role: role);
             var command = new AcceptInvitationCommand(expectedInvitation.Id);
             _invitations.GetByIdAsync(Arg.Any<EntityId>())
                 .Returns(expectedInvitation);
-            _userContext.GetCurrentUserAsync().Returns(userInformation);
 
             var result = await _handler.HandleAsync(command);
 
@@ -121,7 +122,7 @@ namespace PlanningPoker.UnitTests.Application.Users.AcceptInvitation
                     access.Grant.Resource == Resources.Tenant &&
                     access.Grant.RecordId == null &&
                     access.TenantId.Value == expectedInvitation.TenantId &&
-                    access.UserId.Value == userInformation.Id) &&
+                    access.UserId.Value == _userInformation.Id) &&
                 expectedScopes.All(scope => accessGrants.Any(access => access.Grant.Scope == scope))));
         }
     }
