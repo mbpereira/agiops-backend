@@ -19,9 +19,15 @@ namespace PlanningPoker.Domain.Issues
 
         public void DefineOwner(int userId)
         {
+            if (UserId.Value.GreaterThan(0))
+            {
+                AddError(new Error(nameof(VotingSystem), nameof(userId), VotingSystemConstants.Messages.OwnerAlreadyDefined));
+                return;
+            }
+
             if (!userId.GreaterThan(0))
             {
-                Error.GreaterThan(nameof(VotingSystem), nameof(userId), value: 0);
+                AddError(Error.GreaterThan(nameof(VotingSystem), nameof(userId), value: 0));
                 return;
             }
 

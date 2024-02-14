@@ -25,6 +25,6 @@ namespace PlanningPoker.UnitTests.Domain.Users.Extensions
                 createdAtUtc: DateTime.UtcNow,
                 sentAtUtc: DateTime.UtcNow,
                 expiresAtUtc: expiresAtUtc ?? DateTime.UtcNow.AddMinutes(InvitationConstants.ExpirationTimeInMinutes),
-                status: status ?? InvitationStatus.Open);
+                status: status ?? InvitationStatus.Sent);
     }
 }

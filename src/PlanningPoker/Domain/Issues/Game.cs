@@ -20,7 +20,11 @@ namespace PlanningPoker.Domain.Issues
 
         public void DefineOwner(int userId)
         {
-            if (UserId.Value.GreaterThan(0)) return;
+            if (UserId.Value.GreaterThan(0)) 
+            {
+                AddError(new Error(nameof(Game), nameof(userId), GameConstants.Messages.OwnerAlreadyDefined));
+                return;
+            }
 
             if (!userId.GreaterThan(0))
             {

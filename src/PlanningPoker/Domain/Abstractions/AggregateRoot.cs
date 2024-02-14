@@ -32,7 +32,11 @@ namespace PlanningPoker.Domain.Abstractions
 
         public void DefineTenant(int tenantId)
         {
-            if (TenantId.Value.GreaterThan(0)) return;
+            if (TenantId.Value.GreaterThan(0))
+            {
+                AddError(new Error(nameof(tenantId), "Tenant id cannot be changed."));
+                return;
+            }
 
             if (!tenantId.GreaterThan(0))
             {

@@ -2,8 +2,8 @@
 {
     public enum InvitationStatus
     {
-        Open = 1,
+        Sent = 1,
         Accepted = 2,
-        Inactive = 3
+        Cancelled = 3
     }
 }

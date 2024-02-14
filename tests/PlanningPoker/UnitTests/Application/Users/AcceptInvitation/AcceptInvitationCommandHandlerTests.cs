@@ -68,7 +68,7 @@ namespace PlanningPoker.UnitTests.Application.Users.AcceptInvitation
 
         [Theory]
         [InlineData(InvitationStatus.Accepted)]
-        [InlineData(InvitationStatus.Inactive)]
+        [InlineData(InvitationStatus.Cancelled)]
         public async Task ShouldReturnValidationErrorWhenInvitationAlreadyBeenAcceptedOrInactived(InvitationStatus status)
         {
             var command = new AcceptInvitationCommand(invitationId: _faker.ValidId());

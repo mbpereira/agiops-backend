@@ -23,7 +23,8 @@ namespace PlanningPoker.UnitTests.Domain.Issues
             {
                 new { Code = "tenantId", Message = "Provided value must be greater than 0." },
                 new { Code = "VotingSystem.description", Message = "The provided string does not meet the minimum length requirement. Min length: 3." },
-                new { Code = "VotingSystem.grades", Message = "The list cannot be empty." }
+                new { Code = "VotingSystem.grades", Message = "The list cannot be empty." },
+                new { Code = "VotingSystem.userId", Message = "Provided value must be greater than 0." },
             };
 
             var votingSystem = VotingSystem.New(tenantId: 0, invalidDescription, userId: 0, new List<int>());

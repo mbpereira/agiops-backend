@@ -37,7 +37,7 @@ namespace PlanningPoker.UnitTests.Application.Users.RenewInvitation
 
         [Theory]
         [InlineData(InvitationStatus.Accepted)]
-        [InlineData(InvitationStatus.Inactive)]
+        [InlineData(InvitationStatus.Cancelled)]
         public async Task ShouldReturnValidationErrorWhenInvitationAlreadyBeenAcceptedOrInactived(InvitationStatus status)
         {
             var expectedErrors = new[]

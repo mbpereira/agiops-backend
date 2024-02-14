@@ -14,7 +14,7 @@ namespace PlanningPoker.Domain.Users
         public DateTime ExpiresAtUtc { get; private set; }
         public InvitationStatus Status { get; private set; }
         public DateTime? UpdatedAtUtc { get; private set; } = null;
-        public bool IsOpen => InvitationStatus.Open.Equals(Status);
+        public bool IsOpen => InvitationStatus.Sent.Equals(Status);
         public bool HasExpired => DateTime.UtcNow > ExpiresAtUtc;
 
         private Invitation(int id, int tenantId, string to, Role role)
@@ -23,7 +23,7 @@ namespace PlanningPoker.Domain.Users
                   createdAtUtc: DateTime.UtcNow,
                   sentAtUtc: DateTime.UtcNow,
                   expiresAtUtc: DateTime.UtcNow.AddMinutes(InvitationConstants.ExpirationTimeInMinutes),
-                  status: InvitationStatus.Open)
+                  status: InvitationStatus.Sent)
         {
             RaiseDomainEvent(new InvitationCreated(Token, Receiver, ExpiresAtUtc));
         }

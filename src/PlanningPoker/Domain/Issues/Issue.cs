@@ -27,7 +27,7 @@ namespace PlanningPoker.Domain.Issues
         {
             if (!userId.GreaterThan(0))
             {
-                AddError(new Error(nameof(Issue), nameof(RegisterGrade), "Provided user id is not valid."));
+                AddError(new Error(nameof(Issue), nameof(RegisterGrade), IssueConstants.Messages.InvalidUserId));
                 return;
             }
 
@@ -48,7 +48,11 @@ namespace PlanningPoker.Domain.Issues
 
         public void DefineGame(int gameId)
         {
-            if (GameId.Value.GreaterThan(0)) return;
+            if (GameId.Value.GreaterThan(0))
+            {
+                AddError(new Error(nameof(Issue), nameof(gameId), IssueConstants.Messages.GameAlreadyDefined));
+                return;
+            }
 
             if (!gameId.GreaterThan(0))
             {

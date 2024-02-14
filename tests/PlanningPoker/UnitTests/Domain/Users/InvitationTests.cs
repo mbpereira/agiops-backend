@@ -61,7 +61,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
 
         [Theory]
         [InlineData(InvitationStatus.Accepted)]
-        [InlineData(InvitationStatus.Inactive)]
+        [InlineData(InvitationStatus.Cancelled)]
         public void Validate_ShouldReturnFinalizedInvitationErrorWhenTryingToRenewAnAcceptedOrInactiveInvitation(InvitationStatus status)
         {
             var expectedErrors = new[]
@@ -83,7 +83,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
 
         [Theory]
         [InlineData(InvitationStatus.Accepted)]
-        [InlineData(InvitationStatus.Inactive)]
+        [InlineData(InvitationStatus.Cancelled)]
         public void Validate_ShouldReturnFinalizedInvitationErrorWhenTryingToAcceptAnAcceptedOrInactiveInvitation(InvitationStatus status)
         {
             var expectedErrors = new[]
