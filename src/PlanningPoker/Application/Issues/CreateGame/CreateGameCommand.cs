@@ -3,7 +3,7 @@ using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Application.Issues.CreateGame
 {
-    public class CreateGameCommand : Command<CreateGameCommand>
+    public class CreateGameCommand : Command
     {
         public string Name { get; }
         public string? Password { get; }
@@ -12,10 +12,6 @@ namespace PlanningPoker.Application.Issues.CreateGame
         {
             Name = name;
             Password = password;
-        }
-
-        protected override void ConfigureValidationRules(IValidationRuleFactory<CreateGameCommand> validator)
-        {
         }
     }
 }

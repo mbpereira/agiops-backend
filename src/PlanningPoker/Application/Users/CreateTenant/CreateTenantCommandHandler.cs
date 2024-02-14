@@ -19,10 +19,8 @@ namespace PlanningPoker.Application.Users.CreateTenant
         {
             var tenant = Tenant.New(command.Name);
 
-            var validationResult = tenant.Validate();
-
-            if (!validationResult.IsValid)
-                return CommandResult<CreateTenantResult>.Fail(validationResult.Errors, CommandStatus.ValidationFailed);
+            if (!tenant.IsValid)
+                return CommandResult<CreateTenantResult>.Fail(tenant.Errors, CommandStatus.ValidationFailed);
 
             var tenantId = await CreateTenantAsync(tenant);
 

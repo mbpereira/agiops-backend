@@ -1,47 +1,61 @@
-﻿using FluentValidation;
-using PlanningPoker.Domain.Abstractions;
+﻿using PlanningPoker.Domain.Abstractions;
+using PlanningPoker.Domain.Shared.Extensions;
 using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Domain.Issues
 {
-    public sealed class Game : AggregateRoot<Game>, ITenantable
+    public sealed class Game : TenantableAggregateRoot
     {
-        public string Name { get; private set; }
-        public EntityId UserId { get; private set; }
+        public string Name { get; private set; } = string.Empty;
+        public EntityId UserId { get; private set; } = EntityId.Blank();
         public GameCredentials? Credentials { get; private set; }
-        public EntityId TenantId { get; private set; }
 
-        public Game(EntityId id, EntityId tenantId, string name, EntityId userId, string? password = null)
-            : base(id)
+        public Game(int id, int tenantId, string name, int userId, string? password = null)
+            : base(id, tenantId)
         {
-            Name = name;
-            UserId = userId;
-            TenantId = tenantId;
+            Named(name);
+            Owner(userId);
             DefinePassword(password);
         }
 
-        protected override void ConfigureValidationRules(IValidationRuleFactory<Game> validator)
+        public void Owner(int userId)
         {
-            validator.CreateRuleFor(c => c.Name)
-                .NotEmpty()
-                .MinimumLength(1);
+            if (!userId.GreaterThan(0))
+            {
+                AddError(Error.GreaterThan(nameof(Game), nameof(userId), value: 0));
+                return;
+            }
 
-            validator.CreateRuleFor(c => c.Credentials!.Password)
-                .NotEmpty()
-                .MinimumLength(6)
-                .When(g => g.Credentials is not null);
+            UserId = userId;
+        }
+
+        public void Named(string name)
+        {
+            if (!name.HasMinLength(minLength: 1))
+            {
+                AddError(Error.MinLength(nameof(Game), nameof(name), minLength: 1));
+                return;
+            }
+
+            Name = name;
         }
 
         public void DefinePassword(string? password = null)
         {
-            Credentials = string.IsNullOrEmpty(password)
-                ? null
-                : new GameCredentials(password);
+            if (password.IsNullOrEmpty()) return;
+
+            if (!password.HasMinLength(minLength: 6))
+            {
+                AddError(Error.MinLength(nameof(Game), nameof(password), minLength: 6));
+                return;
+            }
+
+            Credentials = new GameCredentials(password!);
         }
 
-        public static Game New(int tenantId, string name, int userId, string? password = null) 
-            => new(EntityId.AutoIncrement(), new EntityId(tenantId), name, new EntityId(userId), password);
-        public static Game New(int id, int tenantId, string name, int userId, string? password = null) 
-            => new(new EntityId(id), new EntityId(tenantId), name, new EntityId(userId), password);
+        public static Game New(int tenantId, string name, int userId, string? password = null)
+            => new(EntityId.AutoIncrement(), tenantId, name, userId, password);
+        public static Game New(int id, int tenantId, string name, int userId, string? password = null)
+            => new(id, tenantId, name, userId, password);
     }
 }

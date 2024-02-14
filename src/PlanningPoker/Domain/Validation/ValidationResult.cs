@@ -35,5 +35,10 @@ namespace PlanningPoker.Domain.Validation
             foreach (var error in validationResult.Errors)
                 AddError(error.Code, error.Message);
         }
+
+        public void AddError(Error error)
+        {
+            _errors.Add(error);
+        }
     }
 }

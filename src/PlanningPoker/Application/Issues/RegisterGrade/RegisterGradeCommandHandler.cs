@@ -17,10 +17,8 @@ namespace PlanningPoker.Application.Issues.RegisterGrade
 
         public async Task<CommandResult> HandleAsync(RegisterGradeCommand command)
         {
-            var validationResult = command.Validate();
-
-            if (!validationResult.IsValid)
-                return CommandResult.Fail(validationResult.Errors, CommandStatus.ValidationFailed);
+            if (!command.IsValid)
+                return CommandResult.Fail(command.Errors, CommandStatus.ValidationFailed);
 
             var issue = await _uow.Issues.GetByIdAsync(command.IssueId);
 
@@ -30,6 +28,9 @@ namespace PlanningPoker.Application.Issues.RegisterGrade
             var userInformation = await _authenticationContext.GetCurrentUserAsync();
 
             issue.RegisterGrade(userInformation.Id, command.Grade);
+
+            if (!issue.IsValid)
+                return CommandResult.Fail(issue.Errors, CommandStatus.ValidationFailed);
 
             await _uow.Issues.ChangeAsync(issue);
             await _uow.SaveChangesAsync();

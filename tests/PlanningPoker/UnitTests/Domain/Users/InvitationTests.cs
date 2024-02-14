@@ -20,9 +20,9 @@ namespace PlanningPoker.UnitTests.Domain.Users
         {
             var invitation = _faker.NewInvalidInvitation();
 
-            var validationResult = invitation.Validate();
+            var errors = invitation.Errors;
 
-            validationResult.Errors.Should().BeEquivalentTo(new[] { new { Code = "Invitation.To" } });
+            errors.Should().BeEquivalentTo(new[] { new { Code = "Invitation.email", Message = "Provided email is not valid." } });
         }
 
         [Fact]
@@ -40,7 +40,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         {
             var invitation = GetNewValidInvitation();
 
-            invitation.GetDomainEvents().Should().BeEquivalentTo(new[] { new InvitationCreated(invitation.Token, invitation.To, invitation.ExpiresAtUtc) });
+            invitation.GetDomainEvents().Should().BeEquivalentTo(new[] { new InvitationCreated(invitation.Token, invitation.Receiver, invitation.ExpiresAtUtc) });
         }
 
         [Fact]
@@ -54,7 +54,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
             invitation.Renew();
 
             using var _ = new AssertionScope();
-            invitation.GetDomainEvents().Should().BeEquivalentTo(new[] { new InvitationRenewed(invitation.Token, invitation.To, invitation.ExpiresAtUtc) });
+            invitation.GetDomainEvents().Should().BeEquivalentTo(new[] { new InvitationRenewed(invitation.Token, invitation.Receiver, invitation.ExpiresAtUtc) });
             invitation.SentAtUtc.Should().BeAfter(sentAt);
             invitation.ExpiresAtUtc.Should().BeAfter(expiresAt);
         }
@@ -73,13 +73,12 @@ namespace PlanningPoker.UnitTests.Domain.Users
                 }
             };
             var invitation = _faker.LoadValidInvitation(status: status);
+
             invitation.Renew();
 
-            var validationResult = invitation.Validate();
-
             using var _ = new AssertionScope();
-            validationResult.IsValid.Should().BeFalse();
-            validationResult.Errors.Should().BeEquivalentTo(expectedErrors);
+            invitation.IsValid.Should().BeFalse();
+            invitation.Errors.Should().BeEquivalentTo(expectedErrors);
         }
 
         [Theory]
@@ -96,13 +95,12 @@ namespace PlanningPoker.UnitTests.Domain.Users
                 }
             };
             var invitation = _faker.LoadValidInvitation(status: status);
+            
             invitation.Accept();
 
-            var validationResult = invitation.Validate();
-
             using var _ = new AssertionScope();
-            validationResult.IsValid.Should().BeFalse();
-            validationResult.Errors.Should().BeEquivalentTo(expectedErrors);
+            invitation.IsValid.Should().BeFalse();
+            invitation.Errors.Should().BeEquivalentTo(expectedErrors);
         }
 
         [Fact]
@@ -117,13 +115,12 @@ namespace PlanningPoker.UnitTests.Domain.Users
                 }
             };
             var invitation = _faker.LoadValidInvitation(expiresAtUtc: DateTime.UtcNow.AddDays(-30));
+            
             invitation.Accept();
 
-            var validationResult = invitation.Validate();
-
             using var _ = new AssertionScope();
-            validationResult.IsValid.Should().BeFalse();
-            validationResult.Errors.Should().BeEquivalentTo(expectedErrors);
+            invitation.IsValid.Should().BeFalse();
+            invitation.Errors.Should().BeEquivalentTo(expectedErrors);
         }
 
         private Invitation GetNewValidInvitation()

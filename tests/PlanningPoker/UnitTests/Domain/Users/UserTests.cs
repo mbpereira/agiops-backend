@@ -1,7 +1,6 @@
 ﻿using Bogus;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Users;
 
 namespace PlanningPoker.UnitTests.Domain.Users
@@ -15,23 +14,23 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [InlineData("")]
         public void ShouldReturnExpectedErrors(string invalidName)
         {
-            var user = User.New(tenantId: 0, invalidName, email: _faker.Internet.Email());
+            var user = User.New(invalidName, email: _faker.Internet.Email());
             var expectedErrors = new[]
             {
-                new { Code = "User.Name" }
+                new { Code = "User.name", Message = "The provided string does not meet the minimum length requirement. Min length: 3." }
             };
 
-            var validationResult = user.Validate();
+            var isValid = user.IsValid;
 
             using var _ = new AssertionScope();
-            validationResult.Errors.Should().BeEquivalentTo(expectedErrors);
-            validationResult.IsValid.Should().BeFalse();
+            user.Errors.Should().BeEquivalentTo(expectedErrors);
+            isValid.Should().BeFalse();
         }
 
         [Fact]
         public void ShouldSetEmailAsNullAndSetSessionIdWhenCreatingGuest()
         {
-            var user = User.NewGuest(tenantId: _faker.Random.Int(min: 1), name: _faker.Random.String2(length: 10));
+            var user = User.NewGuest(name: _faker.Random.String2(length: 10));
 
             using var _ = new AssertionScope();
             user.Email.Should().BeNull();
@@ -44,7 +43,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         {
             var email = _faker.Internet.Email();
 
-            var user = User.New(tenantId: _faker.Random.Int(min: 1), name: _faker.Random.String2(length: 10), email);
+            var user = User.New(name: _faker.Random.String2(length: 10), email);
 
             using var _ = new AssertionScope();
             user.Guest.Should().BeNull();
@@ -56,11 +55,13 @@ namespace PlanningPoker.UnitTests.Domain.Users
         public void ShouldThrowExceptionWhenEmailIsNotSet()
         {
             var name = _faker.Random.String2(length: 5);
-            var act = () => User.New(tenantId: _faker.Random.Int(min: 1), name: name, email: null!);
+            
+            var user = User.New(name: name, email: null!);
 
-            var ex = act.Should().Throw<DomainException>();
-
-            ex.Which.Message.Should().Be("Email or Session Id must be defined.");
+            user.Errors.Should().BeEquivalentTo(new[]
+            {
+                new { Code = "User.IdentifyUser", Message = "A valid email or session id must be defined." }
+            });
         }
     }
 }

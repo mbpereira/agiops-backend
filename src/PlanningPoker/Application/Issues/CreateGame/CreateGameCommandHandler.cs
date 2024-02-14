@@ -22,10 +22,8 @@ namespace PlanningPoker.Application.Issues.CreateGame
 
             var game = Game.New(context.Tenant.Id, command.Name, context.User.Id, command.Password);
 
-            var validationResult = game.Validate();
-
-            if (!validationResult.IsValid)
-                return CommandResult<CreateGameResult>.Fail(validationResult.Errors, CommandStatus.ValidationFailed);
+            if (!game.IsValid)
+                return CommandResult<CreateGameResult>.Fail(game.Errors, CommandStatus.ValidationFailed);
 
             var createdGame = await _uow.Games.AddAsync(game);
 

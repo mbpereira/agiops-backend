@@ -1,27 +1,14 @@
-﻿using FluentValidation;
-using PlanningPoker.Domain.Abstractions;
+﻿using PlanningPoker.Domain.Abstractions;
+using PlanningPoker.Domain.Shared.Extensions;
 using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Domain.Users
 {
-    public static class InvitationConstants
+    public class Invitation : TenantableAggregateRoot
     {
-        public const int ExpirationTimeInMinutes = 30;
-
-        public static class Messages
-        {
-            public const string AlreadyAcceptedInvitation = "This invitation has already been accepted or is inactive.";
-            public const string ExpiredInvitation = "This invitation has expired.";
-        }
-    }
-
-    public class Invitation : AggregateRoot<Invitation>, ITenantable
-    {
-
-        public EntityId TenantId { get; private set; }
         public Guid Token { get; private set; }
         public Role Role { get; private set; }
-        public Email To { get; private set; }
+        public Email Receiver { get; private set; } = Email.Empty();
         public DateTime CreatedAtUtc { get; private set; }
         public DateTime SentAtUtc { get; private set; }
         public DateTime ExpiresAtUtc { get; private set; }
@@ -30,7 +17,7 @@ namespace PlanningPoker.Domain.Users
         public bool IsOpen => InvitationStatus.Open.Equals(Status);
         public bool HasExpired => DateTime.UtcNow > ExpiresAtUtc;
 
-        private Invitation(EntityId id, EntityId tenantId, Email to, Role role)
+        private Invitation(int id, int tenantId, string to, Role role)
             : this(id, tenantId, to, role,
                   token: Guid.NewGuid(),
                   createdAtUtc: DateTime.UtcNow,
@@ -38,16 +25,25 @@ namespace PlanningPoker.Domain.Users
                   expiresAtUtc: DateTime.UtcNow.AddMinutes(InvitationConstants.ExpirationTimeInMinutes),
                   status: InvitationStatus.Open)
         {
-            RaiseDomainEvent(new InvitationCreated(Token, To, ExpiresAtUtc));
+            RaiseDomainEvent(new InvitationCreated(Token, Receiver, ExpiresAtUtc));
         }
 
-        public Invitation(EntityId id, EntityId tenantId, Email to, Role role, Guid token, DateTime createdAtUtc, DateTime sentAtUtc, DateTime expiresAtUtc, InvitationStatus status, DateTime? updatedAtUtc = null)
-            : base(id)
+        public Invitation(
+            int id,
+            int tenantId,
+            string receiver,
+            Role role,
+            Guid token,
+            DateTime createdAtUtc,
+            DateTime sentAtUtc,
+            DateTime expiresAtUtc,
+            InvitationStatus status,
+            DateTime? updatedAtUtc = null)
+            : base(id, tenantId)
         {
-            TenantId = tenantId;
             Token = token;
             Role = role;
-            To = to;
+            To(receiver);
             CreatedAtUtc = createdAtUtc;
             SentAtUtc = sentAtUtc;
             ExpiresAtUtc = expiresAtUtc;
@@ -55,38 +51,41 @@ namespace PlanningPoker.Domain.Users
             UpdatedAtUtc = updatedAtUtc;
         }
 
-        protected override void ConfigureValidationRules(IValidationRuleFactory<Invitation> validator)
+        public void To(string email)
         {
-            validator.CreateRuleFor(i => i.To.Value, nameof(To))
-                .NotEmpty()
-                .NotNull()
-                .EmailAddress();
+            if (!email.IsEmail())
+            {
+                AddError(Error.InvalidEmail(nameof(Invitation), nameof(email)));
+                return;
+            }
+
+            Receiver = new Email(email);
         }
 
         public void Renew()
         {
             if (!IsOpen)
             {
-                AddError(nameof(Renew), InvitationConstants.Messages.AlreadyAcceptedInvitation);
+                AddError(new Error(nameof(Invitation), nameof(Renew), InvitationConstants.Messages.AlreadyAcceptedInvitation));
                 return;
             }
 
             SentAtUtc = DateTime.UtcNow;
             ExpiresAtUtc = SentAtUtc.AddMinutes(InvitationConstants.ExpirationTimeInMinutes);
-            RaiseDomainEvent(new InvitationRenewed(Token, To, ExpiresAtUtc));
+            RaiseDomainEvent(new InvitationRenewed(Token, Receiver, ExpiresAtUtc));
         }
 
         public void Accept()
         {
             if (!IsOpen)
             {
-                AddError(nameof(Accept), InvitationConstants.Messages.AlreadyAcceptedInvitation);
+                AddError(new Error(nameof(Invitation), nameof(Accept), InvitationConstants.Messages.AlreadyAcceptedInvitation));
                 return;
             }
 
             if (HasExpired)
             {
-                AddError(nameof(Accept), InvitationConstants.Messages.ExpiredInvitation);
+                AddError(new Error(nameof(Invitation), nameof(Accept), InvitationConstants.Messages.ExpiredInvitation));
                 return;
             }
 
@@ -96,7 +95,7 @@ namespace PlanningPoker.Domain.Users
         }
 
         public static Invitation New(int tenantId, string to, Role role) =>
-            new(EntityId.AutoIncrement(), new EntityId(tenantId), new Email(to), role);
+            new(EntityId.AutoIncrement(), tenantId, to, role);
 
         public static Invitation Load(
             int id,
@@ -109,9 +108,9 @@ namespace PlanningPoker.Domain.Users
             DateTime expiresAtUtc,
             InvitationStatus status,
             DateTime? updatedAtUtc = null) =>
-                new(new EntityId(id),
-                    new EntityId(tenantId),
-                    new Email(to),
+                new(id,
+                    tenantId,
+                    to,
                     role,
                     token,
                     createdAtUtc,

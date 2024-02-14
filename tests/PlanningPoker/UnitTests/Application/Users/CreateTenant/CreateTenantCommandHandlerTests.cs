@@ -47,7 +47,7 @@ namespace PlanningPoker.UnitTests.Application.Users.CreateTenant
         public async Task ShouldReturnSuccessAndSetAllAvailableTenantPermissionsToCurrentUser()
         {
             var exoectedUser = new UserInformation(Id: _faker.Random.Int(min: 1));
-            var expectedTenant = Tenant.New(id: _faker.Random.Int(min: 1), name: _faker.Random.String2(length: 3));
+            var expectedTenant = Tenant.Load(id: _faker.Random.Int(min: 1), name: _faker.Random.String2(length: 3));
             var command = new CreateTenantCommand(name: expectedTenant.Name);
             _tenants.AddAsync(Arg.Any<Tenant>())
                 .Returns(expectedTenant);

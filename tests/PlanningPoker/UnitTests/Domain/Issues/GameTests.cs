@@ -1,6 +1,8 @@
 ﻿using Bogus;
 using FluentAssertions;
+using FluentAssertions.Equivalency;
 using FluentAssertions.Execution;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Issues;
 
@@ -24,7 +26,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         }
 
         private Game GetGame(string? password = null)
-            => Game.New(_faker.Random.Int(min: 1), name: _faker.Random.String2(length: 5), userId: _faker.Random.Int(), password);
+            => Game.New(_faker.Random.Int(min: 1), name: _faker.Random.String2(length: 5), userId: _faker.Random.Int(min: 1), password);
 
         [Fact]
         public void ShouldReturnAutoIncrementAsIdWhenNewGameIsCreated()
@@ -49,18 +51,35 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [InlineData("")]
         public void ShouldReturnValidationErrorsWhenProvidedDataIsNotValid(string? name)
         {
-            var game = Game.New(tenantId: 0, name!, userId: 0, password: _faker.Random.String2(length: 2));
             var expectedErrors = new[]
             {
-                new { Code = "Game.Name" },
-                new { Code = "Game.Credentials.Password" }
+                new
+                {
+                    Code = "Game.name",
+                    Message = "The provided string does not meet the minimum length requirement. Min length: 1."
+                },
+                new
+                {
+                    Code = "tenantId.value",
+                    Message = "Provided value must be greater than 0."
+                },
+                new
+                {
+                    Code = "Game.userId",
+                    Message = "Provided value must be greater than 0."
+                },
+                new
+                {
+                    Code = "Game.password",
+                    Message = "The provided string does not meet the minimum length requirement. Min length: 6."
+                }
             };
 
-            var validationResult = game.Validate();
+            var game = Game.New(tenantId: 0, name!, userId: 0, password: _faker.Random.String2(length: 2));
 
             using var _ = new AssertionScope();
-            validationResult.IsValid.Should().BeFalse();
-            validationResult.Errors.Should().BeEquivalentTo(expectedErrors);
+            game.IsValid.Should().BeFalse();
+            game.Errors.Should().BeEquivalentTo(expectedErrors);
         }
 
         [Fact]
@@ -68,9 +87,9 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         {
             var game = GetGame(password: _faker.Random.String2(length: 6));
 
-            var validationResult = game.Validate();
-
-            validationResult.IsValid.Should().BeTrue();
+            using var _ = new AssertionScope();
+            game.IsValid.Should().BeTrue();
+            game.Errors.Should().BeEmpty();
         }
     }
 }

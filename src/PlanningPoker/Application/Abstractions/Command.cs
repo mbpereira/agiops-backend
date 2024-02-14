@@ -2,8 +2,7 @@
 
 namespace PlanningPoker.Application.Abstractions
 {
-    public abstract class Command<TCommand> : Validatable<TCommand>
-        where TCommand : Command<TCommand>
+    public abstract class Command : Validatable
     {
     }
 }

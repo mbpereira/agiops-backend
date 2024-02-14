@@ -1,9 +1,8 @@
 ﻿using PlanningPoker.Application.Abstractions;
-using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Application.Issues.CreateIssue
 {
-    public class CreateIssueCommand : Command<CreateIssueCommand>
+    public class CreateIssueCommand : Command
     {
         public int GameId { get; }
         public string Name { get; }
@@ -16,10 +15,6 @@ namespace PlanningPoker.Application.Issues.CreateIssue
             Name = name;
             Link = link;
             Description = description;
-        }
-
-        protected override void ConfigureValidationRules(IValidationRuleFactory<CreateIssueCommand> validator)
-        {
         }
     }
 }

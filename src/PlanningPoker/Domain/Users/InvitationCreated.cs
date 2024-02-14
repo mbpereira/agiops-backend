@@ -2,5 +2,5 @@
 
 namespace PlanningPoker.Domain.Users
 {
-    public record InvitationCreated(Guid Token, Email To, DateTime ExpiresAtUtc) : IDomainEvent;
+    public record InvitationCreated(Guid Token, Email Receiver, DateTime ExpiresAtUtc) : IDomainEvent;
 }

@@ -14,10 +14,8 @@ namespace PlanningPoker.Application.Users.RenewInvitation
 
         public async Task<CommandResult> HandleAsync(RenewInvitationCommand command)
         {
-            var validationResult = command.Validate();
-
-            if (!validationResult.IsValid)
-                return CommandResult.Fail(validationResult.Errors, CommandStatus.ValidationFailed);
+            if (!command.IsValid)
+                return CommandResult.Fail(command.Errors, CommandStatus.ValidationFailed);
 
             var invitation = await _uow.Invitations.GetByIdAsync(command.Id);
 

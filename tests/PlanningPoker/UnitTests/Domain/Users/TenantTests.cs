@@ -19,15 +19,14 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [InlineData("ab")]
         public void ShouldReturnExpectedErrorsWhenProvidedDataIsNotValid(string invalidName)
         {
-            var tenant = Tenant.New(name: invalidName);
             var expectedErrors = new[]
             {
-                new { Code = "Tenant.Name" }
+                new { Code = "Tenant.name", Message = "The provided string does not meet the minimum length requirement. Min length: 3." }
             };
 
-            var validationResult = tenant.Validate();
+            var tenant = Tenant.New(name: invalidName);
 
-            validationResult.Errors.Should().BeEquivalentTo(expectedErrors);
+            tenant.Errors.Should().BeEquivalentTo(expectedErrors);
         }
 
         [Fact]
@@ -35,9 +34,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         {
             var tenant = Tenant.New(_faker.Random.String2(length: 3));
 
-            var validationResult = tenant.Validate();
-
-            validationResult.IsValid.Should().BeTrue();
+            tenant.IsValid.Should().BeTrue();
         }
     }
 }

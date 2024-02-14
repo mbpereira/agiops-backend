@@ -1,6 +1,7 @@
 ﻿using AutoBogus;
 using Bogus;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using NSubstitute;
 using PlanningPoker.Application.Abstractions;
 using PlanningPoker.Application.Issues.RegisterGrade;
@@ -54,11 +55,15 @@ namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
             _authenticationContext.GetCurrentUserAsync()
                 .Returns(new UserInformation(Id: 0));
             var command = new RegisterGradeCommand(issueId: _faker.Random.Int(min: 1), grade: _faker.Random.Decimal());
-            var act = async () => await _handler.HandleAsync(command);
+            
+            var result = await _handler.HandleAsync(command);
 
-            var ex = await act.Should().ThrowAsync<DomainException>();
-
-            ex.Which.Message.Should().Be("Provided user id is not valid.");
+            using var _ = new AssertionScope();
+            result.Status.Should().Be(CommandStatus.ValidationFailed);
+            result.Details.Should().BeEquivalentTo(new[] 
+            { 
+                new { Code = "Issue.RegisterGrade", Message = "Provided user id is not valid." } 
+            });
         }
 
         [Fact]

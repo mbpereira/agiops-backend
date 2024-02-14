@@ -1,6 +1,8 @@
 ﻿using Bogus;
 using FluentAssertions;
+using FluentAssertions.Equivalency;
 using FluentAssertions.Execution;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Issues;
 
@@ -28,18 +30,30 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [InlineData("")]
         public void ShouldReturnExpectedErrorsWhenProvidedDataIsNotValid(string name)
         {
-            var issue = Issue.New(tenantId: 0, gameId: 0, name);
             var expectedErrros = new[]
             {
-                new { Code = "Issue.GameId" },
-                new { Code = "Issue.Name" },
+                new
+                {
+                    Code = "Issue.name",
+                    Message = "The provided string does not meet the minimum length requirement. Min length: 3."
+                },
+                new
+                {
+                    Code = "tenantId.value",
+                    Message = "Provided value must be greater than 0."
+                },
+                new
+                {
+                    Code = "Issue.gameId",
+                    Message = "Provided value must be greater than 0."
+                }
             };
 
-            var validationResult = issue.Validate();
+            var issue = Issue.New(tenantId: 0, gameId: 0, name);
 
             using var _ = new AssertionScope();
-            validationResult.IsValid.Should().BeFalse();
-            validationResult.Errors.Should().BeEquivalentTo(expectedErrros);
+            issue.IsValid.Should().BeFalse();
+            issue.Errors.Should().BeEquivalentTo(expectedErrros);
         }
 
         [Fact]
@@ -59,11 +73,15 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         public void ShouldThrowExceptionWhenProvidedUserIdIsNotValid()
         {
             var issue = GetValidIssue();
-            Action act = () => issue.RegisterGrade(userId: 0, 1);
 
-            var ex = act.Should().Throw<DomainException>();
+            issue.RegisterGrade(userId: 0, 1);
 
-            ex.Which.Message.Should().Be("Provided user id is not valid.");
+            using var _ = new AssertionScope();
+            issue.IsValid.Should().BeFalse();
+            issue.Errors.Should().BeEquivalentTo(new[]
+            {
+                new { Code = "Issue.RegisterGrade", Message= "Provided user id is not valid." }
+            });
         }
 
         [Fact]
@@ -81,7 +99,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         private Issue GetValidIssue()
             => Issue.New(
                 tenantId: _faker.Random.Int(min: 1),
-                gameId: _faker.Random.Int(),
+                gameId: _faker.Random.Int(min: 1),
                 name: _faker.Random.String2(length: 10),
                 description: _faker.Random.String2(length: 10),
                 link: _faker.Internet.Url());

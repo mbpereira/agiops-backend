@@ -2,5 +2,5 @@
 
 namespace PlanningPoker.Domain.Users
 {
-    public record InvitationRenewed(Guid Token, Email To, DateTime NewExpirationDateUtc) : IDomainEvent;
+    public record InvitationRenewed(Guid Token, Email Receiver, DateTime NewExpirationDateUtc) : IDomainEvent;
 }

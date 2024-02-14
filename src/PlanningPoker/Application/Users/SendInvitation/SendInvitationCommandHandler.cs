@@ -21,10 +21,8 @@ namespace PlanningPoker.Application.Users.SendInvitation
 
             var invitation = Invitation.New(tenant.Id, command.To, command.Role);
 
-            var validationResult = invitation.Validate();
-
-            if (!validationResult.IsValid)
-                return CommandResult.Fail(validationResult.Errors, CommandStatus.ValidationFailed);
+            if (!invitation.IsValid)
+                return CommandResult.Fail(invitation.Errors, CommandStatus.ValidationFailed);
 
             await _uow.Invitations.AddAsync(invitation);
             await _uow.SaveChangesAsync();

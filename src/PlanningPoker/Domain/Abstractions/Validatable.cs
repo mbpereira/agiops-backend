@@ -2,36 +2,25 @@
 
 namespace PlanningPoker.Domain.Abstractions
 {
-    public abstract class Validatable<T> where T : Validatable<T>
+    public abstract class Validatable
     {
-        private readonly IValidationHandler<T> _validationHandler;
         private readonly ValidationResult _validationResult;
+        public bool IsValid => _validationResult.IsValid;
+        public IEnumerable<Error> Errors => _validationResult.Errors;
 
         public Validatable()
         {
             _validationResult = new ValidationResult();
-            _validationHandler = GetValidator();
-        }
-
-        private Validator<T> GetValidator()
-        {
-            var validator = new Validator<T>();
-            ConfigureValidationRules(validator);
-            return validator;
         }
 
         protected void AddError(string code, string message)
         {
-            var className = typeof(T).Name;
-            _validationResult.AddError($"{className}.{code}", message);
+            _validationResult.AddError(code, message);
         }
 
-        protected abstract void ConfigureValidationRules(IValidationRuleFactory<T> validator);
-
-        public virtual IValidationResult Validate()
+        protected void AddError(Error error)
         {
-            _validationResult.Merge(_validationHandler.Handle((T)this));
-            return _validationResult;
+            _validationResult.AddError(error);
         }
     }
 }

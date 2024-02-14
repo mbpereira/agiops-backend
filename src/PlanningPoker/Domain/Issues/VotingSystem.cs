@@ -1,42 +1,57 @@
 ﻿using FluentValidation;
 using PlanningPoker.Domain.Abstractions;
+using PlanningPoker.Domain.Shared.Extensions;
 using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Domain.Issues
 {
-    public sealed class VotingSystem : AggregateRoot<VotingSystem>, ITenantable
+    public sealed class VotingSystem : TenantableAggregateRoot
     {
-        private readonly IList<int> _grades = new List<int>();
-        public IReadOnlyCollection<int> Grades => _grades.AsReadOnly();
-        public string Description { get; private set; }
-        public EntityId UserId { get; private set; }
-        public EntityId TenantId { get; private set; }
+        public EntityId UserId { get; private set; } = EntityId.Blank();
+        public string Description { get; private set; } = string.Empty;
+        public IList<int> Grades { get; private set; } = new List<int>();
 
-        private VotingSystem(EntityId id, EntityId tenantId, string description, EntityId userId) : base(id)
+        private VotingSystem(int id, int tenantId, string description, int userId, IList<int> grades) : base(id, tenantId)
         {
+            Described(description);
+            Owner(userId);
+            PossbileGrades(grades);
+        }
+
+        public void Owner(int userId)
+        {
+            if (!userId.GreaterThan(0))
+            {
+                Error.GreaterThan(nameof(VotingSystem), nameof(userId), value: 0);
+                return;
+            }
+
+            UserId = new EntityId(userId);
+        }
+
+        public void PossbileGrades(IList<int> grades)
+        {
+            if (grades.IsEmpty())
+            {
+                AddError(Error.EmptyCollection(nameof(VotingSystem), nameof(grades)));
+                return;
+            }
+
+            Grades = grades.AsReadOnly();
+        }
+
+        public void Described(string description)
+        {
+            if (!description.HasMinLength(minLength: 3))
+            {
+                AddError(Error.MinLength(nameof(VotingSystem), nameof(description), minLength: 3));
+                return;
+            }
+
             Description = description;
-            UserId = userId;
-            TenantId = tenantId;
         }
 
-        protected override void ConfigureValidationRules(IValidationRuleFactory<VotingSystem> validator)
-        {
-            validator.CreateRuleFor(v => v.Grades)
-                .NotEmpty();
-
-            validator.CreateRuleFor(v => v.Description)
-                .NotEmpty()
-                .MinimumLength(3);
-
-            validator.CreateRuleFor(v => v.UserId!.Value, propertyName: nameof(UserId))
-                .GreaterThan(0);
-        }
-
-        public static VotingSystem New(int tenantId, string description, int userId)
-            => new(EntityId.AutoIncrement(), new EntityId(tenantId), description, new EntityId(userId));
-
-        public void AddGrade(int grade) => _grades.Add(grade);
-        public void ClearGrades() => _grades.Clear();
-        public void ChangeDescription(string description) => Description = description;
+        public static VotingSystem New(int tenantId, string description, int userId, IList<int> grades)
+            => new(EntityId.AutoIncrement(), tenantId, description, userId, grades);
     }
 }

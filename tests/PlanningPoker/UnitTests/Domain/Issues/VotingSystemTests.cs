@@ -1,6 +1,5 @@
 ﻿using Bogus;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using PlanningPoker.Domain.Issues;
 
 namespace PlanningPoker.UnitTests.Domain.Issues
@@ -20,39 +19,16 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [InlineData("te")]
         public void ShouldReturnExpectedErrrors(string invalidDescription)
         {
-            var votingSystem = VotingSystem.New(tenantId: 0, invalidDescription, userId: 0);
             var expectedErrors = new[]
             {
-                new { Code = "VotingSystem.Description" },
-                new { Code = "VotingSystem.UserId" },
-                new { Code = "VotingSystem.Grades" }
+                new { Code = "tenantId.value", Message = "Provided value must be greater than 0." },
+                new { Code = "VotingSystem.description", Message = "The provided string does not meet the minimum length requirement. Min length: 3." },
+                new { Code = "VotingSystem.grades", Message = "The list cannot be empty." }
             };
 
-            var validationResult = votingSystem.Validate();
+            var votingSystem = VotingSystem.New(tenantId: 0, invalidDescription, userId: 0, new List<int>());
 
-            using var _ = new AssertionScope();
-            validationResult.Errors.Should().BeEquivalentTo(expectedErrors);
-        }
-
-        [Fact]
-        public void ShouldRegisterGrade()
-        {
-            var votingSystem = GetValidVotingSystem();
-
-            votingSystem.AddGrade(_faker.Random.Int());
-
-            votingSystem.Grades.Count.Should().Be(1);
-        }
-
-        [Fact]
-        public void ShouldClearGrades()
-        {
-            var votingSystem = GetValidVotingSystem();
-            votingSystem.AddGrade(_faker.Random.Int());
-
-            votingSystem.ClearGrades();
-
-            votingSystem.Grades.Should().BeEmpty();
+            votingSystem.Errors.Should().BeEquivalentTo(expectedErrors);
         }
 
         [Fact]
@@ -61,12 +37,16 @@ namespace PlanningPoker.UnitTests.Domain.Issues
             var newDescription = _faker.Random.String2(length: 10);
             var votingSystem = GetValidVotingSystem();
 
-            votingSystem.ChangeDescription(newDescription);
+            votingSystem.Described(newDescription);
 
             votingSystem.Description.Should().Be(newDescription);
         }
 
         private VotingSystem GetValidVotingSystem()
-            => VotingSystem.New(tenantId: _faker.Random.Int(min: 1), description: _faker.Random.String2(length: 10), userId: _faker.Random.Int());
+            => VotingSystem.New(
+                tenantId: _faker.Random.Int(min: 1),
+                description: _faker.Random.String2(length: 10),
+                userId: _faker.Random.Int(),
+                grades: _faker.Make(3, () => _faker.Random.Int()));
     }
 }

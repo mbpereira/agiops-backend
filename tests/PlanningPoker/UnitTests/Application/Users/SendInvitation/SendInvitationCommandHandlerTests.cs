@@ -48,7 +48,7 @@ namespace PlanningPoker.UnitTests.Application.Users.SendInvitation
         public async Task ShouldAddInvitationAndReturnsSuccess()
         {
             var expectedInvitation = _faker.LoadValidInvitation(tenantId: _tenant.Id);
-            var command = new SendInvitationCommand(expectedInvitation.To.Value, expectedInvitation.Role);
+            var command = new SendInvitationCommand(expectedInvitation.Receiver.Value, expectedInvitation.Role);
             _invitations.AddAsync(Arg.Any<Invitation>())
                 .Returns(expectedInvitation);
 
@@ -57,7 +57,7 @@ namespace PlanningPoker.UnitTests.Application.Users.SendInvitation
             using var _ = new AssertionScope();
             result.Status.Should().Be(CommandStatus.Success);
             await _invitations.Received().AddAsync(Arg.Is<Invitation>(i =>
-                i.To.Value == expectedInvitation.To.Value &&
+                i.Receiver.Value == expectedInvitation.Receiver.Value &&
                 i.TenantId.Value == expectedInvitation.TenantId.Value &&
                 i.Role == expectedInvitation.Role));
         }

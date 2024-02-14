@@ -1,34 +1,34 @@
 ﻿using FluentValidation;
 using PlanningPoker.Domain.Abstractions;
+using PlanningPoker.Domain.Shared.Extensions;
 using PlanningPoker.Domain.Validation;
-using System.Diagnostics.CodeAnalysis;
 
 namespace PlanningPoker.Domain.Users
 {
-    public sealed class AccessGrant : AggregateRoot<AccessGrant>, ITenantable
+    public sealed class AccessGrant : TenantableAggregateRoot
     {
-        public EntityId UserId { get; private set; }
-        public EntityId TenantId { get; private set; }
+        public EntityId UserId { get; private set; } = EntityId.Blank();
         public Grant Grant { get; private set; }
 
         private AccessGrant(
-            [NotNull] EntityId id,
-            [NotNull] EntityId userId,
-            [NotNull] EntityId tenantId,
-            [NotNull] Grant grant) : base(id)
+            int id,
+            int userId,
+            int tenantId,
+            Grant grant) : base(id, tenantId)
         {
-            UserId = userId;
-            TenantId = tenantId;
+            ToUser(userId);
             Grant = grant;
         }
 
-        protected override void ConfigureValidationRules(IValidationRuleFactory<AccessGrant> validator)
+        public void ToUser(int userId)
         {
-            validator.CreateRuleFor(a => a.UserId.Value, nameof(UserId))
-                .GreaterThan(0);
+            if (!userId.GreaterThan(0))
+            {
+                AddError(Error.GreaterThan(nameof(Invitation), nameof(userId), value: 0));
+                return;
+            }
 
-            validator.CreateRuleFor(a => a.TenantId.Value, nameof(TenantId))
-                .GreaterThan(0);
+            UserId = new EntityId(userId);
         }
 
         public static AccessGrant New(int userId, int tenantId, Resources resource, GrantScopes scope) =>

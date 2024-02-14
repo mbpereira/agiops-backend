@@ -1,24 +1,30 @@
 ﻿using FluentValidation;
 using PlanningPoker.Application.Abstractions;
+using PlanningPoker.Domain.Shared.Extensions;
 using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Application.Issues.RegisterGrade
 {
-    public class RegisterGradeCommand : Command<RegisterGradeCommand>
+    public class RegisterGradeCommand : Command
     {
-        public int IssueId { get; }
-        public decimal Grade { get; }
+        public int IssueId { get; private set; }
+        public decimal Grade { get; private set; }
 
         public RegisterGradeCommand(int issueId, decimal grade)
         {
-            IssueId = issueId;
+            SetIssueId(issueId);
             Grade = grade;
         }
 
-        protected override void ConfigureValidationRules(IValidationRuleFactory<RegisterGradeCommand> validator)
+        public void SetIssueId(int issueId)
         {
-            validator.CreateRuleFor(r => r.IssueId)
-                .GreaterThan(0);
+            if (!issueId.GreaterThan(0))
+            {
+                AddError(Error.GreaterThan(nameof(RegisterGradeCommand), nameof(issueId), value: 0));
+                return;
+            }
+
+            IssueId = issueId;
         }
     }
 }

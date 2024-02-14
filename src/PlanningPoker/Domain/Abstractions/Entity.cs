@@ -1,8 +1,6 @@
 ﻿namespace PlanningPoker.Domain.Abstractions
 {
-    public abstract class Entity<TEntity> 
-        : Validatable<TEntity> where TEntity : Entity<TEntity>
-
+    public abstract class Entity : Validatable
     {
         public EntityId Id { get; init; }
 

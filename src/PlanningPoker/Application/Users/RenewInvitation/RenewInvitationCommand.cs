@@ -1,22 +1,28 @@
 ﻿using FluentValidation;
 using PlanningPoker.Application.Abstractions;
+using PlanningPoker.Domain.Shared.Extensions;
 using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Application.Users.RenewInvitation
 {
-    public class RenewInvitationCommand : Command<RenewInvitationCommand>
+    public class RenewInvitationCommand : Command
     {
         public int Id { get; private set; }
 
         public RenewInvitationCommand(int id)
         {
-            Id = id;
+            SetInvitationId(id);
         }
 
-        protected override void ConfigureValidationRules(IValidationRuleFactory<RenewInvitationCommand> validator)
+        public void SetInvitationId(int invitationId)
         {
-            validator.CreateRuleFor(c => c.Id)
-                .GreaterThan(0);
+            if (!invitationId.GreaterThan(0))
+            {
+                AddError(Error.GreaterThan(nameof(RenewInvitationCommand), nameof(invitationId), value: 0));
+                return;
+            }
+
+            Id = invitationId;
         }
     }
 }

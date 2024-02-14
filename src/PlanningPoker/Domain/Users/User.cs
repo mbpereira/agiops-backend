@@ -1,49 +1,54 @@
-﻿using FluentValidation;
-using PlanningPoker.Domain.Abstractions;
+﻿using PlanningPoker.Domain.Abstractions;
+using PlanningPoker.Domain.Shared.Extensions;
 using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Domain.Users
 {
-    public sealed class User : AggregateRoot<User>, ITenantable
+    public sealed class User : AggregateRoot
     {
-        public string Name { get; private set; }
+        public string Name { get; private set; } = string.Empty;
         public Email? Email { get; private set; }
         public Guest? Guest { get; private set; }
-        public EntityId TenantId { get; private set; }
 
         public bool IsGuest => Guest is not null;
 
-
-        private User(EntityId id, EntityId tenantId, string name, string? email, string? sessionId) : base(id)
+        private User(int id, string name, string? email = null, string? sessionId = null) : base(id)
         {
-            Name = name;
-            TenantId = tenantId;
+            Named(name);
             IdentifyUser(email, sessionId);
         }
 
-        protected override void ConfigureValidationRules(IValidationRuleFactory<User> validator)
+        public void Named(string name)
         {
-            validator.CreateRuleFor(u => u.Name)
-                .NotEmpty()
-                .MinimumLength(3);
+            if (!name.HasMinLength(minLength: 3))
+            {
+                AddError(Error.MinLength(nameof(User), nameof(name), minLength: 3));
+                return;
+            }
+
+            Name = name;
         }
 
         private void IdentifyUser(string? email, string? sessionId)
         {
-            if (email is null && sessionId is null) throw new DomainException("Email or Session Id must be defined.");
-
-            if (email is not null)
+            if (email.IsEmail())
             {
-                Email = new Email(email);
+                Email = new Email(email!);
                 Guest = null;
                 return;
             }
 
-            Guest = new Guest(sessionId!);
+            if (sessionId is not null)
+            {
+                Guest = new Guest(sessionId!);
+                return;
+            }
+
+            AddError(new Error(nameof(User), nameof(IdentifyUser), "A valid email or session id must be defined."));
         }
 
-        public static User New(int id, int tenantId, string name, string email) => new(new EntityId(id), new EntityId(tenantId), name, email, sessionId: null);
-        public static User New(int tenantId, string name, string email) => new(EntityId.AutoIncrement(), new EntityId(tenantId), name, email, sessionId: null);
-        public static User NewGuest(int tenantId, string name) => new(EntityId.AutoIncrement(), new EntityId(tenantId), name, email: null, sessionId: Guid.NewGuid().ToString());
+        public static User Load(int id, string name, string? email, string? sessionId) => new(id, name, email, sessionId);
+        public static User New(string name, string email) => new(EntityId.AutoIncrement(), name, email, sessionId: null);
+        public static User NewGuest(string name) => new(EntityId.AutoIncrement(), name, email: null, sessionId: Guid.NewGuid().ToString());
     }
 }

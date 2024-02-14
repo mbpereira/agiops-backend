@@ -1,39 +1,31 @@
-﻿using FluentValidation;
-using PlanningPoker.Domain.Abstractions;
+﻿using PlanningPoker.Domain.Abstractions;
+using PlanningPoker.Domain.Shared.Extensions;
 using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Domain.Users
 {
-    public static class TenantScopes
+    public class Tenant : AggregateRoot
     {
-        private static GrantScopes[] Admin => new[] { GrantScopes.Delete, GrantScopes.View, GrantScopes.Archive, GrantScopes.Edit };
-        private static GrantScopes[] Viewer => new[] { GrantScopes.View };
+        public string Name { get; private set; } = string.Empty;
 
-        public static GrantScopes[] GetByRole(Role role)
-        {
-            if (Role.Admin.Equals(role)) return Admin;
-            return Viewer;
-        }
-    }
-
-    public class Tenant : AggregateRoot<Tenant>
-    {
-        public string Name { get; private set; }
-
-        private Tenant(EntityId id, string name)
+        private Tenant(int id, string name)
             : base(id)
         {
+            Named(name);
+        }
+
+        public void Named(string name)
+        {
+            if (!name.HasMinLength(minLength: 3))
+            {
+                AddError(Error.MinLength(nameof(Tenant), nameof(name), minLength: 3));
+                return;
+            }
+
             Name = name;
         }
 
-        protected override void ConfigureValidationRules(IValidationRuleFactory<Tenant> validator)
-        {
-            validator.CreateRuleFor(t => t.Name)
-                .NotEmpty()
-                .MinimumLength(3);
-        }
-
-        public static Tenant New(int id, string name) => new(id, name);
+        public static Tenant Load(int id, string name) => new(id, name);
         public static Tenant New(string name) => new(EntityId.AutoIncrement(), name);
     }
 }

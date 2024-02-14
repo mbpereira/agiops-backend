@@ -8,5 +8,7 @@
         {
             Value = value;
         }
+
+        public static Email Empty() => new(string.Empty);
     }
 }
