@@ -21,7 +21,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         {
             var expectedErrors = new[]
             {
-                new { Code = "tenantId.value", Message = "Provided value must be greater than 0." },
+                new { Code = "tenantId", Message = "Provided value must be greater than 0." },
                 new { Code = "VotingSystem.description", Message = "The provided string does not meet the minimum length requirement. Min length: 3." },
                 new { Code = "VotingSystem.grades", Message = "The list cannot be empty." }
             };

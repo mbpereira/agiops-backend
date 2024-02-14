@@ -4,9 +4,9 @@
     {
         public EntityId Id { get; init; }
 
-        public Entity(EntityId id)
+        public Entity(int id)
         {
-            Id = id;
+            Id = new EntityId(id);
         }
     }
 }

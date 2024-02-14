@@ -60,7 +60,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
                 },
                 new
                 {
-                    Code = "tenantId.value",
+                    Code = "tenantId",
                     Message = "Provided value must be greater than 0."
                 },
                 new

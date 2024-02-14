@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using PlanningPoker.Application.Abstractions;
+﻿using PlanningPoker.Application.Abstractions;
 using PlanningPoker.Domain.Shared.Extensions;
 using PlanningPoker.Domain.Validation;
 

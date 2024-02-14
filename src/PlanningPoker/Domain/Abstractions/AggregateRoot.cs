@@ -7,7 +7,7 @@ namespace PlanningPoker.Domain.Abstractions
     {
         private readonly IList<IDomainEvent> _domainEvents = new List<IDomainEvent>();
 
-        protected AggregateRoot(EntityId id) : base(id)
+        protected AggregateRoot(int id) : base(id)
         {
         }
 
@@ -34,7 +34,7 @@ namespace PlanningPoker.Domain.Abstractions
         {
             if (!tenantId.GreaterThan(0))
             {
-                AddError(Error.GreaterThan(nameof(tenantId), value: 0));
+                AddError(Error.GreaterThan(code: nameof(tenantId), value: 0));
                 return;
             }
 
