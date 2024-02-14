@@ -35,6 +35,26 @@ namespace PlanningPoker.UnitTests.Application.Users.RenewInvitation
             result.Status.Should().Be(CommandStatus.ValidationFailed);
         }
 
+        [Theory]
+        [InlineData(InvitationStatus.Accepted)]
+        [InlineData(InvitationStatus.Inactive)]
+        public async Task ShouldReturnValidationErrorWhenInvitationAlreadyBeenAcceptedOrInactived(InvitationStatus status)
+        {
+            var expectedErrors = new[]
+            {
+                new { Code = "Invitation.Renew", Message = "This invitation has already been accepted or is inactive." }
+            };
+            var expectedInvitation = _faker.LoadValidInvitation(status: status);
+            var command = new RenewInvitationCommand(expectedInvitation.Id.Value);
+            _invitations.GetByIdAsync(Arg.Any<EntityId>()).Returns(expectedInvitation);
+
+            var result = await _handler.HandleAsync(command);
+
+            using var _ = new AssertionScope();
+            result.Status.Should().Be(CommandStatus.ValidationFailed);
+            result.Details.Should().BeEquivalentTo(expectedErrors);
+        }
+
         [Fact]
         public async Task ShouldUpdateSentAtUtcAndExpiresAtUtcDate()
         {

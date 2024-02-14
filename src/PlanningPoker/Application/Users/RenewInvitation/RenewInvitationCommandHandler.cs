@@ -24,6 +24,9 @@ namespace PlanningPoker.Application.Users.RenewInvitation
 
             invitation.Renew();
 
+            if (!invitation.IsValid)
+                return CommandResult.Fail(invitation.Errors, CommandStatus.ValidationFailed);
+
             await _uow.Invitations.ChangeAsync(invitation);
             await _uow.SaveChangesAsync();
 
