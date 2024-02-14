@@ -32,8 +32,4 @@
     <ProjectReference Include="..\..\..\src\PlanningPoker\Domain\PlanningPoker.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Application\Users\AcceptInvitation\" />
-  </ItemGroup>
-
 </Project>

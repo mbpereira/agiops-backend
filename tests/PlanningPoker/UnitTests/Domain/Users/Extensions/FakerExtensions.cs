@@ -15,12 +15,12 @@ namespace PlanningPoker.UnitTests.Domain.Users.Extensions
 
         public static Invitation NewInvalidInvitation(this Faker faker) => Invitation.New(tenantId: faker.Random.Int(min: 1), to: faker.InvalidEmail(), faker.PickRandom<Role>());
 
-        public static Invitation LoadValidInvitation(this Faker faker, int? tenantId = null, InvitationStatus? status = null, DateTime? expiresAtUtc = null)
+        public static Invitation LoadValidInvitation(this Faker faker, int? tenantId = null, InvitationStatus? status = null, DateTime? expiresAtUtc = null, Role? role = null)
             => Invitation.Load(
                 id: faker.ValidId(),
                 tenantId: tenantId ?? faker.ValidId(),
                 to: faker.Person.Email,
-                role: faker.PickRandom<Role>(),
+                role: role ?? faker.PickRandom<Role>(),
                 token: Guid.NewGuid(),
                 createdAtUtc: DateTime.UtcNow,
                 sentAtUtc: DateTime.UtcNow,
