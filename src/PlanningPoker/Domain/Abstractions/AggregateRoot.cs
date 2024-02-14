@@ -27,11 +27,13 @@ namespace PlanningPoker.Domain.Abstractions
 
         public TenantableAggregateRoot(int id, int tenantId) : base(id)
         {
-            InTenant(tenantId);
+            DefineTenant(tenantId);
         }
 
-        public void InTenant(int tenantId)
+        public void DefineTenant(int tenantId)
         {
+            if (TenantId.Value.GreaterThan(0)) return;
+
             if (!tenantId.GreaterThan(0))
             {
                 AddError(Error.GreaterThan(code: nameof(tenantId), value: 0));

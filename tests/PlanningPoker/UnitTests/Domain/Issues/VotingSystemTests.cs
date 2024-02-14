@@ -37,7 +37,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
             var newDescription = _faker.Random.String2(length: 10);
             var votingSystem = GetValidVotingSystem();
 
-            votingSystem.Described(newDescription);
+            votingSystem.Describe(newDescription);
 
             votingSystem.Description.Should().Be(newDescription);
         }

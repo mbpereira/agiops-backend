@@ -43,7 +43,7 @@ namespace PlanningPoker.Domain.Users
         {
             Token = token;
             Role = role;
-            To(receiver);
+            DefineReceiver(receiver);
             CreatedAtUtc = createdAtUtc;
             SentAtUtc = sentAtUtc;
             ExpiresAtUtc = expiresAtUtc;
@@ -51,7 +51,7 @@ namespace PlanningPoker.Domain.Users
             UpdatedAtUtc = updatedAtUtc;
         }
 
-        public void To(string email)
+        public void DefineReceiver(string email)
         {
             if (!email.IsEmail())
             {

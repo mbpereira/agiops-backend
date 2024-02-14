@@ -12,12 +12,12 @@ namespace PlanningPoker.Domain.Issues
 
         private VotingSystem(int id, int tenantId, string description, int userId, IList<int> grades) : base(id, tenantId)
         {
-            Described(description);
-            Owner(userId);
-            PossbileGrades(grades);
+            Describe(description);
+            DefineOwner(userId);
+            DefinePossbileGrades(grades);
         }
 
-        public void Owner(int userId)
+        public void DefineOwner(int userId)
         {
             if (!userId.GreaterThan(0))
             {
@@ -28,7 +28,7 @@ namespace PlanningPoker.Domain.Issues
             UserId = new EntityId(userId);
         }
 
-        public void PossbileGrades(IList<int> grades)
+        public void DefinePossbileGrades(IList<int> grades)
         {
             if (grades.IsEmpty())
             {
@@ -39,7 +39,7 @@ namespace PlanningPoker.Domain.Issues
             Grades = grades.AsReadOnly();
         }
 
-        public void Described(string description)
+        public void Describe(string description)
         {
             if (!description.HasMinLength(minLength: 3))
             {

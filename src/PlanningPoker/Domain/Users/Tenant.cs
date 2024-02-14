@@ -11,10 +11,10 @@ namespace PlanningPoker.Domain.Users
         private Tenant(int id, string name)
             : base(id)
         {
-            Named(name);
+            DefineName(name);
         }
 
-        public void Named(string name)
+        public void DefineName(string name)
         {
             if (!name.HasMinLength(minLength: 3))
             {
