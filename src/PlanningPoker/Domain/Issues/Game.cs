@@ -9,18 +9,31 @@ namespace PlanningPoker.Domain.Issues
         public string Name { get; private set; } = string.Empty;
         public EntityId UserId { get; private set; } = EntityId.Blank();
         public GameCredentials? Credentials { get; private set; }
+        public PossibleGrades PossibleGrades { get; private set; } = PossibleGrades.Empty();
 
-        public Game(int id, int tenantId, string name, int userId, string? password = null)
+        public Game(int id, int tenantId, string name, int userId, VotingSystem votingSystem, string? password = null)
             : base(id, tenantId)
         {
             SetName(name);
             SetOwner(userId);
             SetPassword(password);
+            SetVotingSystem(votingSystem);
+        }
+
+        public void SetVotingSystem(VotingSystem votingSystem)
+        {
+            if (votingSystem is null || !votingSystem.IsValid)
+            {
+                AddError(new Error(nameof(Game), nameof(SetVotingSystem), "Provided voting system is not valid."));
+                return;
+            }
+
+            PossibleGrades = votingSystem.PossibleGrades;
         }
 
         public void SetOwner(int userId)
         {
-            if (UserId.Value.GreaterThan(0)) 
+            if (UserId.Value.GreaterThan(0))
             {
                 AddError(new Error(nameof(Game), nameof(userId), GameConstants.Messages.OwnerAlreadySetd));
                 return;
@@ -63,9 +76,9 @@ namespace PlanningPoker.Domain.Issues
             Credentials = new GameCredentials(password!);
         }
 
-        public static Game New(int tenantId, string name, int userId, string? password = null)
-            => new(EntityId.AutoIncrement(), tenantId, name, userId, password);
-        public static Game New(int id, int tenantId, string name, int userId, string? password = null)
-            => new(id, tenantId, name, userId, password);
+        public static Game New(int tenantId, string name, int userId, VotingSystem votingSystem, string? password = null)
+            => new(EntityId.AutoIncrement(), tenantId, name, userId, votingSystem, password);
+        public static Game New(int id, int tenantId, string name, int userId, VotingSystem votingSystem, string? password = null)
+            => new(id, tenantId, name, userId, votingSystem, password);
     }
 }

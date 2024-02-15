@@ -7,6 +7,7 @@ using PlanningPoker.Application.Issues.CreateGame;
 using PlanningPoker.Application.Users;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Issues;
+using PlanningPoker.UnitTests.Domain.Users.Extensions;
 
 namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
 {
@@ -37,7 +38,7 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
         [InlineData(null, "abcde")]
         public async Task ShouldReturnValidationFailedWhenProvidedDataIsNotValid(string invalidName, string invalidPassword)
         {
-            var command = new CreateGameCommand(name: invalidName, password: invalidPassword);
+            var command = new CreateGameCommand(name: invalidName, password: invalidPassword, votingSystemId: 0);
 
             var commandResult = await _handler.HandleAsync(command);
 
@@ -50,7 +51,8 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
             var expectedGame = GetValidGame();
             var command = new CreateGameCommand(
                 name: expectedGame.Name,
-                password: expectedGame.Credentials!.Password);
+                password: expectedGame.Credentials!.Password,
+                votingSystemId: _faker.ValidId());
             _uow.Games.AddAsync(Arg.Any<Game>()).Returns(expectedGame);
 
             var commandResult = await _handler.HandleAsync(command);
@@ -60,11 +62,6 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
             commandResult.Data!.Id.Should().Be(expectedGame.Id.Value);
         }
 
-        private Game GetValidGame() => Game.New(
-            tenantId: _faker.Random.Int(min: 1),
-            id: _faker.Random.Int(min: 1, max: 100),
-            name: _faker.Random.String2(length: 10),
-            userId: _faker.Random.Int(min: 1, max: 100),
-            password: _faker.Random.String2(length: 10));
+        private Game GetValidGame() => _faker.NewValidGame();
     }
 }

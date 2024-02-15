@@ -29,7 +29,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
                 new { Code = "VotingSystem.userId", Message = "Provided value must be greater than 0." },
             };
 
-            var votingSystem = VotingSystem.New(tenantId: 0, invalidDescription, userId: 0, new List<int>());
+            var votingSystem = VotingSystem.New(tenantId: 0, invalidDescription, userId: 0, new List<string>());
 
             votingSystem.Errors.Should().BeEquivalentTo(expectedErrors);
         }
@@ -113,7 +113,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
                 tenantId: _faker.ValidId(),
                 description: _faker.Random.String2(length: 10),
                 userId: _faker.ValidId(),
-                grades: _faker.Make(3, () => _faker.Random.Int()),
+                possibleGrades: _faker.Make(3, () => _faker.Random.Int().ToString()),
                 sharing: sharingStatus);
     }
 }

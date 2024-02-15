@@ -18,6 +18,10 @@ namespace PlanningPoker.Application.Abstractions
             IEnumerable<Error> errors,
             CommandStatus status = CommandStatus.ValidationFailed)
                 => new(null, status, errors);
+
+        public static CommandResult<TResponse> Fail(
+            CommandStatus status = CommandStatus.ValidationFailed)
+                => new(null, status, Enumerable.Empty<Error>());
     }
 
     public record BaseCommandResult

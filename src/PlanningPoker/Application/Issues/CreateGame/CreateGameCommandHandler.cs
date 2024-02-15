@@ -18,9 +18,17 @@ namespace PlanningPoker.Application.Issues.CreateGame
 
         public async Task<CommandResult<CreateGameResult>> HandleAsync(CreateGameCommand command)
         {
+            if (!command.IsValid)
+                return CommandResult<CreateGameResult>.Fail(command.Errors, CommandStatus.ValidationFailed);
+
+            var votingSystem = await _uow.VotingSystems.GetByIdAsync(command.VotingSystemId);
+
+            if (votingSystem is null)
+                return CommandResult<CreateGameResult>.Fail(CommandStatus.RecordNotFound);
+
             var context = await _security.GetSecurityInformationAsync();
 
-            var game = Game.New(context.Tenant.Id, command.Name, context.User.Id, command.Password);
+            var game = Game.New(context.Tenant.Id, command.Name, context.User.Id, votingSystem, command.Password);
 
             if (!game.IsValid)
                 return CommandResult<CreateGameResult>.Fail(game.Errors, CommandStatus.ValidationFailed);

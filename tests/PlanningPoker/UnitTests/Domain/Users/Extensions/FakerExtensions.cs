@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using PlanningPoker.Domain.Issues;
 using PlanningPoker.Domain.Users;
 
 namespace PlanningPoker.UnitTests.Domain.Users.Extensions
@@ -26,5 +27,21 @@ namespace PlanningPoker.UnitTests.Domain.Users.Extensions
                 sentAtUtc: DateTime.UtcNow,
                 expiresAtUtc: expiresAtUtc ?? DateTime.UtcNow.AddMinutes(InvitationConstants.ExpirationTimeInMinutes),
                 status: status ?? InvitationStatus.Sent);
+        public static VotingSystem LoadValidVotingSystem(this Faker faker)
+            => VotingSystem.Load(
+                id: faker.ValidId(),
+                tenantId: faker.ValidId(),
+                description: faker.Random.String2(length: 10),
+                userId: faker.ValidId(),
+                possibleGrades: faker.Make(3, () => faker.Random.Int(min: 1).ToString()),
+                sharing: SharingStatus.Requested);
+
+        public static Game NewValidGame(this Faker faker, string? password = null)
+            => Game.New(
+                tenantId: faker.ValidId(),
+                name: faker.Random.String2(length: 5),
+                userId: faker.ValidId(),
+                password: password,
+                votingSystem: faker.LoadValidVotingSystem());
     }
 }

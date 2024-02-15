@@ -8,10 +8,10 @@ namespace PlanningPoker.Domain.Issues
     {
         public EntityId UserId { get; private set; } = EntityId.Blank();
         public string Description { get; private set; } = string.Empty;
-        public IList<int> Grades { get; private set; } = new List<int>();
+        public PossibleGrades PossibleGrades { get; private set; } = PossibleGrades.Empty();
         public SharingStatus SharingStatus { get; private set; } = SharingStatus.Undefined;
 
-        private VotingSystem(int id, int tenantId, string description, int userId, IList<int> grades, SharingStatus sharingStatus) : base(id, tenantId)
+        private VotingSystem(int id, int tenantId, string description, int userId, IList<string> grades, SharingStatus sharingStatus) : base(id, tenantId)
         {
             Describe(description);
             SetOwner(userId);
@@ -66,15 +66,17 @@ namespace PlanningPoker.Domain.Issues
             UserId = new EntityId(userId);
         }
 
-        public void SetPossibleGrades(IList<int> grades)
+        public void SetPossibleGrades(IList<string> grades)
         {
-            if (grades.IsEmpty())
+            var validGrades = grades.Select(g => g.Trim()).Where(g => g.IsPresent());
+
+            if (validGrades.IsEmpty())
             {
                 AddError(Error.EmptyCollection(nameof(VotingSystem), nameof(grades)));
                 return;
             }
 
-            Grades = grades.AsReadOnly();
+            PossibleGrades = new PossibleGrades(grades);
         }
 
         public void Describe(string description)
@@ -88,10 +90,10 @@ namespace PlanningPoker.Domain.Issues
             Description = description;
         }
 
-        public static VotingSystem New(int tenantId, string description, int userId, IList<int> grades, SharingStatus sharing = SharingStatus.Unshared)
-            => new(EntityId.AutoIncrement(), tenantId, description, userId, grades, sharing);
+        public static VotingSystem New(int tenantId, string description, int userId, IList<string> possibleGrades, SharingStatus sharing = SharingStatus.Unshared)
+            => new(EntityId.AutoIncrement(), tenantId, description, userId, possibleGrades, sharing);
 
-        public static VotingSystem Load(int id, int tenantId, string description, int userId, IList<int> grades, SharingStatus sharing = SharingStatus.Unshared)
-            => new(id, tenantId, description, userId, grades, sharing);
+        public static VotingSystem Load(int id, int tenantId, string description, int userId, IList<string> possibleGrades, SharingStatus sharing = SharingStatus.Unshared)
+            => new(id, tenantId, description, userId, possibleGrades, sharing);
     }
 }

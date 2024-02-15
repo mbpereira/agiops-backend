@@ -1,10 +1,9 @@
 ﻿using Bogus;
 using FluentAssertions;
-using FluentAssertions.Equivalency;
 using FluentAssertions.Execution;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Issues;
+using PlanningPoker.UnitTests.Domain.Users.Extensions;
 
 namespace PlanningPoker.UnitTests.Domain.Issues
 {
@@ -20,18 +19,18 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [Fact]
         public void ShouldReturnCredentialsAsNullWhenPasswordIsNotSetd()
         {
-            var game = GetGame();
+            var game = GetValidGame();
 
             game.Credentials.Should().BeNull();
         }
 
-        private Game GetGame(string? password = null)
-            => Game.New(_faker.Random.Int(min: 1), name: _faker.Random.String2(length: 5), userId: _faker.Random.Int(min: 1), password);
+        private Game GetValidGame(string? password = null)
+            => _faker.NewValidGame(password);
 
         [Fact]
         public void ShouldReturnAutoIncrementAsIdWhenNewGameIsCreated()
         {
-            var game = GetGame();
+            var game = GetValidGame();
 
             game.Id.Should().Be(EntityId.AutoIncrement());
         }
@@ -41,7 +40,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         {
             var password = _faker.Random.String2(length: 25);
 
-            var game = GetGame(password);
+            var game = GetValidGame(password);
 
             game.Credentials!.Password.Should().Be(password);
         }
@@ -72,10 +71,15 @@ namespace PlanningPoker.UnitTests.Domain.Issues
                 {
                     Code = "Game.password",
                     Message = "The provided string does not meet the minimum length requirement. Min length: 6."
+                },
+                new
+                {
+                    Code = "Game.SetVotingSystem",
+                    Message = "Provided voting system is not valid."
                 }
             };
 
-            var game = Game.New(tenantId: 0, name!, userId: 0, password: _faker.Random.String2(length: 2));
+            var game = Game.New(tenantId: 0, name!, userId: 0, password: _faker.Random.String2(length: 2), votingSystem: null!);
 
             using var _ = new AssertionScope();
             game.IsValid.Should().BeFalse();
@@ -85,7 +89,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [Fact]
         public void ShouldReturnIsValidAsTrueWhenProvidedDataIsValid()
         {
-            var game = GetGame(password: _faker.Random.String2(length: 6));
+            var game = GetValidGame(password: _faker.Random.String2(length: 6));
 
             using var _ = new AssertionScope();
             game.IsValid.Should().BeTrue();
