@@ -18,7 +18,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         }
 
         [Fact]
-        public void ShouldReturnCredentialsAsNullWhenPasswordIsNotDefined()
+        public void ShouldReturnCredentialsAsNullWhenPasswordIsNotSetd()
         {
             var game = GetGame();
 

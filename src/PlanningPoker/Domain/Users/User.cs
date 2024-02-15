@@ -14,11 +14,11 @@ namespace PlanningPoker.Domain.Users
 
         private User(int id, string name, string? email = null, string? sessionId = null) : base(id)
         {
-            DefineName(name);
+            SetName(name);
             IdentifyUser(email, sessionId);
         }
 
-        public void DefineName(string name)
+        public void SetName(string name)
         {
             if (!name.HasMinLength(minLength: 3))
             {

@@ -13,16 +13,16 @@ namespace PlanningPoker.Domain.Issues
         public Game(int id, int tenantId, string name, int userId, string? password = null)
             : base(id, tenantId)
         {
-            DefineName(name);
-            DefineOwner(userId);
-            DefinePassword(password);
+            SetName(name);
+            SetOwner(userId);
+            SetPassword(password);
         }
 
-        public void DefineOwner(int userId)
+        public void SetOwner(int userId)
         {
             if (UserId.Value.GreaterThan(0)) 
             {
-                AddError(new Error(nameof(Game), nameof(userId), GameConstants.Messages.OwnerAlreadyDefined));
+                AddError(new Error(nameof(Game), nameof(userId), GameConstants.Messages.OwnerAlreadySetd));
                 return;
             }
 
@@ -35,7 +35,7 @@ namespace PlanningPoker.Domain.Issues
             UserId = userId;
         }
 
-        public void DefineName(string name)
+        public void SetName(string name)
         {
             if (!name.HasMinLength(minLength: 1))
             {
@@ -46,7 +46,7 @@ namespace PlanningPoker.Domain.Issues
             Name = name;
         }
 
-        public void DefinePassword(string? password = null)
+        public void SetPassword(string? password = null)
         {
             if (password.IsNullOrEmpty())
             {

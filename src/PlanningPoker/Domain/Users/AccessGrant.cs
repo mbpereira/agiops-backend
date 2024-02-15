@@ -15,11 +15,11 @@ namespace PlanningPoker.Domain.Users
             int tenantId,
             Grant grant) : base(id, tenantId)
         {
-            DefineUser(userId);
+            SetUser(userId);
             Grant = grant;
         }
 
-        public void DefineUser(int userId)
+        public void SetUser(int userId)
         {
             if (!userId.GreaterThan(0))
             {

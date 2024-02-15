@@ -16,8 +16,8 @@ namespace PlanningPoker.Domain.Issues
 
         private Issue(int id, int tenantId, int gameId, string name, string? description = null, string? link = null, List<UserGrade>? grades = null) : base(id, tenantId)
         {
-            DefineGame(gameId);
-            DefineName(name);
+            SetGame(gameId);
+            SetName(name);
             Link = link;
             Description = description;
             _grades = grades ?? new List<UserGrade>();
@@ -35,7 +35,7 @@ namespace PlanningPoker.Domain.Issues
             _grades.Add(new UserGrade(new EntityId(userId), grade));
         }
 
-        public void DefineName(string name)
+        public void SetName(string name)
         {
             if (!name.HasMinLength(minLength: 3))
             {
@@ -46,11 +46,11 @@ namespace PlanningPoker.Domain.Issues
             Name = name;
         }
 
-        public void DefineGame(int gameId)
+        public void SetGame(int gameId)
         {
             if (GameId.Value.GreaterThan(0))
             {
-                AddError(new Error(nameof(Issue), nameof(gameId), IssueConstants.Messages.GameAlreadyDefined));
+                AddError(new Error(nameof(Issue), nameof(gameId), IssueConstants.Messages.GameAlreadySetd));
                 return;
             }
 

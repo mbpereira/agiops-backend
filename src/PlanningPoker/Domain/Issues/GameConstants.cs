@@ -4,7 +4,7 @@
     {
         public static class Messages
         {
-            public const string OwnerAlreadyDefined = "You cannot change the game owner, as it has already been set.";
+            public const string OwnerAlreadySetd = "You cannot change the game owner, as it has already been set.";
         }
     }
 }
