@@ -7,9 +7,9 @@ namespace PlanningPoker.Application.Issues.RegisterGrade
     public class RegisterGradeCommand : Command
     {
         public int IssueId { get; private set; }
-        public decimal Grade { get; private set; }
+        public string Grade { get; private set; }
 
-        public RegisterGradeCommand(int issueId, decimal grade)
+        public RegisterGradeCommand(int issueId, string grade)
         {
             SetIssueId(issueId);
             Grade = grade;

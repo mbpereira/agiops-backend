@@ -29,17 +29,20 @@ namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
         [Fact]
         public async Task ShouldReturnsNotFoundWhenIssueDoesNotExists()
         {
-            var command = new RegisterGradeCommand(issueId: _faker.Random.Int(min: 1), grade: _faker.Random.Decimal());
+            var command = new RegisterGradeCommand(issueId: _faker.Random.Int(min: 1), grade: GetValidGrade());
 
             var result = await _handler.HandleAsync(command);
 
             result.Status.Should().Be(CommandStatus.RecordNotFound);
         }
 
+        private string GetValidGrade()
+            => _faker.Random.String(length: 1, minChar: '0', maxChar: '9');
+
         [Fact]
         public async Task ShouldReturnValidationFailedWhenProvidedDataIsNotValid()
         {
-            var command = new RegisterGradeCommand(issueId: 0, grade: _faker.Random.Decimal());
+            var command = new RegisterGradeCommand(issueId: 0, grade: GetValidGrade());
 
             var result = await _handler.HandleAsync(command);
 
@@ -54,7 +57,7 @@ namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
                 .Returns(expectedIssue);
             _authenticationContext.GetCurrentUserAsync()
                 .Returns(new UserInformation(Id: 0));
-            var command = new RegisterGradeCommand(issueId: _faker.Random.Int(min: 1), grade: _faker.Random.Decimal());
+            var command = new RegisterGradeCommand(issueId: _faker.Random.Int(min: 1), grade: GetValidGrade());
             
             var result = await _handler.HandleAsync(command);
 
@@ -74,7 +77,7 @@ namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
                 .Returns(expectedIssue);
             _authenticationContext.GetCurrentUserAsync()
                 .Returns(new AutoFaker<UserInformation>().RuleFor(u => u.Id, faker => faker.Random.Int(min: 1)));
-            var command = new RegisterGradeCommand(issueId: _faker.Random.Int(min: 1), grade: _faker.Random.Decimal());
+            var command = new RegisterGradeCommand(issueId: _faker.Random.Int(min: 1), grade: GetValidGrade());
 
             var result = await _handler.HandleAsync(command);
 

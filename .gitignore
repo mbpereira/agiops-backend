@@ -13,4 +13,4 @@ Desktop.ini
 .DS_Store
 
 appsettings.Development.json
-/tests/PlanningPoker/UnitTests/TestResults
+**/TestResults/
