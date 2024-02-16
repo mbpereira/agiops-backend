@@ -11,8 +11,7 @@ namespace PlanningPoker.Domain.Issues
         public string? Description { get; private set; }
         public string? Link { get; private set; }
         private readonly List<UserGrade> _grades;
-        public IReadOnlyCollection<UserGrade> Grades => _grades.AsReadOnly();
-        public decimal Average => Grades.Average(g => g.Grade);
+        public IReadOnlyCollection<UserGrade> UserGrades => _grades.AsReadOnly();
 
         private Issue(int id, int tenantId, int gameId, string name, string? description = null, string? link = null, List<UserGrade>? grades = null) : base(id, tenantId)
         {
@@ -23,7 +22,7 @@ namespace PlanningPoker.Domain.Issues
             _grades = grades ?? new List<UserGrade>();
         }
 
-        public void RegisterGrade(int userId, decimal grade)
+        public void RegisterGrade(int userId, string grade)
         {
             if (!userId.GreaterThan(0))
             {

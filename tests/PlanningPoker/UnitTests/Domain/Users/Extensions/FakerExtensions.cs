@@ -43,5 +43,13 @@ namespace PlanningPoker.UnitTests.Domain.Users.Extensions
                 userId: faker.ValidId(),
                 password: password,
                 votingSystem: votingSystem ?? faker.LoadValidVotingSystem());
+
+        public static VotingSystem InvalidVotingSystem(this Faker faker) =>
+            VotingSystem.New(
+                tenantId: faker.InvalidId(),
+                description: string.Empty,
+                userId: faker.InvalidId(),
+                possibleGrades: new List<string>(),
+                sharing: SharingStatus.Unshared);
     }
 }

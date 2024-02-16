@@ -17,7 +17,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         }
 
         [Fact]
-        public void ShouldReturnCredentialsAsNullWhenPasswordIsNotSetd()
+        public void ShouldReturnCredentialsAsNullWhenPasswordIsNotSet()
         {
             var game = GetValidGame();
 
@@ -28,11 +28,13 @@ namespace PlanningPoker.UnitTests.Domain.Issues
             => _faker.NewValidGame(password);
 
         [Fact]
-        public void ShouldReturnAutoIncrementAsIdWhenNewGameIsCreated()
+        public void ShouldReturnAutoIncrementAsIdWhenNewValidGameIsCreated()
         {
             var game = GetValidGame();
 
+            using var _ = new AssertionScope();
             game.Id.Should().Be(EntityId.AutoIncrement());
+            game.IsValid.Should().BeTrue();
         }
 
         [Fact]
@@ -42,7 +44,9 @@ namespace PlanningPoker.UnitTests.Domain.Issues
 
             var game = GetValidGame(password);
 
+            using var _ = new AssertionScope();
             game.Credentials!.Password.Should().Be(password);
+            game.IsValid.Should().BeTrue();
         }
 
         [Theory]
@@ -84,6 +88,32 @@ namespace PlanningPoker.UnitTests.Domain.Issues
             using var _ = new AssertionScope();
             game.IsValid.Should().BeFalse();
             game.Errors.Should().BeEquivalentTo(expectedErrors);
+        }
+
+        [Fact]
+        public void ShouldReturnErrorWhenProvidedVotingSystemIsNotValid()
+        {
+            var game = _faker.NewValidGame();
+            
+            game.SetVotingSystem(_faker.InvalidVotingSystem());
+
+            game.Errors.Should().BeEquivalentTo(new[]
+            {
+                new { Code = "Game.SetVotingSystem", Message = "Provided voting system is not valid." }
+            });
+        }
+
+        [Fact]
+        public void ShouldReturnErrorWhenTryingToChangeGameOwner()
+        {
+            var game = _faker.NewValidGame();
+
+            game.SetOwner(_faker.ValidId());
+
+            game.Errors.Should().BeEquivalentTo(new[]
+            {
+                new { Code = "Game.userId", Message = "You cannot change the game owner, as it has already been set." }
+            });
         }
 
         [Fact]

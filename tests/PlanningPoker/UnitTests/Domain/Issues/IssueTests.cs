@@ -1,10 +1,9 @@
 ﻿using Bogus;
 using FluentAssertions;
-using FluentAssertions.Equivalency;
 using FluentAssertions.Execution;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Issues;
+using PlanningPoker.UnitTests.Domain.Users.Extensions;
 
 namespace PlanningPoker.UnitTests.Domain.Issues
 {
@@ -57,16 +56,20 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         }
 
         [Fact]
-        public void ShoulCaculateAverage()
+        public void ShouldReturnErrorWhenTryingChangeIssueGame()
         {
             var issue = GetValidIssue();
-            issue.RegisterGrade(userId: 1, grade: 1);
-            issue.RegisterGrade(userId: 2, grade: 1);
-            issue.RegisterGrade(userId: 3, grade: 1);
 
-            var avg = issue.Average;
+            issue.SetGame(_faker.ValidId());
 
-            avg.Should().Be(1);
+            issue.Errors.Should().BeEquivalentTo(new[]
+            {
+                new
+                {
+                    Code = "Issue.gameId",
+                    Message = "You cannot change the issue game, as it has already been set."
+                }
+            });
         }
 
         [Fact]
@@ -74,13 +77,17 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         {
             var issue = GetValidIssue();
 
-            issue.RegisterGrade(userId: 0, 1);
+            issue.RegisterGrade(userId: 0, grade: "1");
 
             using var _ = new AssertionScope();
             issue.IsValid.Should().BeFalse();
             issue.Errors.Should().BeEquivalentTo(new[]
             {
-                new { Code = "Issue.RegisterGrade", Message= "Provided user id is not valid." }
+                new 
+                {
+                    Code = "Issue.RegisterGrade", 
+                    Message= "Provided user id is not valid." 
+                }
             });
         }
 
@@ -88,10 +95,10 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         public void ShouldRemoveExistingUserIdBeforeRegisterGradeToPreventDuplication()
         {
             var issue = GetValidIssue();
-            issue.RegisterGrade(userId: 1, grade: 1);
-            issue.RegisterGrade(userId: 1, grade: 1);
+            issue.RegisterGrade(userId: 1, grade: "1");
+            issue.RegisterGrade(userId: 1, grade: "1");
 
-            var gradesCount = issue.Grades.Count;
+            var gradesCount = issue.UserGrades.Count;
 
             gradesCount.Should().Be(1);
         }
