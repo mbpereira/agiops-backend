@@ -24,9 +24,9 @@ namespace PlanningPoker.UnitTests.Domain.Issues
             var expectedErrors = new[]
             {
                 new { Code = "tenantId", Message = "Provided value must be greater than 0." },
-                new { Code = "VotingSystem.description", Message = "The provided string does not meet the minimum length requirement. Min length: 3." },
-                new { Code = "VotingSystem.grades", Message = "The list cannot be empty." },
-                new { Code = "VotingSystem.userId", Message = "Provided value must be greater than 0." },
+                new { Code = "VotingSystem.Description", Message = "The provided string does not meet the minimum length requirement. Min length: 3." },
+                new { Code = "VotingSystem.Grades", Message = "The list cannot be empty." },
+                new { Code = "VotingSystem.UserId", Message = "Provided value must be greater than 0." },
             };
 
             var votingSystem = VotingSystem.New(tenantId: 0, invalidDescription, userId: 0, new List<string>());
@@ -45,7 +45,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
 
             votingSystem.Errors.Should().BeEquivalentTo(new[]
             {
-                new { Code = "VotingSystem.newSharingStatus", Message = "Only the statuses 'requested' and 'rejected' can be approved." }
+                new { Code = "VotingSystem.SharingStatus", Message = "Only the statuses 'requested' and 'rejected' can be approved." }
             });
         }
 
@@ -61,7 +61,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
 
             votingSystem.Errors.Should().BeEquivalentTo(new[]
             {
-                new { Code = "VotingSystem.newSharingStatus", Message = "Only the status 'requested' can be rejected." }
+                new { Code = "VotingSystem.SharingStatus", Message = "Only the status 'requested' can be rejected." }
             });
         }
 
@@ -76,7 +76,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
 
             votingSystem.Errors.Should().BeEquivalentTo(new[]
             {
-                new { Code = "VotingSystem.newSharingStatus", Message = "Only the statuses 'cancelled', 'rejected' and 'unshared' can made a request sharing." }
+                new { Code = "VotingSystem.SharingStatus", Message = "Only the statuses 'rejected' and 'unshared' can made a request sharing." }
             });
         }
 

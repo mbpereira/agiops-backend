@@ -14,17 +14,16 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [InlineData("")]
         public void ShouldReturnExpectedErrors(string invalidName)
         {
-            var user = User.New(invalidName, email: _faker.Internet.Email());
             var expectedErrors = new[]
             {
-                new { Code = "User.name", Message = "The provided string does not meet the minimum length requirement. Min length: 3." }
+                new { Code = "User.Name", Message = "The provided string does not meet the minimum length requirement. Min length: 3." }
             };
 
-            var isValid = user.IsValid;
+            var user = User.New(invalidName, email: _faker.Internet.Email());
 
             using var _ = new AssertionScope();
             user.Errors.Should().BeEquivalentTo(expectedErrors);
-            isValid.Should().BeFalse();
+            user.IsValid.Should().BeFalse();
         }
 
         [Fact]
@@ -55,7 +54,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         public void ShouldReturnsErrorWhenEmailIsNotSet()
         {
             var name = _faker.Random.String2(length: 5);
-            
+
             var user = User.New(name: name, email: null!);
 
             user.Errors.Should().BeEquivalentTo(new[]

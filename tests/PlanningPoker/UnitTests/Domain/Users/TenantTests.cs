@@ -21,7 +21,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         {
             var expectedErrors = new[]
             {
-                new { Code = "Tenant.name", Message = "The provided string does not meet the minimum length requirement. Min length: 3." }
+                new { Code = "Tenant.Name", Message = "The provided string does not meet the minimum length requirement. Min length: 3." }
             };
 
             var tenant = Tenant.New(name: invalidName);

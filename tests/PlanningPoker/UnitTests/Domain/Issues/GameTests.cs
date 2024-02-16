@@ -58,7 +58,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
             {
                 new
                 {
-                    Code = "Game.name",
+                    Code = "Game.Name",
                     Message = "The provided string does not meet the minimum length requirement. Min length: 1."
                 },
                 new
@@ -68,12 +68,12 @@ namespace PlanningPoker.UnitTests.Domain.Issues
                 },
                 new
                 {
-                    Code = "Game.userId",
+                    Code = "Game.UserId",
                     Message = "Provided value must be greater than 0."
                 },
                 new
                 {
-                    Code = "Game.password",
+                    Code = "Game.Password",
                     Message = "The provided string does not meet the minimum length requirement. Min length: 6."
                 },
                 new
@@ -112,7 +112,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
 
             game.Errors.Should().BeEquivalentTo(new[]
             {
-                new { Code = "Game.userId", Message = "You cannot change the game owner, as it has already been set." }
+                new { Code = "Game.UserId", Message = "You cannot change the game owner, as it has already been set." }
             });
         }
 

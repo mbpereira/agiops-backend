@@ -65,7 +65,7 @@ namespace PlanningPoker.Domain.Users
         {
             if (!IsOpen)
             {
-                AddError(InvitationErrors.AlreadyAcceptedInvitation);
+                AddError(InvitationErrors.AlreadyAcceptedInvitation(nameof(Renew)));
                 return;
             }
 
@@ -78,7 +78,7 @@ namespace PlanningPoker.Domain.Users
         {
             if (!IsOpen)
             {
-                AddError(InvitationErrors.AlreadyAcceptedInvitation);
+                AddError(InvitationErrors.AlreadyAcceptedInvitation(nameof(Accept)));
                 return;
             }
 

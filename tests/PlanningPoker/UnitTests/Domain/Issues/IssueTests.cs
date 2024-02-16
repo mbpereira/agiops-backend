@@ -33,7 +33,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
             {
                 new
                 {
-                    Code = "Issue.name",
+                    Code = "Issue.Name",
                     Message = "The provided string does not meet the minimum length requirement. Min length: 3."
                 },
                 new
@@ -43,7 +43,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
                 },
                 new
                 {
-                    Code = "Issue.gameId",
+                    Code = "Issue.GameId",
                     Message = "Provided value must be greater than 0."
                 }
             };
@@ -66,7 +66,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
             {
                 new
                 {
-                    Code = "Issue.gameId",
+                    Code = "Issue.GameId",
                     Message = "You cannot change the issue game, as it has already been set."
                 }
             });
@@ -85,7 +85,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
             {
                 new 
                 {
-                    Code = "Issue.RegisterGrade", 
+                    Code = "Issue.UserId", 
                     Message= "Provided user id is not valid." 
                 }
             });

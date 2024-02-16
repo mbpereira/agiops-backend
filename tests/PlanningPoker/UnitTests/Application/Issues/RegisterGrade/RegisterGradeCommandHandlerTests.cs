@@ -65,7 +65,7 @@ namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
             result.Status.Should().Be(CommandStatus.ValidationFailed);
             result.Details.Should().BeEquivalentTo(new[] 
             { 
-                new { Code = "Issue.RegisterGrade", Message = "Provided user id is not valid." } 
+                new { Code = "Issue.UserId", Message = "Provided user id is not valid." } 
             });
         }
 

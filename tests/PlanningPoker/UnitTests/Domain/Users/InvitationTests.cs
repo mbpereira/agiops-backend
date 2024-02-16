@@ -22,7 +22,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
 
             var errors = invitation.Errors;
 
-            errors.Should().BeEquivalentTo(new[] { new { Code = "Invitation.email", Message = "Provided email is not valid." } });
+            errors.Should().BeEquivalentTo(new[] { new { Code = "Invitation.Receiver", Message = "Provided email is not valid." } });
         }
 
         [Fact]
