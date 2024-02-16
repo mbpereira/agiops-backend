@@ -1,6 +1,5 @@
 ﻿using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Shared.Extensions;
-using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Domain.Issues
 {
@@ -23,25 +22,25 @@ namespace PlanningPoker.Domain.Issues
         {
             if (SharingStatus.Undefined.Equals(newSharingStatus))
             {
-                AddError(new Error(nameof(VotingSystem), nameof(newSharingStatus), "Undefined is not a valid status."));
+                AddError(VotingSystemErrors.InvalidSharingStatus);
                 return;
             }
 
             if (SharingStatus.Approved.Equals(newSharingStatus) && !SharingStatus.IsSome(SharingStatus.Requested, SharingStatus.Rejected, SharingStatus.Undefined))
             {
-                AddError(new Error(nameof(VotingSystem), nameof(newSharingStatus), "Only the statuses 'requested' and 'rejected' can be approved."));
+                AddError(VotingSystemErrors.InvalidSharingApprovalOperation);
                 return;
             }
 
             if (SharingStatus.Rejected.Equals(newSharingStatus) && !SharingStatus.IsSome(SharingStatus.Requested, SharingStatus.Undefined))
             {
-                AddError(new Error(nameof(VotingSystem), nameof(newSharingStatus), "Only the status 'requested' can be rejected."));
+                AddError(VotingSystemErrors.InvalidSharingRejectOperation);
                 return;
             }
 
             if (SharingStatus.Requested.Equals(newSharingStatus) && !SharingStatus.IsSome(SharingStatus.Rejected, SharingStatus.Unshared, SharingStatus.Undefined))
             {
-                AddError(new Error(nameof(VotingSystem), nameof(newSharingStatus), "Only the statuses 'cancelled', 'rejected' and 'unshared' can made a request sharing."));
+                AddError(VotingSystemErrors.InvalidSharingRequestOperation);
                 return;
             }
 
@@ -53,13 +52,13 @@ namespace PlanningPoker.Domain.Issues
         {
             if (UserId.Value.GreaterThan(0))
             {
-                AddError(new Error(nameof(VotingSystem), nameof(userId), VotingSystemConstants.Messages.OwnerAlreadySetd));
+                AddError(VotingSystemErrors.InvalidOwnerChangeOperation);
                 return;
             }
 
             if (!userId.GreaterThan(0))
             {
-                AddError(Error.GreaterThan(nameof(VotingSystem), nameof(userId), value: 0));
+                AddError(VotingSystemErrors.InvalidOwnerId);
                 return;
             }
 
@@ -68,11 +67,11 @@ namespace PlanningPoker.Domain.Issues
 
         public void SetPossibleGrades(IList<string> grades)
         {
-            var validGrades = grades.Select(g => g.Trim()).Where(g => g.IsPresent());
+            var validGrades = grades.OnlyNotNullOrEmpty();
 
             if (validGrades.IsEmpty())
             {
-                AddError(Error.EmptyCollection(nameof(VotingSystem), nameof(grades)));
+                AddError(VotingSystemErrors.InvalidGrades);
                 return;
             }
 
@@ -83,7 +82,7 @@ namespace PlanningPoker.Domain.Issues
         {
             if (!description.HasMinLength(minLength: 3))
             {
-                AddError(Error.MinLength(nameof(VotingSystem), nameof(description), minLength: 3));
+                AddError(VotingSystemErrors.InvalidDescription);
                 return;
             }
 

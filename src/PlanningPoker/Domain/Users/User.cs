@@ -1,6 +1,5 @@
 ﻿using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Shared.Extensions;
-using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Domain.Users
 {
@@ -22,14 +21,14 @@ namespace PlanningPoker.Domain.Users
         {
             if (!name.HasMinLength(minLength: 3))
             {
-                AddError(Error.MinLength(nameof(User), nameof(name), minLength: 3));
+                AddError(UserErrors.InvalidName);
                 return;
             }
 
             Name = name;
         }
 
-        private void IdentifyUser(string? email, string? sessionId)
+        public void IdentifyUser(string? email, string? sessionId)
         {
             if (email.IsEmail())
             {
@@ -44,7 +43,7 @@ namespace PlanningPoker.Domain.Users
                 return;
             }
 
-            AddError(new Error(nameof(User), nameof(IdentifyUser), "A valid email or session id must be defined."));
+            AddError(UserErrors.InvalidIdentification);
         }
 
         public static User Load(int id, string name, string? email, string? sessionId) => new(id, name, email, sessionId);

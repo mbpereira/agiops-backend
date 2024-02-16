@@ -1,6 +1,5 @@
 ﻿using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Shared.Extensions;
-using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Domain.Users
 {
@@ -55,7 +54,7 @@ namespace PlanningPoker.Domain.Users
         {
             if (!email.IsEmail())
             {
-                AddError(Error.InvalidEmail(nameof(Invitation), nameof(email)));
+                AddError(InvitationErrors.InvalidReceiver);
                 return;
             }
 
@@ -66,7 +65,7 @@ namespace PlanningPoker.Domain.Users
         {
             if (!IsOpen)
             {
-                AddError(new Error(nameof(Invitation), nameof(Renew), InvitationConstants.Messages.AlreadyAcceptedInvitation));
+                AddError(InvitationErrors.AlreadyAcceptedInvitation);
                 return;
             }
 
@@ -79,13 +78,13 @@ namespace PlanningPoker.Domain.Users
         {
             if (!IsOpen)
             {
-                AddError(new Error(nameof(Invitation), nameof(Accept), InvitationConstants.Messages.AlreadyAcceptedInvitation));
+                AddError(InvitationErrors.AlreadyAcceptedInvitation);
                 return;
             }
 
             if (HasExpired)
             {
-                AddError(new Error(nameof(Invitation), nameof(Accept), InvitationConstants.Messages.ExpiredInvitation));
+                AddError(InvitationErrors.ExpiredInvitation);
                 return;
             }
 

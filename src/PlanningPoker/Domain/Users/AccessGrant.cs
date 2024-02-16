@@ -1,6 +1,5 @@
 ﻿using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Shared.Extensions;
-using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Domain.Users
 {
@@ -21,9 +20,15 @@ namespace PlanningPoker.Domain.Users
 
         public void SetUser(int userId)
         {
+            if (UserId.Value.GreaterThan(0))
+            {
+                AddError(AccessGrantErrors.UserChange);
+                return;
+            }
+
             if (!userId.GreaterThan(0))
             {
-                AddError(Error.GreaterThan(nameof(Invitation), nameof(userId), value: 0));
+                AddError(AccessGrantErrors.InvalidUserId);
                 return;
             }
 

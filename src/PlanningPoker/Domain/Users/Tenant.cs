@@ -4,6 +4,11 @@ using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Domain.Users
 {
+    public static class TenantErrors
+    {
+        public static Error InvalidName = Error.MinLength(nameof(Tenant), nameof(Tenant.Name), minLength: 3);
+    }
+
     public class Tenant : AggregateRoot
     {
         public string Name { get; private set; } = string.Empty;
@@ -18,7 +23,7 @@ namespace PlanningPoker.Domain.Users
         {
             if (!name.HasMinLength(minLength: 3))
             {
-                AddError(Error.MinLength(nameof(Tenant), nameof(name), minLength: 3));
+                AddError(TenantErrors.InvalidName);
                 return;
             }
 

@@ -19,7 +19,7 @@
 
         public static bool IsEmpty<T>(this IEnumerable<T> enumerable) => !enumerable.Any();
         public static bool IsSome<T>(this T e, params T[] values) where T : Enum => values.Contains(e);
-        public static IEnumerable<string> OnlyPresents(this IEnumerable<string> strings) => strings
+        public static IEnumerable<string> OnlyNotNullOrEmpty(this IEnumerable<string> strings) => strings
             .Select(s => s.Trim())
             .Where(s => !string.IsNullOrEmpty(s));
     }

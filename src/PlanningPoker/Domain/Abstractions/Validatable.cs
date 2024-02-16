@@ -13,11 +13,6 @@ namespace PlanningPoker.Domain.Abstractions
             _validationResult = new ValidationResult();
         }
 
-        protected void AddError(string code, string message)
-        {
-            _validationResult.AddError(code, message);
-        }
-
         protected void AddError(Error error)
         {
             _validationResult.AddError(error);

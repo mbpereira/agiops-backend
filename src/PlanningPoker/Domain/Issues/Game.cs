@@ -1,6 +1,5 @@
 ﻿using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Shared.Extensions;
-using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Domain.Issues
 {
@@ -24,7 +23,7 @@ namespace PlanningPoker.Domain.Issues
         {
             if (votingSystem is null || !votingSystem.IsValid)
             {
-                AddError(new Error(nameof(Game), nameof(SetVotingSystem), "Provided voting system is not valid."));
+                AddError(GameErrors.InvalidVotingSystem);
                 return;
             }
 
@@ -35,13 +34,13 @@ namespace PlanningPoker.Domain.Issues
         {
             if (UserId.Value.GreaterThan(0))
             {
-                AddError(new Error(nameof(Game), nameof(userId), GameConstants.Messages.OwnerAlreadySetd));
+                AddError(GameErrors.OwnerAlreadySet);
                 return;
             }
 
             if (!userId.GreaterThan(0))
             {
-                AddError(Error.GreaterThan(nameof(Game), nameof(userId), value: 0));
+                AddError(GameErrors.InvalidUserId);
                 return;
             }
 
@@ -52,7 +51,7 @@ namespace PlanningPoker.Domain.Issues
         {
             if (!name.HasMinLength(minLength: 1))
             {
-                AddError(Error.MinLength(nameof(Game), nameof(name), minLength: 1));
+                AddError(GameErrors.InvalidName);
                 return;
             }
 
@@ -69,7 +68,7 @@ namespace PlanningPoker.Domain.Issues
 
             if (!password.HasMinLength(minLength: 6))
             {
-                AddError(Error.MinLength(nameof(Game), nameof(password), minLength: 6));
+                AddError(GameErrors.InvalidPassword);
                 return;
             }
 
@@ -78,7 +77,8 @@ namespace PlanningPoker.Domain.Issues
 
         public static Game New(int tenantId, string name, int userId, VotingSystem votingSystem, string? password = null)
             => new(EntityId.AutoIncrement(), tenantId, name, userId, votingSystem, password);
-        public static Game New(int id, int tenantId, string name, int userId, VotingSystem votingSystem, string? password = null)
+
+        public static Game Load(int id, int tenantId, string name, int userId, VotingSystem votingSystem, string? password = null)
             => new(id, tenantId, name, userId, votingSystem, password);
     }
 }

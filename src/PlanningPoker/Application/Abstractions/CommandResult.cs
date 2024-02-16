@@ -24,20 +24,6 @@ namespace PlanningPoker.Application.Abstractions
                 => new(null, status, Enumerable.Empty<Error>());
     }
 
-    public record BaseCommandResult
-    {
-        protected BaseCommandResult(CommandStatus status, IEnumerable<Error> details)
-        {
-            Status = status;
-            Details = details;
-        }
-
-        public CommandStatus Status { get; private set; }
-
-        public IEnumerable<Error> Details { get; private set; }
-
-    }
-
     public record CommandResult : BaseCommandResult
     {
         protected CommandResult(CommandStatus status, IEnumerable<Error> errors)
@@ -55,5 +41,18 @@ namespace PlanningPoker.Application.Abstractions
 
         public static CommandResult Fail(CommandStatus status) =>
                 new(status, Enumerable.Empty<Error>());
+    }
+
+    public abstract record BaseCommandResult
+    {
+        protected BaseCommandResult(CommandStatus status, IEnumerable<Error> details)
+        {
+            Status = status;
+            Details = details;
+        }
+
+        public CommandStatus Status { get; private set; }
+
+        public IEnumerable<Error> Details { get; private set; }
     }
 }

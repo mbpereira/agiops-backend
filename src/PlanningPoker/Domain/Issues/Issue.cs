@@ -1,6 +1,5 @@
 ﻿using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Shared.Extensions;
-using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Domain.Issues
 {
@@ -26,7 +25,7 @@ namespace PlanningPoker.Domain.Issues
         {
             if (!userId.GreaterThan(0))
             {
-                AddError(new Error(nameof(Issue), nameof(RegisterGrade), IssueConstants.Messages.InvalidUserId));
+                AddError(IssueErrors.InvalidUserId);
                 return;
             }
 
@@ -38,7 +37,7 @@ namespace PlanningPoker.Domain.Issues
         {
             if (!name.HasMinLength(minLength: 3))
             {
-                AddError(Error.MinLength(nameof(Issue), nameof(name), minLength: 3));
+                AddError(IssueErrors.InvalidName);
                 return;
             }
 
@@ -49,13 +48,13 @@ namespace PlanningPoker.Domain.Issues
         {
             if (GameId.Value.GreaterThan(0))
             {
-                AddError(new Error(nameof(Issue), nameof(gameId), IssueConstants.Messages.GameAlreadySetd));
+                AddError(IssueErrors.ChangeIssueGame);
                 return;
             }
 
             if (!gameId.GreaterThan(0))
             {
-                AddError(Error.GreaterThan(nameof(Issue), nameof(gameId), value: 0));
+                AddError(IssueErrors.InvalidGameId);
                 return;
             }
 
@@ -64,6 +63,7 @@ namespace PlanningPoker.Domain.Issues
 
         public static Issue New(int tenantId, int gameId, string name, string? description = null, string? link = null)
             => new(EntityId.AutoIncrement(), tenantId, gameId, name, description, link);
+
         public static Issue Load(int id, int tenantId, int gameId, string name, string? description = null, string? link = null, List<UserGrade>? grades = null)
             => new(id, tenantId, gameId, name, description, link, grades);
     }

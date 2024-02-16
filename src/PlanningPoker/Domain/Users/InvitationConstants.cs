@@ -6,8 +6,8 @@
 
         public static class Messages
         {
-            public const string AlreadyAcceptedInvitation = "This invitation has already been accepted or is inactive.";
-            public const string ExpiredInvitation = "This invitation has expired.";
+            public const string AlreadyAcceptedInvitation = "";
+            public const string ExpiredInvitation = "";
         }
     }
 }
