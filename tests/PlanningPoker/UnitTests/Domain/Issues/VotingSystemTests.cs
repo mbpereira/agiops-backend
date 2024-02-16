@@ -108,12 +108,29 @@ namespace PlanningPoker.UnitTests.Domain.Issues
             votingSystem.Description.Should().Be(newDescription);
         }
 
+        [Fact]
+        public void ShouldReturnIsQuantifiableAsFalseWhenExistsAnyNonNumericGrade()
+        {
+            var votingSystem = GetValidVotingSystem();
+            votingSystem.SetPossibleGrades(new[] { "P", "M", "G" });
+
+            var gradeDetails = votingSystem.GradeDetails;
+
+            gradeDetails.IsQuantifiable.Should().BeFalse();
+        }
+
+        [Fact]
+        public void ShouldReturnIsQuantifiableAsTrueWhenAllGradesAreNumeric()
+        {
+            var votingSystem = GetValidVotingSystem();
+            votingSystem.SetPossibleGrades(new[] { "1", "2", "3" });
+
+            var gradeDetails = votingSystem.GradeDetails;
+
+            gradeDetails.IsQuantifiable.Should().BeTrue();
+        }
+
         private VotingSystem GetValidVotingSystem(SharingStatus sharingStatus = SharingStatus.Unshared)
-            => VotingSystem.New(
-                tenantId: _faker.ValidId(),
-                description: _faker.Random.String2(length: 10),
-                userId: _faker.ValidId(),
-                possibleGrades: _faker.Make(3, () => _faker.Random.Int().ToString()),
-                sharing: sharingStatus);
+            => _faker.NewValidVotingSystem(sharingStatus);
     }
 }

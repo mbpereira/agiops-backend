@@ -44,6 +44,15 @@ namespace PlanningPoker.UnitTests.Domain.Users.Extensions
                 password: password,
                 votingSystem: votingSystem ?? faker.LoadValidVotingSystem());
 
+        public static Game LoadValidGame(this Faker faker, string? password = null, VotingSystem? votingSystem = null)
+            => Game.Load(
+                id: faker.ValidId(),
+                tenantId: faker.ValidId(),
+                name: faker.Random.String2(length: 5),
+                userId: faker.ValidId(),
+                password: password,
+                votingSystem: votingSystem ?? faker.LoadValidVotingSystem());
+
         public static VotingSystem InvalidVotingSystem(this Faker faker) =>
             VotingSystem.New(
                 tenantId: faker.InvalidId(),
@@ -51,5 +60,13 @@ namespace PlanningPoker.UnitTests.Domain.Users.Extensions
                 userId: faker.InvalidId(),
                 possibleGrades: new List<string>(),
                 sharing: SharingStatus.Unshared);
+
+        public static VotingSystem NewValidVotingSystem(this Faker faker, SharingStatus sharingStatus = SharingStatus.Undefined) =>
+            VotingSystem.New(
+                tenantId: faker.ValidId(),
+                description: faker.Random.String2(length: 10),
+                userId: faker.ValidId(),
+                possibleGrades: faker.Make(3, () => faker.Random.Int().ToString()),
+                sharing: sharingStatus);
     }
 }

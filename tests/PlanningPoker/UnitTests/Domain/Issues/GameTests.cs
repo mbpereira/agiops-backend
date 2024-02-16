@@ -19,18 +19,15 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [Fact]
         public void ShouldReturnCredentialsAsNullWhenPasswordIsNotSet()
         {
-            var game = GetValidGame();
+            var game = _faker.NewValidGame();
 
             game.Credentials.Should().BeNull();
         }
 
-        private Game GetValidGame(string? password = null)
-            => _faker.NewValidGame(password);
-
         [Fact]
         public void ShouldReturnAutoIncrementAsIdWhenNewValidGameIsCreated()
         {
-            var game = GetValidGame();
+            var game = _faker.NewValidGame();
 
             using var _ = new AssertionScope();
             game.Id.Should().Be(EntityId.AutoIncrement());
@@ -42,7 +39,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         {
             var password = _faker.Random.String2(length: 25);
 
-            var game = GetValidGame(password);
+            var game = _faker.NewValidGame(password);
 
             using var _ = new AssertionScope();
             game.Credentials!.Password.Should().Be(password);
@@ -106,7 +103,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [Fact]
         public void ShouldReturnErrorWhenTryingToChangeGameOwner()
         {
-            var game = _faker.NewValidGame();
+            var game = _faker.LoadValidGame();
 
             game.SetOwner(_faker.ValidId());
 
@@ -119,7 +116,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [Fact]
         public void ShouldReturnIsValidAsTrueWhenProvidedDataIsValid()
         {
-            var game = GetValidGame(password: _faker.Random.String2(length: 6));
+            var game = _faker.NewValidGame(password: _faker.Random.String2(length: 6));
 
             using var _ = new AssertionScope();
             game.IsValid.Should().BeTrue();
