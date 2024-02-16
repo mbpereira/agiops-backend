@@ -34,6 +34,9 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal --logger trx --results-directory "test-report"
 
+    - name: Coverage
+      run: dotnet test tests/PlanningPoker/UnitTests /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=opencover
+
     - uses: dorny/test-reporter@v1
       if: ${{ always() }}
       with:
