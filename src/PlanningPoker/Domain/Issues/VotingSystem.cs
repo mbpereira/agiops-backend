@@ -8,7 +8,7 @@ namespace PlanningPoker.Domain.Issues
     {
         public EntityId UserId { get; private set; } = EntityId.Blank();
         public string Description { get; private set; } = string.Empty;
-        public PossibleGrades PossibleGrades { get; private set; } = PossibleGrades.Empty();
+        public GradeDetails GradeDetails { get; private set; } = GradeDetails.Empty();
         public SharingStatus SharingStatus { get; private set; } = SharingStatus.Undefined;
 
         private VotingSystem(int id, int tenantId, string description, int userId, IList<string> grades, SharingStatus sharingStatus) : base(id, tenantId)
@@ -76,7 +76,7 @@ namespace PlanningPoker.Domain.Issues
                 return;
             }
 
-            PossibleGrades = new PossibleGrades(grades);
+            GradeDetails = new GradeDetails(grades);
         }
 
         public void Describe(string description)

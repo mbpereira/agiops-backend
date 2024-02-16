@@ -14,18 +14,23 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
     public class CreateGameCommandHandlerTests
     {
         private readonly Faker _faker;
-        private readonly IUnitOfWork _uow;
+        private readonly IVotingSystemsRepository _votingSystems;
+        private readonly IGamesRepository _games;
         private readonly ISecurityContext _authenticationContext;
         private readonly CreateGameCommandHandler _handler;
 
         public CreateGameCommandHandlerTests()
         {
+            _games = Substitute.For<IGamesRepository>();
+            _votingSystems = Substitute.For<IVotingSystemsRepository>();
             _authenticationContext = Substitute.For<ISecurityContext>();
             _faker = new();
             _authenticationContext.GetSecurityInformationAsync()
                 .Returns(GetSecurityInformation());
-            _uow = Substitute.For<IUnitOfWork>();
-            _handler = new(_uow, _authenticationContext);
+            var uow = Substitute.For<IUnitOfWork>();
+            uow.Games.Returns(_games);
+            uow.VotingSystems.Returns(_votingSystems);
+            _handler = new(uow, _authenticationContext);
         }
 
         private SecurityInformation GetSecurityInformation()
@@ -38,7 +43,10 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
         [InlineData(null, "abcde")]
         public async Task ShouldReturnValidationFailedWhenProvidedDataIsNotValid(string invalidName, string invalidPassword)
         {
-            var command = new CreateGameCommand(name: invalidName, password: invalidPassword, votingSystemId: 0);
+            var validVotingSystem = _faker.LoadValidVotingSystem();
+            var command = new CreateGameCommand(name: invalidName, password: invalidPassword, votingSystemId: validVotingSystem.Id.Value);
+            _votingSystems.GetByIdAsync(Arg.Any<EntityId>())
+                .Returns(validVotingSystem);
 
             var commandResult = await _handler.HandleAsync(command);
 
@@ -46,14 +54,41 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
         }
 
         [Fact]
-        public async Task ShouldReturnGeneratedIdWhenGameWasCreated()
+        public async Task ShouldReturnValidationFailedWhenProvidedVotingSystemIdIsNotValid()
         {
-            var expectedGame = GetValidGame();
+            var command = new CreateGameCommand(name: _faker.Random.String2(length: 10), password: _faker.Random.String2(length: 10), votingSystemId: 0);
+
+            var commandResult = await _handler.HandleAsync(command);
+
+            commandResult.Status.Should().Be(CommandStatus.ValidationFailed);
+        }
+
+        [Fact]
+        public async Task ShouldReturnRecordNotFoundWhenProvidedVotingSystemDoesNotExists()
+        {
+            var expectedGame = _faker.NewValidGame();
             var command = new CreateGameCommand(
                 name: expectedGame.Name,
-                password: expectedGame.Credentials!.Password,
+                password: expectedGame.Credentials?.Password,
                 votingSystemId: _faker.ValidId());
-            _uow.Games.AddAsync(Arg.Any<Game>()).Returns(expectedGame);
+
+            var result = await _handler.HandleAsync(command);
+
+            result.Status.Should().Be(CommandStatus.RecordNotFound);
+        }
+
+        [Fact]
+        public async Task ShouldReturnGeneratedIdWhenGameWasCreated()
+        {
+            var validVotingSystem = _faker.LoadValidVotingSystem();
+            var expectedGame = _faker.NewValidGame(votingSystem: validVotingSystem);
+            var command = new CreateGameCommand(
+                name: expectedGame.Name,
+                password: expectedGame.Credentials?.Password,
+                votingSystemId: _faker.ValidId());
+            _games.AddAsync(Arg.Any<Game>()).Returns(expectedGame);
+            _votingSystems.GetByIdAsync(Arg.Any<EntityId>())
+                .Returns(validVotingSystem);
 
             var commandResult = await _handler.HandleAsync(command);
 
@@ -61,7 +96,5 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
             commandResult.Status.Should().Be(CommandStatus.Success);
             commandResult.Data!.Id.Should().Be(expectedGame.Id.Value);
         }
-
-        private Game GetValidGame() => _faker.NewValidGame();
     }
 }

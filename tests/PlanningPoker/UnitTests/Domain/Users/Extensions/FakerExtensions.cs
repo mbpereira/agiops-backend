@@ -36,12 +36,12 @@ namespace PlanningPoker.UnitTests.Domain.Users.Extensions
                 possibleGrades: faker.Make(3, () => faker.Random.Int(min: 1).ToString()),
                 sharing: SharingStatus.Requested);
 
-        public static Game NewValidGame(this Faker faker, string? password = null)
+        public static Game NewValidGame(this Faker faker, string? password = null, VotingSystem? votingSystem = null)
             => Game.New(
                 tenantId: faker.ValidId(),
                 name: faker.Random.String2(length: 5),
                 userId: faker.ValidId(),
                 password: password,
-                votingSystem: faker.LoadValidVotingSystem());
+                votingSystem: votingSystem ?? faker.LoadValidVotingSystem());
     }
 }

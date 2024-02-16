@@ -9,7 +9,7 @@ namespace PlanningPoker.Domain.Issues
         public string Name { get; private set; } = string.Empty;
         public EntityId UserId { get; private set; } = EntityId.Blank();
         public GameCredentials? Credentials { get; private set; }
-        public PossibleGrades PossibleGrades { get; private set; } = PossibleGrades.Empty();
+        public GradeDetails GradeDetails { get; private set; } = GradeDetails.Empty();
 
         public Game(int id, int tenantId, string name, int userId, VotingSystem votingSystem, string? password = null)
             : base(id, tenantId)
@@ -28,7 +28,7 @@ namespace PlanningPoker.Domain.Issues
                 return;
             }
 
-            PossibleGrades = votingSystem.PossibleGrades;
+            GradeDetails = votingSystem.GradeDetails;
         }
 
         public void SetOwner(int userId)
