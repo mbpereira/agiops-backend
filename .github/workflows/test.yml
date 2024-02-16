@@ -34,12 +34,6 @@ jobs:
     - name: Test
       run: dotnet test tests/PlanningPoker/UnitTests /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=cobertura --no-build --verbosity normal --logger trx --results-directory "test-report"
     
-    - name: Install Coverage Reporter
-      run: dotnet tool update dotnet-reportgenerator-globaltool --tool-path tools --version 5.2.1
-
-    - name: Generate Report
-      run: tools/reportgenerator.exe -reports:*tests/PlanningPoker/UnitTests/TestResults/coverage.cobertura.xml -targetdir:coveragereport
-
     - uses: dorny/test-reporter@v1
       if: ${{ always() }}
       with:
