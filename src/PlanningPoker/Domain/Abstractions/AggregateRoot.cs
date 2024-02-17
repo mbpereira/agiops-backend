@@ -40,7 +40,7 @@ namespace PlanningPoker.Domain.Abstractions
 
             if (!tenantId.GreaterThan(0))
             {
-                AddError(Error.GreaterThan(code: nameof(tenantId), value: 0));
+                AddError(Error.GreaterThan(code: nameof(TenantId), value: 0));
                 return;
             }
 
