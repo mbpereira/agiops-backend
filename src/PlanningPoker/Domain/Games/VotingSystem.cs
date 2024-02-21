@@ -6,14 +6,14 @@ namespace PlanningPoker.Domain.Games
     public sealed class VotingSystem : TenantableAggregateRoot
     {
         public EntityId UserId { get; private set; } = EntityId.Blank();
-        public string Description { get; private set; } = string.Empty;
+        public string Name { get; private set; } = string.Empty;
         public GradeDetails GradeDetails { get; private set; } = GradeDetails.Empty();
         public SharingStatus SharingStatus { get; private set; } = SharingStatus.Undefined;
 
-        private VotingSystem(int id, int tenantId, string description, int userId, IList<string> grades,
+        private VotingSystem(int id, int tenantId, string name, int userId, IList<string> grades,
             SharingStatus sharingStatus) : base(id, tenantId)
         {
-            Describe(description);
+            SetName(name);
             SetOwner(userId);
             SetPossibleGrades(grades);
             SetSharingStatus(sharingStatus);
@@ -82,15 +82,15 @@ namespace PlanningPoker.Domain.Games
             GradeDetails = new GradeDetails(grades);
         }
 
-        public void Describe(string description)
+        public void SetName(string name)
         {
-            if (!description.HasMinLength(minLength: 3))
+            if (!name.HasMinLength(minLength: 3))
             {
-                AddError(VotingSystemErrors.InvalidDescription);
+                AddError(VotingSystemErrors.InvalidName);
                 return;
             }
 
-            Description = description;
+            Name = name;
         }
 
         public static VotingSystem New(int tenantId, string description, int userId, IList<string> possibleGrades,

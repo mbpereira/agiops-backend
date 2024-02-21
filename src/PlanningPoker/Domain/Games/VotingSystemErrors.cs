@@ -25,7 +25,7 @@ namespace PlanningPoker.Domain.Games
 
         public static readonly Error InvalidGrades = Error.EmptyCollection(nameof(VotingSystem), "Grades");
 
-        public static readonly Error InvalidDescription =
-            Error.MinLength(nameof(VotingSystem), nameof(VotingSystem.Description), minLength: 3);
+        public static readonly Error InvalidName =
+            Error.MinLength(nameof(VotingSystem), nameof(VotingSystem.Name), minLength: 3);
     }
 }

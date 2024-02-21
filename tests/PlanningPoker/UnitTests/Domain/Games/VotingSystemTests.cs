@@ -14,14 +14,14 @@ namespace PlanningPoker.UnitTests.Domain.Games
         [InlineData(null)]
         [InlineData("")]
         [InlineData("te")]
-        public void New_ShouldReturnExpectedErrrors(string invalidDescription)
+        public void New_ShouldReturnExpectedErrors(string invalidDescription)
         {
             var expectedErrors = new[]
             {
                 new { Code = "TenantId", Message = "Provided value must be greater than 0." },
                 new
                 {
-                    Code = "VotingSystem.Description",
+                    Code = "VotingSystem.Name",
                     Message = "The provided string does not meet the minimum length requirement. Min length: 3."
                 },
                 new { Code = "VotingSystem.Grades", Message = "The list cannot be empty." },
@@ -109,14 +109,14 @@ namespace PlanningPoker.UnitTests.Domain.Games
         }
 
         [Fact]
-        public void Describe_ShouldChangeDescription()
+        public void SetName_ShouldChangeName()
         {
             var newDescription = _faker.Random.String2(length: 10);
             var votingSystem = GetValidVotingSystem();
 
-            votingSystem.Describe(newDescription);
+            votingSystem.SetName(newDescription);
 
-            votingSystem.Description.Should().Be(newDescription);
+            votingSystem.Name.Should().Be(newDescription);
         }
 
         [Fact]
