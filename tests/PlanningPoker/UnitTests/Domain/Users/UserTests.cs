@@ -7,7 +7,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
 {
     public class UserTests
     {
-        private static readonly Faker _faker = new();
+        private static readonly Faker Faker = new();
 
         [Theory]
         [InlineData(null)]
@@ -19,7 +19,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
                 new { Code = "User.Name", Message = "The provided string does not meet the minimum length requirement. Min length: 3." }
             };
 
-            var user = User.New(invalidName, email: _faker.Internet.Email());
+            var user = User.New(invalidName, email: Faker.Internet.Email());
 
             using var _ = new AssertionScope();
             user.Errors.Should().BeEquivalentTo(expectedErrors);
@@ -29,7 +29,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [Fact]
         public void ShouldSetEmailAsNullAndSetSessionIdWhenCreatingGuest()
         {
-            var user = User.NewGuest(name: _faker.Random.String2(length: 10));
+            var user = User.NewGuest(name: Faker.Random.String2(length: 10));
 
             using var _ = new AssertionScope();
             user.Email.Should().BeNull();
@@ -40,9 +40,9 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [Fact]
         public void ShouldSetGuestAsNullWhenCreatingUser()
         {
-            var email = _faker.Internet.Email();
+            var email = Faker.Internet.Email();
 
-            var user = User.New(name: _faker.Random.String2(length: 10), email);
+            var user = User.New(name: Faker.Random.String2(length: 10), email);
 
             using var _ = new AssertionScope();
             user.Guest.Should().BeNull();
@@ -53,7 +53,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [Fact]
         public void ShouldReturnsErrorWhenEmailIsNotSet()
         {
-            var name = _faker.Random.String2(length: 5);
+            var name = Faker.Random.String2(length: 5);
 
             var user = User.New(name: name, email: null!);
 

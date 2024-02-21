@@ -9,12 +9,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
 {
     public class IssueTests
     {
-        private readonly Faker _faker;
-
-        public IssueTests()
-        {
-            _faker = new();
-        }
+        private readonly Faker _faker = new();
 
         [Fact]
         public void ShouldReturnAutoIncrementAsIdWhenNewIssueIsCreated()

@@ -10,19 +10,19 @@ namespace PlanningPoker.Domain.Validation
 
     public record ValidationResult : IValidationResult
     {
-        private ISet<Error> _errors;
+        private readonly ISet<Error> _errors;
         public IImmutableSet<Error> Errors => _errors.ToImmutableHashSet();
 
         public bool IsValid => Errors.Count == 0;
 
-        public ValidationResult(ISet<Error> errors)
-        {
-            _errors = errors.ToHashSet();
-        }
-
         public ValidationResult()
         {
             _errors = new HashSet<Error>();
+        }
+
+        public ValidationResult(ISet<Error> errors)
+        {
+            _errors = errors;
         }
 
         public void AddError(string code, string message)

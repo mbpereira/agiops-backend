@@ -9,12 +9,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
 {
     public class GameTests
     {
-        private readonly Faker _faker;
-
-        public GameTests()
-        {
-            _faker = new();
-        }
+        private readonly Faker _faker = new();
 
         [Fact]
         public void ShouldReturnCredentialsAsNullWhenPasswordIsNotSet()

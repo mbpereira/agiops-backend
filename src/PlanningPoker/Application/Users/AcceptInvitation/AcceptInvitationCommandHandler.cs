@@ -4,23 +4,15 @@ using PlanningPoker.Domain.Users;
 
 namespace PlanningPoker.Application.Users.AcceptInvitation
 {
-    public class AcceptInvitationCommandHandler : ICommandHandler<AcceptInvitationCommand>
+    public class AcceptInvitationCommandHandler(IUnitOfWork uow, IUserContext userContext)
+        : ICommandHandler<AcceptInvitationCommand>
     {
-        private readonly IUnitOfWork _uow;
-        private readonly IUserContext _userContext;
-
-        public AcceptInvitationCommandHandler(IUnitOfWork uow, IUserContext userContext)
-        {
-            _uow = uow;
-            _userContext = userContext;
-        }
-
         public async Task<CommandResult> HandleAsync(AcceptInvitationCommand command)
         {
             if (!command.IsValid)
                 return CommandResult.Fail(command.Errors, CommandStatus.ValidationFailed);
 
-            var invitation = await _uow.Invitations.GetByIdAsync(command.InvitationId);
+            var invitation = await uow.Invitations.GetByIdAsync(command.InvitationId);
 
             if (invitation is null)
                 return CommandResult.Fail(CommandStatus.RecordNotFound);
@@ -32,17 +24,17 @@ namespace PlanningPoker.Application.Users.AcceptInvitation
 
             var accessGrants = await GetAccessGrantsAsync(invitation);
 
-            await _uow.Invitations.ChangeAsync(invitation);
-            await _uow.AccessGrants.AddAsync(accessGrants);
+            await uow.Invitations.ChangeAsync(invitation);
+            await uow.AccessGrants.AddAsync(accessGrants);
 
-            await _uow.SaveChangesAsync();
+            await uow.SaveChangesAsync();
 
             return CommandResult.Success();
         }
 
         private async Task<IList<AccessGrant>> GetAccessGrantsAsync(Invitation invitation)
         {
-            var userInformation = await _userContext.GetCurrentUserAsync();
+            var userInformation = await userContext.GetCurrentUserAsync();
             var scopes = TenantScopes.GetByRole(invitation.Role);
             return scopes.Select(scope => AccessGrant.New(userInformation.Id, invitation.TenantId, Resources.Tenant, scope)).ToList();
         }

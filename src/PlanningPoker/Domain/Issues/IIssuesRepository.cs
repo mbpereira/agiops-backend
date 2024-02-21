@@ -2,7 +2,5 @@
 
 namespace PlanningPoker.Domain.Issues
 {
-    public interface IIssuesRepository : IRepository<Issue>
-    {
-    }
+    public interface IIssuesRepository : IRepository<Issue>;
 }

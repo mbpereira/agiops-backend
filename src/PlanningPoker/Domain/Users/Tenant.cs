@@ -1,14 +1,8 @@
 ﻿using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Shared.Extensions;
-using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Domain.Users
 {
-    public static class TenantErrors
-    {
-        public static Error InvalidName = Error.MinLength(nameof(Tenant), nameof(Tenant.Name), minLength: 3);
-    }
-
     public class Tenant : AggregateRoot
     {
         public string Name { get; private set; } = string.Empty;

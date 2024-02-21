@@ -6,12 +6,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
 {
     public class TenantTests
     {
-        private readonly Faker _faker;
-
-        public TenantTests()
-        {
-            _faker = new();
-        }
+        private readonly Faker _faker = new();
 
         [Theory]
         [InlineData(null)]

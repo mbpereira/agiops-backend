@@ -8,12 +8,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
 {
     public class InvitationTests
     {
-        private readonly Faker _faker;
-
-        public InvitationTests()
-        {
-            _faker = new();
-        }
+        private readonly Faker _faker = new();
 
         [Fact]
         public void New_ShouldReturnExpectedErrorsWhenProvidedDataIsNotValid()

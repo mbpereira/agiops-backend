@@ -4,14 +4,9 @@ namespace PlanningPoker.Domain.Abstractions
 {
     public abstract class Validatable
     {
-        private readonly ValidationResult _validationResult;
+        private readonly ValidationResult _validationResult = new();
         public bool IsValid => _validationResult.IsValid;
         public IEnumerable<Error> Errors => _validationResult.Errors;
-
-        public Validatable()
-        {
-            _validationResult = new ValidationResult();
-        }
 
         protected void AddError(Error error)
         {

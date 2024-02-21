@@ -2,7 +2,5 @@
 
 namespace PlanningPoker.Domain.Users
 {
-    public interface IAccessGrantsRepository : IRepository<AccessGrant>
-    {
-    }
+    public interface IAccessGrantsRepository : IRepository<AccessGrant>;
 }

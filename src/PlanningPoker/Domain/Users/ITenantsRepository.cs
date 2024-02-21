@@ -2,7 +2,5 @@
 
 namespace PlanningPoker.Domain.Users
 {
-    public interface ITenantsRepository : IRepository<Tenant>
-    {
-    }
+    public interface ITenantsRepository : IRepository<Tenant>;
 }

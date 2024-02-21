@@ -12,7 +12,7 @@ namespace PlanningPoker.Domain.Users
         public DateTime SentAtUtc { get; private set; }
         public DateTime ExpiresAtUtc { get; private set; }
         public InvitationStatus Status { get; private set; }
-        public DateTime? UpdatedAtUtc { get; private set; } = null;
+        public DateTime? UpdatedAtUtc { get; private set; }
         public bool IsOpen => InvitationStatus.Sent.Equals(Status);
         public bool HasExpired => DateTime.UtcNow > ExpiresAtUtc;
 

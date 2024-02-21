@@ -16,7 +16,6 @@ namespace PlanningPoker.UnitTests.Application.Users.AcceptInvitation
         private readonly Faker _faker;
         private readonly IInvitationsRepository _invitations;
         private readonly IAccessGrantsRepository _grants;
-        private readonly IUserContext _userContext;
         private readonly AcceptInvitationCommandHandler _handler;
         private readonly UserInformation _userInformation;
 
@@ -28,10 +27,10 @@ namespace PlanningPoker.UnitTests.Application.Users.AcceptInvitation
             var uow = Substitute.For<IUnitOfWork>();
             uow.Invitations.Returns(_invitations);
             uow.AccessGrants.Returns(_grants);
-            _userContext = Substitute.For<IUserContext>();
+            var userContext = Substitute.For<IUserContext>();
             _userInformation = new UserInformation(Id: _faker.ValidId());
-            _userContext.GetCurrentUserAsync().Returns(_userInformation);
-            _handler = new AcceptInvitationCommandHandler(uow, _userContext);
+            userContext.GetCurrentUserAsync().Returns(_userInformation);
+            _handler = new AcceptInvitationCommandHandler(uow, userContext);
         }
 
         [Fact]

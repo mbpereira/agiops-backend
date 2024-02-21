@@ -4,17 +4,9 @@ using PlanningPoker.Domain.Users;
 
 namespace PlanningPoker.Application.Users.CreateTenant
 {
-    public class CreateTenantCommandHandler : ICommandHandler<CreateTenantCommand, CreateTenantResult>
+    public class CreateTenantCommandHandler(IUnitOfWork uow, IUserContext userContext)
+        : ICommandHandler<CreateTenantCommand, CreateTenantResult>
     {
-        private readonly IUnitOfWork _uow;
-        private readonly IUserContext _userContext;
-
-        public CreateTenantCommandHandler(IUnitOfWork uow, IUserContext userContext)
-        {
-            _uow = uow;
-            _userContext = userContext;
-        }
-
         public async Task<CommandResult<CreateTenantResult>> HandleAsync(CreateTenantCommand command)
         {
             var tenant = Tenant.New(command.Name);
@@ -31,15 +23,15 @@ namespace PlanningPoker.Application.Users.CreateTenant
 
         private async Task<int> GetCurrentUserIdAsync()
         {
-            var user = await _userContext.GetCurrentUserAsync();
+            var user = await userContext.GetCurrentUserAsync();
             return user.Id;
         }
 
         private async Task<int> CreateTenantAsync(Tenant tenant)
         {
-            var createdTenant = await _uow.Tenants.AddAsync(tenant);
+            var createdTenant = await uow.Tenants.AddAsync(tenant);
 
-            await _uow.SaveChangesAsync();
+            await uow.SaveChangesAsync();
 
             return createdTenant.Id.Value;
         }
@@ -48,9 +40,9 @@ namespace PlanningPoker.Application.Users.CreateTenant
         {
             var accessGrants = await GetAccessGrantsAsync(tenantId);
 
-            await _uow.AccessGrants.AddAsync(accessGrants);
+            await uow.AccessGrants.AddAsync(accessGrants);
 
-            await _uow.SaveChangesAsync();
+            await uow.SaveChangesAsync();
         }
 
         private async Task<IList<AccessGrant>> GetAccessGrantsAsync(int tenantId)

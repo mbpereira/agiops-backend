@@ -16,21 +16,20 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
         private readonly Faker _faker;
         private readonly IVotingSystemsRepository _votingSystems;
         private readonly IGamesRepository _games;
-        private readonly ISecurityContext _authenticationContext;
         private readonly CreateGameCommandHandler _handler;
 
         public CreateGameCommandHandlerTests()
         {
             _games = Substitute.For<IGamesRepository>();
             _votingSystems = Substitute.For<IVotingSystemsRepository>();
-            _authenticationContext = Substitute.For<ISecurityContext>();
+            var authenticationContext = Substitute.For<ISecurityContext>();
             _faker = new();
-            _authenticationContext.GetSecurityInformationAsync()
+            authenticationContext.GetSecurityInformationAsync()
                 .Returns(GetSecurityInformation());
             var uow = Substitute.For<IUnitOfWork>();
             uow.Games.Returns(_games);
             uow.VotingSystems.Returns(_votingSystems);
-            _handler = new(uow, _authenticationContext);
+            _handler = new(uow, authenticationContext);
         }
 
         private SecurityInformation GetSecurityInformation()

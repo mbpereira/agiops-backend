@@ -14,7 +14,6 @@ namespace PlanningPoker.UnitTests.Application.Users.SendInvitation
     public class SendInvitationCommandHandlerTests
     {
         private readonly Faker _faker;
-        private readonly ITenantContext _tenantContext;
         private readonly IInvitationsRepository _invitations;
         private readonly TenantInformation _tenant;
         private readonly SendInvitationCommandHandler _handler;
@@ -24,11 +23,11 @@ namespace PlanningPoker.UnitTests.Application.Users.SendInvitation
             _faker = new();
             _tenant = new TenantInformation(Id: _faker.Random.Int(min: 1));
             _invitations = Substitute.For<IInvitationsRepository>();
-            _tenantContext = Substitute.For<ITenantContext>();
-            _tenantContext.GetCurrentTenantAsync().Returns(_tenant);
+            var tenantContext = Substitute.For<ITenantContext>();
+            tenantContext.GetCurrentTenantAsync().Returns(_tenant);
             var uow = Substitute.For<IUnitOfWork>();
             uow.Invitations.Returns(_invitations);
-            _handler = new SendInvitationCommandHandler(uow, _tenantContext);
+            _handler = new SendInvitationCommandHandler(uow, tenantContext);
         }
 
         [Theory]

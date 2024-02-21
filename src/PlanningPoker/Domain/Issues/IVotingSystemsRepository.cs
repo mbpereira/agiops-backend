@@ -2,7 +2,5 @@
 
 namespace PlanningPoker.Domain.Issues
 {
-    public interface IVotingSystemsRepository : IRepository<VotingSystem>
-    {
-    }
+    public interface IVotingSystemsRepository : IRepository<VotingSystem>;
 }

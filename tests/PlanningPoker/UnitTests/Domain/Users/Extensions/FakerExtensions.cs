@@ -27,6 +27,7 @@ namespace PlanningPoker.UnitTests.Domain.Users.Extensions
                 sentAtUtc: DateTime.UtcNow,
                 expiresAtUtc: expiresAtUtc ?? DateTime.UtcNow.AddMinutes(InvitationConstants.ExpirationTimeInMinutes),
                 status: status ?? InvitationStatus.Sent);
+        
         public static VotingSystem LoadValidVotingSystem(this Faker faker)
             => VotingSystem.Load(
                 id: faker.ValidId(),

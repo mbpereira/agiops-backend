@@ -2,19 +2,12 @@
 
 namespace PlanningPoker.Application.Issues.CreateIssue
 {
-    public class CreateIssueCommand : Command
+    public class CreateIssueCommand(int gameId, string name, string? link = null, string? description = null)
+        : Command
     {
-        public int GameId { get; }
-        public string Name { get; }
-        public string? Link { get; }
-        public string? Description { get; }
-
-        public CreateIssueCommand(int gameId, string name, string? link = null, string? description = null)
-        {
-            GameId = gameId;
-            Name = name;
-            Link = link;
-            Description = description;
-        }
+        public int GameId { get; } = gameId;
+        public string Name { get; } = name;
+        public string? Link { get; } = link;
+        public string? Description { get; } = description;
     }
 }

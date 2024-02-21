@@ -14,17 +14,16 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateIssue
     {
         private readonly Faker _faker;
         private readonly IUnitOfWork _uow;
-        private readonly ITenantContext _tenantContext;
         private readonly CreateIssueCommandHandler _handler;
 
         public CreateIssueCommandHandlerTests()
         {
             _faker = new();
-            _tenantContext = Substitute.For<ITenantContext>();
+            var tenantContext = Substitute.For<ITenantContext>();
             _uow = Substitute.For<IUnitOfWork>();
-            _tenantContext.GetCurrentTenantAsync()
+            tenantContext.GetCurrentTenantAsync()
                 .Returns(new TenantInformation(Id: _faker.Random.Int(min: 1)));
-            _handler = new CreateIssueCommandHandler(_uow, _tenantContext);
+            _handler = new CreateIssueCommandHandler(_uow, tenantContext);
         }
 
         [Theory]

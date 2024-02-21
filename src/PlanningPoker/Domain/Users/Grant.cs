@@ -6,7 +6,7 @@ namespace PlanningPoker.Domain.Users
     {
         public Resources Resource { get; private set; }
         public GrantScopes Scope { get; private set; }
-        public EntityId? RecordId { get; private set; } = null;
+        public EntityId? RecordId { get; private set; }
 
         internal Grant(Resources resource, GrantScopes scope, EntityId? recordId = null)
         {

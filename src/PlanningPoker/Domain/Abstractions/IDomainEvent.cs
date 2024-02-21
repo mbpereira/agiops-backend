@@ -1,6 +1,4 @@
 ﻿namespace PlanningPoker.Domain.Abstractions
 {
-    public interface IDomainEvent
-    {
-    }
+    public interface IDomainEvent;
 }

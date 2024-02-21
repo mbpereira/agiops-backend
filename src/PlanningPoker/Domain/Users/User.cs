@@ -39,7 +39,7 @@ namespace PlanningPoker.Domain.Users
 
             if (sessionId is not null)
             {
-                Guest = new Guest(sessionId!);
+                Guest = new Guest(sessionId);
                 return;
             }
 

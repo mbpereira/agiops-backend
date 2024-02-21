@@ -8,12 +8,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
 {
     public class VotingSystemTests
     {
-        private readonly Faker _faker;
-
-        public VotingSystemTests()
-        {
-            _faker = new();
-        }
+        private readonly Faker _faker = new();
 
         [Theory]
         [InlineData(null)]

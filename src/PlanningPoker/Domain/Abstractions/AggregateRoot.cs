@@ -3,13 +3,9 @@ using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Domain.Abstractions
 {
-    public abstract class AggregateRoot : Entity, IAggregateRoot
+    public abstract class AggregateRoot(int id) : Entity(id), IAggregateRoot
     {
         private readonly IList<IDomainEvent> _domainEvents = new List<IDomainEvent>();
-
-        protected AggregateRoot(int id) : base(id)
-        {
-        }
 
         public IReadOnlyList<IDomainEvent> GetDomainEvents()
             => _domainEvents.ToList();
