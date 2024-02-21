@@ -7,7 +7,6 @@ using PlanningPoker.Application.Invitations.SendInvitation;
 using PlanningPoker.Application.Tenants;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Invitations;
-using PlanningPoker.Domain.Issues;
 using PlanningPoker.Domain.Users;
 using PlanningPoker.UnitTests.Domain.Common.Extensions;
 

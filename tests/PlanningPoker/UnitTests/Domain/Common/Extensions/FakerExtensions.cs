@@ -1,6 +1,6 @@
 ﻿using Bogus;
+using PlanningPoker.Domain.Games;
 using PlanningPoker.Domain.Invitations;
-using PlanningPoker.Domain.Issues;
 using PlanningPoker.Domain.Users;
 
 namespace PlanningPoker.UnitTests.Domain.Common.Extensions

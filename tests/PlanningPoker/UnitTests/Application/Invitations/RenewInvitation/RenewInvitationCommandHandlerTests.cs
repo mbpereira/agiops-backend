@@ -6,7 +6,6 @@ using PlanningPoker.Application.Abstractions.Commands;
 using PlanningPoker.Application.Invitations.RenewInvitation;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Invitations;
-using PlanningPoker.Domain.Issues;
 using PlanningPoker.UnitTests.Domain.Common.Extensions;
 
 namespace PlanningPoker.UnitTests.Application.Invitations.RenewInvitation

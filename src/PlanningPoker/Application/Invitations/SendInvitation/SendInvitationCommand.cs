@@ -1,5 +1,4 @@
-﻿using PlanningPoker.Application.Abstractions;
-using PlanningPoker.Application.Abstractions.Commands;
+﻿using PlanningPoker.Application.Abstractions.Commands;
 using PlanningPoker.Domain.Users;
 
 namespace PlanningPoker.Application.Invitations.SendInvitation
