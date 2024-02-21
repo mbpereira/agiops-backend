@@ -14,7 +14,7 @@ namespace PlanningPoker.UnitTests.Domain.Common.Extensions
         public static string ValidEmail(this Faker faker) => faker.Person.Email;
 
         public static string InvalidEmail(this Faker faker) =>
-            faker.PickRandomParam(new string[] { null!, "", " ", faker.Random.String() });
+            faker.PickRandomParam([null!, "", " ", faker.Random.String()]);
 
         public static Invitation NewInvalidInvitation(this Faker faker) =>
             Invitation.New(tenantId: faker.Random.Int(min: 1), to: faker.InvalidEmail(), faker.PickRandom<Role>());
