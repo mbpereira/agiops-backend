@@ -1,4 +1,4 @@
-﻿using PlanningPoker.Domain.Shared.Extensions;
+﻿using PlanningPoker.Domain.Common.Extensions;
 using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Domain.Abstractions

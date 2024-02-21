@@ -1,4 +1,5 @@
 ﻿using PlanningPoker.Application.Abstractions;
+using PlanningPoker.Application.Abstractions.Commands;
 
 namespace PlanningPoker.Application.Issues.CreateIssue
 {

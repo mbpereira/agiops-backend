@@ -3,7 +3,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Issues;
-using PlanningPoker.UnitTests.Domain.Users.Extensions;
+using PlanningPoker.UnitTests.Domain.Common.Extensions;
 
 namespace PlanningPoker.UnitTests.Domain.Issues
 {

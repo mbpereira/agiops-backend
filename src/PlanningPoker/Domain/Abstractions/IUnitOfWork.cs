@@ -1,4 +1,5 @@
 ﻿using PlanningPoker.Domain.Issues;
+using PlanningPoker.Domain.Tenants;
 using PlanningPoker.Domain.Users;
 
 namespace PlanningPoker.Domain.Abstractions

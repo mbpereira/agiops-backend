@@ -1,6 +1,6 @@
 ﻿using Bogus;
 using FluentAssertions;
-using PlanningPoker.UnitTests.Domain.Users.Extensions;
+using PlanningPoker.UnitTests.Domain.Common.Extensions;
 
 namespace PlanningPoker.UnitTests.Domain.Abstractions
 {

@@ -1,5 +1,5 @@
 ﻿using PlanningPoker.Domain.Abstractions;
-using PlanningPoker.Domain.Shared.Extensions;
+using PlanningPoker.Domain.Common.Extensions;
 
 namespace PlanningPoker.Domain.Users
 {

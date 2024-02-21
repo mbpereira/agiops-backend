@@ -3,11 +3,13 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using NSubstitute;
 using PlanningPoker.Application.Abstractions;
+using PlanningPoker.Application.Abstractions.Commands;
+using PlanningPoker.Application.Abstractions.Security;
 using PlanningPoker.Application.Issues.CreateGame;
 using PlanningPoker.Application.Users;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Issues;
-using PlanningPoker.UnitTests.Domain.Users.Extensions;
+using PlanningPoker.UnitTests.Domain.Common.Extensions;
 
 namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
 {

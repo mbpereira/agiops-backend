@@ -1,6 +1,6 @@
 ﻿using PlanningPoker.Application.Abstractions;
-using PlanningPoker.Domain.Shared.Extensions;
-using PlanningPoker.Domain.Validation;
+using PlanningPoker.Application.Abstractions.Commands;
+using PlanningPoker.Domain.Common.Extensions;
 
 namespace PlanningPoker.Application.Issues.CreateGame
 {
@@ -21,7 +21,7 @@ namespace PlanningPoker.Application.Issues.CreateGame
         {
             if (!votingSystemId.GreaterThan(0))
             {
-                AddError(Error.GreaterThan(nameof(CreateGameCommand), nameof(votingSystemId), value: 0));
+                AddError(CreateGameCommandErrors.InvalidVotingSystemId);
                 return;
             }
 
