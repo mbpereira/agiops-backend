@@ -34,7 +34,7 @@ namespace PlanningPoker.UnitTests.Application.Users.CreateTenant
         [InlineData(null)]
         [InlineData("")]
         [InlineData("ab")]
-        public async Task ShouldReturnValidationErrorWhenProvidedDataIsNotValid(string invalidName)
+        public async Task HandleAsync_ShouldReturnValidationErrorWhenProvidedDataIsNotValid(string invalidName)
         {
             var command = new CreateTenantCommand(invalidName);
 
@@ -44,15 +44,15 @@ namespace PlanningPoker.UnitTests.Application.Users.CreateTenant
         }
 
         [Fact]
-        public async Task ShouldReturnSuccessAndSetAllAvailableTenantPermissionsToCurrentUser()
+        public async Task HandleAsync_ShouldReturnSuccessAndSetAllAvailableTenantPermissionsToCurrentUser()
         {
-            var exoectedUser = new UserInformation(Id: _faker.Random.Int(min: 1));
+            var expectedUser = new UserInformation(Id: _faker.Random.Int(min: 1));
             var expectedTenant = Tenant.Load(id: _faker.Random.Int(min: 1), name: _faker.Random.String2(length: 3));
             var command = new CreateTenantCommand(name: expectedTenant.Name);
             _tenants.AddAsync(Arg.Any<Tenant>())
                 .Returns(expectedTenant);
             _userContext.GetCurrentUserAsync()
-                .Returns(exoectedUser);
+                .Returns(expectedUser);
 
             var result = await _handler.HandleAsync(command);
 
@@ -60,11 +60,12 @@ namespace PlanningPoker.UnitTests.Application.Users.CreateTenant
             result.Status.Should().Be(CommandStatus.Success);
             await _accessGrants.Received().AddAsync(Arg.Is<IList<AccessGrant>>(accessGrants =>
                 accessGrants.Select(grant => grant.Grant.Resource).All(resource => resource == Resources.Tenant) &&
-                TenantScopes.GetByRole(Role.Admin).All(scope => accessGrants.Any(accessGrant => accessGrant.Grant.Scope == scope)) &&
+                TenantScopes.GetByRole(Role.Admin)
+                    .All(scope => accessGrants.Any(accessGrant => accessGrant.Grant.Scope == scope)) &&
                 accessGrants.All(accessGrant =>
                     accessGrant.TenantId.Value == expectedTenant.Id &&
-                    accessGrant.UserId.Value == exoectedUser.Id)
-                ));
+                    accessGrant.UserId.Value == expectedUser.Id)
+            ));
         }
     }
 }

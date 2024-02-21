@@ -75,10 +75,12 @@ namespace PlanningPoker.Domain.Issues
             Credentials = new GameCredentials(password!);
         }
 
-        public static Game New(int tenantId, string name, int userId, VotingSystem votingSystem, string? password = null)
+        public static Game New(int tenantId, string name, int userId, VotingSystem votingSystem,
+            string? password = null)
             => new(EntityId.AutoIncrement(), tenantId, name, userId, votingSystem, password);
 
-        public static Game Load(int id, int tenantId, string name, int userId, VotingSystem votingSystem, string? password = null)
+        public static Game Load(int id, int tenantId, string name, int userId, VotingSystem votingSystem,
+            string? password = null)
             => new(id, tenantId, name, userId, votingSystem, password);
     }
 }

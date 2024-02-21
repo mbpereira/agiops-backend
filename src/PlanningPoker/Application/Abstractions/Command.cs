@@ -2,7 +2,5 @@
 
 namespace PlanningPoker.Application.Abstractions
 {
-    public abstract class Command : Validatable
-    {
-    }
+    public abstract class Command : Validatable;
 }

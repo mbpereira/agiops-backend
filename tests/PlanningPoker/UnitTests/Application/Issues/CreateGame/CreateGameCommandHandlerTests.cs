@@ -40,10 +40,12 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
         [Theory]
         [InlineData("", null)]
         [InlineData(null, "abcde")]
-        public async Task ShouldReturnValidationFailedWhenProvidedDataIsNotValid(string invalidName, string invalidPassword)
+        public async Task HandleAsync_ShouldReturnValidationFailedWhenProvidedDataIsNotValid(string invalidName,
+            string invalidPassword)
         {
             var validVotingSystem = _faker.LoadValidVotingSystem();
-            var command = new CreateGameCommand(name: invalidName, password: invalidPassword, votingSystemId: validVotingSystem.Id.Value);
+            var command = new CreateGameCommand(name: invalidName, password: invalidPassword,
+                votingSystemId: validVotingSystem.Id.Value);
             _votingSystems.GetByIdAsync(Arg.Any<EntityId>())
                 .Returns(validVotingSystem);
 
@@ -53,9 +55,10 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
         }
 
         [Fact]
-        public async Task ShouldReturnValidationFailedWhenProvidedVotingSystemIdIsNotValid()
+        public async Task HandleAsync_ShouldReturnValidationFailedWhenProvidedVotingSystemIdIsNotValid()
         {
-            var command = new CreateGameCommand(name: _faker.Random.String2(length: 10), password: _faker.Random.String2(length: 10), votingSystemId: 0);
+            var command = new CreateGameCommand(name: _faker.Random.String2(length: 10),
+                password: _faker.Random.String2(length: 10), votingSystemId: 0);
 
             var commandResult = await _handler.HandleAsync(command);
 
@@ -63,7 +66,7 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
         }
 
         [Fact]
-        public async Task ShouldReturnRecordNotFoundWhenProvidedVotingSystemDoesNotExists()
+        public async Task HandleAsync_ShouldReturnRecordNotFoundWhenProvidedVotingSystemDoesNotExists()
         {
             var expectedGame = _faker.NewValidGame();
             var command = new CreateGameCommand(
@@ -77,7 +80,7 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateGame
         }
 
         [Fact]
-        public async Task ShouldReturnGeneratedIdWhenGameWasCreated()
+        public async Task HandleAsync_ShouldReturnGeneratedIdWhenGameWasCreated()
         {
             var validVotingSystem = _faker.LoadValidVotingSystem();
             var expectedGame = _faker.NewValidGame(votingSystem: validVotingSystem);

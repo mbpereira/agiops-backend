@@ -12,11 +12,15 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void ShouldReturnExpectedErrors(string invalidName)
+        public void New_ShouldReturnExpectedErrors(string invalidName)
         {
             var expectedErrors = new[]
             {
-                new { Code = "User.Name", Message = "The provided string does not meet the minimum length requirement. Min length: 3." }
+                new
+                {
+                    Code = "User.Name",
+                    Message = "The provided string does not meet the minimum length requirement. Min length: 3."
+                }
             };
 
             var user = User.New(invalidName, email: Faker.Internet.Email());
@@ -27,7 +31,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         }
 
         [Fact]
-        public void ShouldSetEmailAsNullAndSetSessionIdWhenCreatingGuest()
+        public void NewGuest_ShouldSetEmailAsNullAndSetSessionIdWhenCreatingGuest()
         {
             var user = User.NewGuest(name: Faker.Random.String2(length: 10));
 
@@ -38,7 +42,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         }
 
         [Fact]
-        public void ShouldSetGuestAsNullWhenCreatingUser()
+        public void New_ShouldSetGuestAsNullWhenCreatingUser()
         {
             var email = Faker.Internet.Email();
 
@@ -51,7 +55,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         }
 
         [Fact]
-        public void ShouldReturnsErrorWhenEmailIsNotSet()
+        public void New_ShouldReturnsErrorWhenEmailIsNotSet()
         {
             var name = Faker.Random.String2(length: 5);
 

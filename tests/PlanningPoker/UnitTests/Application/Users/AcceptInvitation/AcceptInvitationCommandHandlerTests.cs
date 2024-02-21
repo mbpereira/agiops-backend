@@ -34,7 +34,7 @@ namespace PlanningPoker.UnitTests.Application.Users.AcceptInvitation
         }
 
         [Fact]
-        public async Task ShouldReturnErrorWhenInvitationIdIsNotValid()
+        public async Task HandleAsync_ShouldReturnErrorWhenInvitationIdIsNotValid()
         {
             var command = new AcceptInvitationCommand(invitationId: 0);
 
@@ -44,7 +44,7 @@ namespace PlanningPoker.UnitTests.Application.Users.AcceptInvitation
         }
 
         [Fact]
-        public async Task ShouldReturnErrorWhenInvitationHasExpired()
+        public async Task HandleAsync_ShouldReturnErrorWhenInvitationHasExpired()
         {
             var command = new AcceptInvitationCommand(invitationId: _faker.ValidId());
             _invitations.GetByIdAsync(Arg.Any<EntityId>())
@@ -56,7 +56,7 @@ namespace PlanningPoker.UnitTests.Application.Users.AcceptInvitation
         }
 
         [Fact]
-        public async Task ShouldReturnRecordNotFoundWhenInvitationWasNotFound()
+        public async Task HandleAsync_ShouldReturnRecordNotFoundWhenInvitationWasNotFound()
         {
             var command = new AcceptInvitationCommand(invitationId: _faker.ValidId());
 
@@ -68,7 +68,8 @@ namespace PlanningPoker.UnitTests.Application.Users.AcceptInvitation
         [Theory]
         [InlineData(InvitationStatus.Accepted)]
         [InlineData(InvitationStatus.Cancelled)]
-        public async Task ShouldReturnValidationErrorWhenInvitationAlreadyBeenAcceptedOrInactived(InvitationStatus status)
+        public async Task HandleAsync_ShouldReturnValidationErrorWhenInvitationAlreadyBeenAcceptedOrInactived(
+            InvitationStatus status)
         {
             var command = new AcceptInvitationCommand(invitationId: _faker.ValidId());
             _invitations.GetByIdAsync(Arg.Any<EntityId>())
@@ -80,7 +81,7 @@ namespace PlanningPoker.UnitTests.Application.Users.AcceptInvitation
         }
 
         [Fact]
-        public async Task ShouldReturnSuccessWhenInvitationIsAcceptedWithoutErrors()
+        public async Task HandleAsync_ShouldReturnSuccessWhenInvitationIsAcceptedWithoutErrors()
         {
             var expectedInvitation = _faker.LoadValidInvitation();
             var updatedAt = expectedInvitation.UpdatedAtUtc.GetValueOrDefault();
@@ -106,7 +107,7 @@ namespace PlanningPoker.UnitTests.Application.Users.AcceptInvitation
         [Theory]
         [InlineData(Role.Admin)]
         [InlineData(Role.Contributor)]
-        public async Task ShouldRegisterUserThatAcceptedInvitationInInvitationTenant(Role role)
+        public async Task HandleAsync_ShouldRegisterUserThatAcceptedInvitationInInvitationTenant(Role role)
         {
             var expectedScopes = TenantScopes.GetByRole(role);
             var expectedInvitation = _faker.LoadValidInvitation(role: role);
@@ -114,7 +115,7 @@ namespace PlanningPoker.UnitTests.Application.Users.AcceptInvitation
             _invitations.GetByIdAsync(Arg.Any<EntityId>())
                 .Returns(expectedInvitation);
 
-            var result = await _handler.HandleAsync(command);
+            _ = await _handler.HandleAsync(command);
 
             await _grants.Received().AddAsync(Arg.Is<IList<AccessGrant>>(accessGrants =>
                 accessGrants.All(access =>

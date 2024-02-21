@@ -12,7 +12,8 @@ namespace PlanningPoker.Domain.Issues
         private readonly List<UserGrade> _grades;
         public IReadOnlyCollection<UserGrade> UserGrades => _grades.AsReadOnly();
 
-        private Issue(int id, int tenantId, int gameId, string name, string? description = null, string? link = null, List<UserGrade>? grades = null) : base(id, tenantId)
+        private Issue(int id, int tenantId, int gameId, string name, string? description = null, string? link = null,
+            List<UserGrade>? grades = null) : base(id, tenantId)
         {
             SetGame(gameId);
             SetName(name);
@@ -64,7 +65,8 @@ namespace PlanningPoker.Domain.Issues
         public static Issue New(int tenantId, int gameId, string name, string? description = null, string? link = null)
             => new(EntityId.AutoIncrement(), tenantId, gameId, name, description, link);
 
-        public static Issue Load(int id, int tenantId, int gameId, string name, string? description = null, string? link = null, List<UserGrade>? grades = null)
+        public static Issue Load(int id, int tenantId, int gameId, string name, string? description = null,
+            string? link = null, List<UserGrade>? grades = null)
             => new(id, tenantId, gameId, name, description, link, grades);
     }
 }

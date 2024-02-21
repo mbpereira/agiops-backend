@@ -12,7 +12,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         private readonly Faker _faker = new();
 
         [Fact]
-        public void ShouldReturnCredentialsAsNullWhenPasswordIsNotSet()
+        public void New_ShouldReturnCredentialsAsNullWhenPasswordIsNotSet()
         {
             var game = _faker.NewValidGame();
 
@@ -20,7 +20,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         }
 
         [Fact]
-        public void ShouldReturnAutoIncrementAsIdWhenNewValidGameIsCreated()
+        public void New_ShouldReturnAutoIncrementAsIdWhenNewValidGameIsCreated()
         {
             var game = _faker.NewValidGame();
 
@@ -30,7 +30,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         }
 
         [Fact]
-        public void ShouldReturnProvidedPassword()
+        public void New_ShouldReturnProvidedPassword()
         {
             var password = _faker.Random.String2(length: 25);
 
@@ -44,7 +44,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void ShouldReturnValidationErrorsWhenProvidedDataIsNotValid(string? name)
+        public void New_ShouldReturnValidationErrorsWhenProvidedDataIsNotValid(string? name)
         {
             var expectedErrors = new[]
             {
@@ -75,7 +75,8 @@ namespace PlanningPoker.UnitTests.Domain.Issues
                 }
             };
 
-            var game = Game.New(tenantId: 0, name!, userId: 0, password: _faker.Random.String2(length: 2), votingSystem: null!);
+            var game = Game.New(tenantId: 0, name!, userId: 0, password: _faker.Random.String2(length: 2),
+                votingSystem: null!);
 
             using var _ = new AssertionScope();
             game.IsValid.Should().BeFalse();
@@ -83,10 +84,10 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         }
 
         [Fact]
-        public void ShouldReturnErrorWhenProvidedVotingSystemIsNotValid()
+        public void SetVotingSystem_ShouldReturnErrorWhenProvidedVotingSystemIsNotValid()
         {
             var game = _faker.NewValidGame();
-            
+
             game.SetVotingSystem(_faker.InvalidVotingSystem());
 
             game.Errors.Should().BeEquivalentTo(new[]
@@ -96,7 +97,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         }
 
         [Fact]
-        public void ShouldReturnErrorWhenTryingToChangeGameOwner()
+        public void SetOwner_ShouldReturnErrorWhenTryingToChangeGameOwner()
         {
             var game = _faker.LoadValidGame();
 
@@ -109,7 +110,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         }
 
         [Fact]
-        public void ShouldReturnIsValidAsTrueWhenProvidedDataIsValid()
+        public void New_ShouldReturnIsValidAsTrueWhenProvidedDataIsValid()
         {
             var game = _faker.NewValidGame(password: _faker.Random.String2(length: 6));
 

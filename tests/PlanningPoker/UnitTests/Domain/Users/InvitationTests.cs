@@ -17,7 +17,8 @@ namespace PlanningPoker.UnitTests.Domain.Users
 
             var errors = invitation.Errors;
 
-            errors.Should().BeEquivalentTo(new[] { new { Code = "Invitation.Receiver", Message = "Provided email is not valid." } });
+            errors.Should().BeEquivalentTo(new[]
+                { new { Code = "Invitation.Receiver", Message = "Provided email is not valid." } });
         }
 
         [Fact]
@@ -35,7 +36,8 @@ namespace PlanningPoker.UnitTests.Domain.Users
         {
             var invitation = GetNewValidInvitation();
 
-            invitation.GetDomainEvents().Should().BeEquivalentTo(new[] { new InvitationCreated(invitation.Token, invitation.Receiver, invitation.ExpiresAtUtc) });
+            invitation.GetDomainEvents().Should().BeEquivalentTo(new[]
+                { new InvitationCreated(invitation.Token, invitation.Receiver, invitation.ExpiresAtUtc) });
         }
 
         [Fact]
@@ -49,7 +51,8 @@ namespace PlanningPoker.UnitTests.Domain.Users
             invitation.Renew();
 
             using var _ = new AssertionScope();
-            invitation.GetDomainEvents().Should().BeEquivalentTo(new[] { new InvitationRenewed(invitation.Token, invitation.Receiver, invitation.ExpiresAtUtc) });
+            invitation.GetDomainEvents().Should().BeEquivalentTo(new[]
+                { new InvitationRenewed(invitation.Token, invitation.Receiver, invitation.ExpiresAtUtc) });
             invitation.SentAtUtc.Should().BeAfter(sentAt);
             invitation.ExpiresAtUtc.Should().BeAfter(expiresAt);
         }
@@ -57,10 +60,11 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [Theory]
         [InlineData(InvitationStatus.Accepted)]
         [InlineData(InvitationStatus.Cancelled)]
-        public void Validate_ShouldReturnFinalizedInvitationErrorWhenTryingToRenewAnAcceptedOrInactiveInvitation(InvitationStatus status)
+        public void Renew_ShouldReturnFinalizedInvitationErrorWhenTryingToRenewAnAcceptedOrInactiveInvitation(
+            InvitationStatus status)
         {
             var expectedErrors = new[]
-{
+            {
                 new
                 {
                     Code = "Invitation.Renew",
@@ -79,7 +83,8 @@ namespace PlanningPoker.UnitTests.Domain.Users
         [Theory]
         [InlineData(InvitationStatus.Accepted)]
         [InlineData(InvitationStatus.Cancelled)]
-        public void Validate_ShouldReturnFinalizedInvitationErrorWhenTryingToAcceptAnAcceptedOrInactiveInvitation(InvitationStatus status)
+        public void Accept_ShouldReturnFinalizedInvitationErrorWhenTryingToAcceptAnAcceptedOrInactiveInvitation(
+            InvitationStatus status)
         {
             var expectedErrors = new[]
             {
@@ -90,7 +95,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
                 }
             };
             var invitation = _faker.LoadValidInvitation(status: status);
-            
+
             invitation.Accept();
 
             using var _ = new AssertionScope();
@@ -99,10 +104,10 @@ namespace PlanningPoker.UnitTests.Domain.Users
         }
 
         [Fact]
-        public void Validate_ShouldReturnExpiredInvitationErrorWhenTryingToAcceptExpiredInvitation()
+        public void Accept_ShouldReturnExpiredInvitationErrorWhenTryingToAcceptExpiredInvitation()
         {
             var expectedErrors = new[]
-{
+            {
                 new
                 {
                     Code = "Invitation.Accept",
@@ -110,7 +115,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
                 }
             };
             var invitation = _faker.LoadValidInvitation(expiresAtUtc: DateTime.UtcNow.AddDays(-30));
-            
+
             invitation.Accept();
 
             using var _ = new AssertionScope();
@@ -119,6 +124,7 @@ namespace PlanningPoker.UnitTests.Domain.Users
         }
 
         private Invitation GetNewValidInvitation()
-            => Invitation.New(tenantId: _faker.Random.Int(min: 1), to: _faker.Person.Email, role: _faker.PickRandom<Role>());
+            => Invitation.New(tenantId: _faker.Random.Int(min: 1), to: _faker.Person.Email,
+                role: _faker.PickRandom<Role>());
     }
 }

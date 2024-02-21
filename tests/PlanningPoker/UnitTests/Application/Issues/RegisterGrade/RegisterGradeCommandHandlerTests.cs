@@ -27,7 +27,7 @@ namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
         }
 
         [Fact]
-        public async Task ShouldReturnsNotFoundWhenIssueDoesNotExists()
+        public async Task HandleAsync_ShouldReturnsNotFoundWhenIssueDoesNotExists()
         {
             var command = new RegisterGradeCommand(issueId: _faker.Random.Int(min: 1), grade: GetValidGrade());
 
@@ -36,11 +36,8 @@ namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
             result.Status.Should().Be(CommandStatus.RecordNotFound);
         }
 
-        private string GetValidGrade()
-            => _faker.Random.String(length: 1, minChar: '0', maxChar: '9');
-
         [Fact]
-        public async Task ShouldReturnValidationFailedWhenProvidedDataIsNotValid()
+        public async Task HandleAsync_ShouldReturnValidationFailedWhenProvidedDataIsNotValid()
         {
             var command = new RegisterGradeCommand(issueId: 0, grade: GetValidGrade());
 
@@ -50,7 +47,7 @@ namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
         }
 
         [Fact]
-        public async Task ShouldReturnsErrorWhenCurrentUserIdIsNotValid()
+        public async Task HandleAsync_ShouldReturnsErrorWhenCurrentUserIdIsNotValid()
         {
             var expectedIssue = GetValidIssue();
             _uow.Issues.GetByIdAsync(Arg.Any<EntityId>())
@@ -58,19 +55,19 @@ namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
             _authenticationContext.GetCurrentUserAsync()
                 .Returns(new UserInformation(Id: 0));
             var command = new RegisterGradeCommand(issueId: _faker.Random.Int(min: 1), grade: GetValidGrade());
-            
+
             var result = await _handler.HandleAsync(command);
 
             using var _ = new AssertionScope();
             result.Status.Should().Be(CommandStatus.ValidationFailed);
-            result.Details.Should().BeEquivalentTo(new[] 
-            { 
-                new { Code = "Issue.UserId", Message = "Provided user id is not valid." } 
+            result.Details.Should().BeEquivalentTo(new[]
+            {
+                new { Code = "Issue.UserId", Message = "Provided user id is not valid." }
             });
         }
 
         [Fact]
-        public async Task ShouldReturnsSuccessWhenGradeIsRegistered()
+        public async Task HandleAsync_ShouldReturnsSuccessWhenGradeIsRegistered()
         {
             var expectedIssue = GetValidIssue();
             _uow.Issues.GetByIdAsync(Arg.Any<EntityId>())
@@ -92,5 +89,8 @@ namespace PlanningPoker.UnitTests.Application.Issues.RegisterGrade
                 name: _faker.Random.String2(length: 10),
                 description: _faker.Random.String2(length: 10),
                 link: _faker.Internet.Url());
+
+        private string GetValidGrade()
+            => _faker.Random.String(length: 1, minChar: '0', maxChar: '9');
     }
 }

@@ -46,8 +46,13 @@ namespace PlanningPoker.Domain.Users
             AddError(UserErrors.InvalidIdentification);
         }
 
-        public static User Load(int id, string name, string? email, string? sessionId) => new(id, name, email, sessionId);
-        public static User New(string name, string email) => new(EntityId.AutoIncrement(), name, email, sessionId: null);
-        public static User NewGuest(string name) => new(EntityId.AutoIncrement(), name, email: null, sessionId: Guid.NewGuid().ToString());
+        public static User Load(int id, string name, string? email, string? sessionId) =>
+            new(id, name, email, sessionId);
+
+        public static User New(string name, string email) =>
+            new(EntityId.AutoIncrement(), name, email, sessionId: null);
+
+        public static User NewGuest(string name) => new(EntityId.AutoIncrement(), name, email: null,
+            sessionId: Guid.NewGuid().ToString());
     }
 }

@@ -38,7 +38,8 @@ namespace PlanningPoker.Domain.Users
         public static AccessGrant New(int userId, int tenantId, Resources resource, GrantScopes scope) =>
             new(EntityId.AutoIncrement(), userId, tenantId, new(resource, scope));
 
-        public static AccessGrant Load(int id, int userId, int tenantId, Resources resource, GrantScopes scope, int recordId) =>
+        public static AccessGrant Load(int id, int userId, int tenantId, Resources resource, GrantScopes scope,
+            int recordId) =>
             new(id, userId, tenantId, new(resource, scope, new(recordId)));
     }
 }

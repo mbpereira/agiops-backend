@@ -36,7 +36,8 @@ namespace PlanningPoker.Application.Users.AcceptInvitation
         {
             var userInformation = await userContext.GetCurrentUserAsync();
             var scopes = TenantScopes.GetByRole(invitation.Role);
-            return scopes.Select(scope => AccessGrant.New(userInformation.Id, invitation.TenantId, Resources.Tenant, scope)).ToList();
+            return scopes.Select(scope =>
+                AccessGrant.New(userInformation.Id, invitation.TenantId, Resources.Tenant, scope)).ToList();
         }
     }
 }

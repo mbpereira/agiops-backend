@@ -12,7 +12,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         private readonly Faker _faker = new();
 
         [Fact]
-        public void ShouldReturnAutoIncrementAsIdWhenNewIssueIsCreated()
+        public void New_ShouldReturnAutoIncrementAsIdWhenNewIssueIsCreated()
         {
             var issue = GetValidIssue();
 
@@ -22,7 +22,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void ShouldReturnExpectedErrorsWhenProvidedDataIsNotValid(string name)
+        public void New_ShouldReturnExpectedErrorsWhenProvidedDataIsNotValid(string name)
         {
             var expectedErrros = new[]
             {
@@ -51,7 +51,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         }
 
         [Fact]
-        public void ShouldReturnErrorWhenTryingChangeIssueGame()
+        public void SetGame_ShouldReturnErrorWhenTryingChangeIssueGame()
         {
             var issue = GetValidIssue();
 
@@ -68,7 +68,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         }
 
         [Fact]
-        public void ShouldReturnsErrorWhenProvidedUserIdIsNotValid()
+        public void RegisterGrade_ShouldReturnsErrorWhenProvidedUserIdIsNotValid()
         {
             var issue = GetValidIssue();
 
@@ -78,16 +78,16 @@ namespace PlanningPoker.UnitTests.Domain.Issues
             issue.IsValid.Should().BeFalse();
             issue.Errors.Should().BeEquivalentTo(new[]
             {
-                new 
+                new
                 {
-                    Code = "Issue.UserId", 
-                    Message= "Provided user id is not valid." 
+                    Code = "Issue.UserId",
+                    Message = "Provided user id is not valid."
                 }
             });
         }
 
         [Fact]
-        public void ShouldRemoveExistingUserIdBeforeRegisterGradeToPreventDuplication()
+        public void RegisterGrade_ShouldRemoveExistingUserIdBeforeRegisterGradeToPreventDuplication()
         {
             var issue = GetValidIssue();
             issue.RegisterGrade(userId: 1, grade: "1");

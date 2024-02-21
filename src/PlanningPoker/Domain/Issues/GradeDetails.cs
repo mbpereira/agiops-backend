@@ -1,5 +1,4 @@
-﻿
-namespace PlanningPoker.Domain.Issues
+﻿namespace PlanningPoker.Domain.Issues
 {
     public record GradeDetails
     {

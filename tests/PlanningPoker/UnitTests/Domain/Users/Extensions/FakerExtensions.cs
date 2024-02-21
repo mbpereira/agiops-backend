@@ -12,11 +12,14 @@ namespace PlanningPoker.UnitTests.Domain.Users.Extensions
 
         public static string ValidEmail(this Faker faker) => faker.Person.Email;
 
-        public static string InvalidEmail(this Faker faker) => faker.PickRandomParam(new string[] { null!, "", " ", faker.Random.String() });
+        public static string InvalidEmail(this Faker faker) =>
+            faker.PickRandomParam(new string[] { null!, "", " ", faker.Random.String() });
 
-        public static Invitation NewInvalidInvitation(this Faker faker) => Invitation.New(tenantId: faker.Random.Int(min: 1), to: faker.InvalidEmail(), faker.PickRandom<Role>());
+        public static Invitation NewInvalidInvitation(this Faker faker) =>
+            Invitation.New(tenantId: faker.Random.Int(min: 1), to: faker.InvalidEmail(), faker.PickRandom<Role>());
 
-        public static Invitation LoadValidInvitation(this Faker faker, int? tenantId = null, InvitationStatus? status = null, DateTime? expiresAtUtc = null, Role? role = null)
+        public static Invitation LoadValidInvitation(this Faker faker, int? tenantId = null,
+            InvitationStatus? status = null, DateTime? expiresAtUtc = null, Role? role = null)
             => Invitation.Load(
                 id: faker.ValidId(),
                 tenantId: tenantId ?? faker.ValidId(),
@@ -27,7 +30,7 @@ namespace PlanningPoker.UnitTests.Domain.Users.Extensions
                 sentAtUtc: DateTime.UtcNow,
                 expiresAtUtc: expiresAtUtc ?? DateTime.UtcNow.AddMinutes(InvitationConstants.ExpirationTimeInMinutes),
                 status: status ?? InvitationStatus.Sent);
-        
+
         public static VotingSystem LoadValidVotingSystem(this Faker faker)
             => VotingSystem.Load(
                 id: faker.ValidId(),
@@ -62,7 +65,8 @@ namespace PlanningPoker.UnitTests.Domain.Users.Extensions
                 possibleGrades: new List<string>(),
                 sharing: SharingStatus.Unshared);
 
-        public static VotingSystem NewValidVotingSystem(this Faker faker, SharingStatus sharingStatus = SharingStatus.Undefined) =>
+        public static VotingSystem NewValidVotingSystem(this Faker faker,
+            SharingStatus sharingStatus = SharingStatus.Undefined) =>
             VotingSystem.New(
                 tenantId: faker.ValidId(),
                 description: faker.Random.String2(length: 10),

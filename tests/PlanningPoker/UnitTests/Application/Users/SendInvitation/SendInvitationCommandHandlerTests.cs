@@ -34,7 +34,7 @@ namespace PlanningPoker.UnitTests.Application.Users.SendInvitation
         [InlineData("")]
         [InlineData(null)]
         [InlineData("abc")]
-        public async Task ShouldReturnValidationErrorWhenProvidedDataIsNotValid(string invalidEmail)
+        public async Task HandleAsync_ShouldReturnValidationErrorWhenProvidedDataIsNotValid(string invalidEmail)
         {
             var command = new SendInvitationCommand(to: invalidEmail, _faker.PickRandom<Role>());
 
@@ -44,7 +44,7 @@ namespace PlanningPoker.UnitTests.Application.Users.SendInvitation
         }
 
         [Fact]
-        public async Task ShouldAddInvitationAndReturnsSuccess()
+        public async Task HandleAsync_ShouldAddInvitationAndReturnsSuccess()
         {
             var expectedInvitation = _faker.LoadValidInvitation(tenantId: _tenant.Id);
             var command = new SendInvitationCommand(expectedInvitation.Receiver.Value, expectedInvitation.Role);

@@ -26,7 +26,7 @@ namespace PlanningPoker.UnitTests.Application.Users.RenewInvitation
         }
 
         [Fact]
-        public async Task ShouldReturnValidationErrorWhenInvitationIdIsNotValid()
+        public async Task HandleAsync_ShouldReturnValidationErrorWhenInvitationIdIsNotValid()
         {
             var command = new RenewInvitationCommand(id: 0);
 
@@ -38,7 +38,8 @@ namespace PlanningPoker.UnitTests.Application.Users.RenewInvitation
         [Theory]
         [InlineData(InvitationStatus.Accepted)]
         [InlineData(InvitationStatus.Cancelled)]
-        public async Task ShouldReturnValidationErrorWhenInvitationAlreadyBeenAcceptedOrInactived(InvitationStatus status)
+        public async Task HandleAsync_ShouldReturnValidationErrorWhenInvitationAlreadyBeenAcceptedOrInactived(
+            InvitationStatus status)
         {
             var expectedErrors = new[]
             {
@@ -56,7 +57,7 @@ namespace PlanningPoker.UnitTests.Application.Users.RenewInvitation
         }
 
         [Fact]
-        public async Task ShouldUpdateSentAtUtcAndExpiresAtUtcDate()
+        public async Task HandleAsync_ShouldUpdateSentAtUtcAndExpiresAtUtcDate()
         {
             var expectedInvitation = _faker.LoadValidInvitation();
             var command = new RenewInvitationCommand(expectedInvitation.Id.Value);
@@ -77,7 +78,7 @@ namespace PlanningPoker.UnitTests.Application.Users.RenewInvitation
         }
 
         [Fact]
-        public async Task ShouldReturnNotFoundWhenProvidedInvitationDoesNotExists()
+        public async Task HandleAsync_ShouldReturnNotFoundWhenProvidedInvitationDoesNotExists()
         {
             var command = new RenewInvitationCommand(id: _faker.ValidId());
 

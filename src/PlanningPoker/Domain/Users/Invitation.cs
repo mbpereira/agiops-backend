@@ -18,11 +18,11 @@ namespace PlanningPoker.Domain.Users
 
         private Invitation(int id, int tenantId, string to, Role role)
             : this(id, tenantId, to, role,
-                  token: Guid.NewGuid(),
-                  createdAtUtc: DateTime.UtcNow,
-                  sentAtUtc: DateTime.UtcNow,
-                  expiresAtUtc: DateTime.UtcNow.AddMinutes(InvitationConstants.ExpirationTimeInMinutes),
-                  status: InvitationStatus.Sent)
+                token: Guid.NewGuid(),
+                createdAtUtc: DateTime.UtcNow,
+                sentAtUtc: DateTime.UtcNow,
+                expiresAtUtc: DateTime.UtcNow.AddMinutes(InvitationConstants.ExpirationTimeInMinutes),
+                status: InvitationStatus.Sent)
         {
             RaiseDomainEvent(new InvitationCreated(Token, Receiver, ExpiresAtUtc));
         }
@@ -107,15 +107,15 @@ namespace PlanningPoker.Domain.Users
             DateTime expiresAtUtc,
             InvitationStatus status,
             DateTime? updatedAtUtc = null) =>
-                new(id,
-                    tenantId,
-                    to,
-                    role,
-                    token,
-                    createdAtUtc,
-                    sentAtUtc,
-                    expiresAtUtc,
-                    status,
-                    updatedAtUtc);
+            new(id,
+                tenantId,
+                to,
+                role,
+                token,
+                createdAtUtc,
+                sentAtUtc,
+                expiresAtUtc,
+                status,
+                updatedAtUtc);
     }
 }

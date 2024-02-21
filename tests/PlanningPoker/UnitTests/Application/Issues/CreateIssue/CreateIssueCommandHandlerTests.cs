@@ -30,12 +30,12 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateIssue
         [InlineData("")]
         [InlineData(null)]
         [InlineData("ab")]
-        public async Task ShouldReturnsValidationFailedWhenProvidedDataIsNotValid(string? invalidName)
+        public async Task HandleAsync_ShouldReturnsValidationFailedWhenProvidedDataIsNotValid(string? invalidName)
         {
             var command = new CreateIssueCommand(
-                    gameId: 0,
-                    name: invalidName!
-                );
+                gameId: 0,
+                name: invalidName!
+            );
 
             var result = await _handler.HandleAsync(command);
 
@@ -43,9 +43,9 @@ namespace PlanningPoker.UnitTests.Application.Issues.CreateIssue
         }
 
         [Fact]
-        public async Task ShouldReturnGeneratedIdWhenIssueWasCreated()
+        public async Task HandleAsync_ShouldReturnGeneratedIdWhenIssueWasCreated()
         {
-            Issue expectedIssue = GetValidIssue();
+            var expectedIssue = GetValidIssue();
             var command = new CreateIssueCommand(
                 gameId: expectedIssue.GameId,
                 name: expectedIssue.Name,

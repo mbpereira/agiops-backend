@@ -6,7 +6,8 @@ namespace PlanningPoker.Application.Abstractions
     {
         public TResponse? Data { get; private set; }
 
-        protected CommandResult(TResponse? data, CommandStatus status, IEnumerable<Error> details) : base(status, details)
+        private CommandResult(TResponse? data, CommandStatus status, IEnumerable<Error> details) : base(status,
+            details)
         {
             Data = data;
         }
@@ -17,11 +18,11 @@ namespace PlanningPoker.Application.Abstractions
         public static CommandResult<TResponse> Fail(
             IEnumerable<Error> errors,
             CommandStatus status = CommandStatus.ValidationFailed)
-                => new(null, status, errors);
+            => new(null, status, errors);
 
         public static CommandResult<TResponse> Fail(
             CommandStatus status = CommandStatus.ValidationFailed)
-                => new(null, status, Enumerable.Empty<Error>());
+            => new(null, status, Enumerable.Empty<Error>());
     }
 
     public record CommandResult : BaseCommandResult
@@ -37,10 +38,10 @@ namespace PlanningPoker.Application.Abstractions
         public static CommandResult Fail(
             IEnumerable<Error> errors,
             CommandStatus status = CommandStatus.ValidationFailed) =>
-                new(status, errors);
+            new(status, errors);
 
         public static CommandResult Fail(CommandStatus status) =>
-                new(status, Enumerable.Empty<Error>());
+            new(status, Enumerable.Empty<Error>());
     }
 
     public abstract record BaseCommandResult

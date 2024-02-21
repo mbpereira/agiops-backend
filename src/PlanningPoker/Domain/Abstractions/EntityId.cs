@@ -4,7 +4,10 @@
     {
         public int Value { get; private set; }
 
-        internal EntityId(int value) { Value = value; }
+        internal EntityId(int value)
+        {
+            Value = value;
+        }
 
         public static EntityId AutoIncrement() => new(value: 0);
         public static EntityId Blank() => new(value: -1);

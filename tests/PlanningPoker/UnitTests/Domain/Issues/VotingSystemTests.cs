@@ -14,12 +14,16 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [InlineData(null)]
         [InlineData("")]
         [InlineData("te")]
-        public void ShouldReturnExpectedErrrors(string invalidDescription)
+        public void New_ShouldReturnExpectedErrrors(string invalidDescription)
         {
             var expectedErrors = new[]
             {
                 new { Code = "TenantId", Message = "Provided value must be greater than 0." },
-                new { Code = "VotingSystem.Description", Message = "The provided string does not meet the minimum length requirement. Min length: 3." },
+                new
+                {
+                    Code = "VotingSystem.Description",
+                    Message = "The provided string does not meet the minimum length requirement. Min length: 3."
+                },
                 new { Code = "VotingSystem.Grades", Message = "The list cannot be empty." },
                 new { Code = "VotingSystem.UserId", Message = "Provided value must be greater than 0." },
             };
@@ -32,7 +36,8 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [Theory]
         [InlineData(SharingStatus.Unshared)]
         [InlineData(SharingStatus.Approved)]
-        public void ShouldReturnErrorWhenTryingToApproveSharingOfNonValidVotingSystem(SharingStatus invalidApprovalStatus)
+        public void SetSharingStatus_ShouldReturnErrorWhenTryingToApproveSharingOfNonValidVotingSystem(
+            SharingStatus invalidApprovalStatus)
         {
             var votingSystem = GetValidVotingSystem(invalidApprovalStatus);
 
@@ -40,7 +45,11 @@ namespace PlanningPoker.UnitTests.Domain.Issues
 
             votingSystem.Errors.Should().BeEquivalentTo(new[]
             {
-                new { Code = "VotingSystem.SharingStatus", Message = "Only the statuses 'requested' and 'rejected' can be approved." }
+                new
+                {
+                    Code = "VotingSystem.SharingStatus",
+                    Message = "Only the statuses 'requested' and 'rejected' can be approved."
+                }
             });
         }
 
@@ -48,7 +57,8 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [InlineData(SharingStatus.Unshared)]
         [InlineData(SharingStatus.Approved)]
         [InlineData(SharingStatus.Rejected)]
-        public void ShouldReturnErrorWhenTryingToRejectSharingOfNonValidVotingSystem(SharingStatus invalidApprovalStatus)
+        public void SetSharingStatus_ShouldReturnErrorWhenTryingToRejectSharingOfNonValidVotingSystem(
+            SharingStatus invalidApprovalStatus)
         {
             var votingSystem = GetValidVotingSystem(invalidApprovalStatus);
 
@@ -63,7 +73,8 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [Theory]
         [InlineData(SharingStatus.Requested)]
         [InlineData(SharingStatus.Approved)]
-        public void ShouldReturnErrorWhenTryingToRequestSharingOfNonValidVotingSystem(SharingStatus invalidApprovalStatus)
+        public void SetSharingStatus_ShouldReturnErrorWhenTryingToRequestSharingOfNonValidVotingSystem(
+            SharingStatus invalidApprovalStatus)
         {
             var votingSystem = GetValidVotingSystem(invalidApprovalStatus);
 
@@ -71,7 +82,11 @@ namespace PlanningPoker.UnitTests.Domain.Issues
 
             votingSystem.Errors.Should().BeEquivalentTo(new[]
             {
-                new { Code = "VotingSystem.SharingStatus", Message = "Only the statuses 'rejected' and 'unshared' can made a request sharing." }
+                new
+                {
+                    Code = "VotingSystem.SharingStatus",
+                    Message = "Only the statuses 'rejected' and 'unshared' can made a request sharing."
+                }
             });
         }
 
@@ -81,7 +96,8 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         [InlineData(SharingStatus.Rejected, SharingStatus.Requested)]
         [InlineData(SharingStatus.Requested, SharingStatus.Unshared)]
         [InlineData(SharingStatus.Requested, SharingStatus.Rejected)]
-        public void ShouldReturnErrorWhenTryingToSetUndefinedAsSharingStatus(SharingStatus nextSharingStatus, SharingStatus oldSharingStatus)
+        public void SetSharingStatus_ShouldReturnErrorWhenTryingToSetUndefinedAsSharingStatus(
+            SharingStatus nextSharingStatus, SharingStatus oldSharingStatus)
         {
             var votingSystem = GetValidVotingSystem(oldSharingStatus);
 
@@ -93,7 +109,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         }
 
         [Fact]
-        public void ShouldChangeDescription()
+        public void Describe_ShouldChangeDescription()
         {
             var newDescription = _faker.Random.String2(length: 10);
             var votingSystem = GetValidVotingSystem();
@@ -104,7 +120,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         }
 
         [Fact]
-        public void ShouldReturnIsQuantifiableAsFalseWhenExistsAnyNonNumericGrade()
+        public void GradeDetails_ShouldReturnIsQuantifiableAsFalseWhenExistsAnyNonNumericGrade()
         {
             var votingSystem = GetValidVotingSystem();
             votingSystem.SetPossibleGrades(new[] { "P", "M", "G" });
@@ -115,7 +131,7 @@ namespace PlanningPoker.UnitTests.Domain.Issues
         }
 
         [Fact]
-        public void ShouldReturnIsQuantifiableAsTrueWhenAllGradesAreNumeric()
+        public void GradeDetails_ShouldReturnIsQuantifiableAsTrueWhenAllGradesAreNumeric()
         {
             var votingSystem = GetValidVotingSystem();
             votingSystem.SetPossibleGrades(new[] { "1", "2", "3" });

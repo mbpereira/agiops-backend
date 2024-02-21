@@ -10,7 +10,8 @@ namespace PlanningPoker.Domain.Issues
         public GradeDetails GradeDetails { get; private set; } = GradeDetails.Empty();
         public SharingStatus SharingStatus { get; private set; } = SharingStatus.Undefined;
 
-        private VotingSystem(int id, int tenantId, string description, int userId, IList<string> grades, SharingStatus sharingStatus) : base(id, tenantId)
+        private VotingSystem(int id, int tenantId, string description, int userId, IList<string> grades,
+            SharingStatus sharingStatus) : base(id, tenantId)
         {
             Describe(description);
             SetOwner(userId);
@@ -26,19 +27,22 @@ namespace PlanningPoker.Domain.Issues
                 return;
             }
 
-            if (SharingStatus.Approved.Equals(newSharingStatus) && !SharingStatus.IsSome(SharingStatus.Requested, SharingStatus.Rejected, SharingStatus.Undefined))
+            if (SharingStatus.Approved.Equals(newSharingStatus) && !SharingStatus.IsSome(SharingStatus.Requested,
+                    SharingStatus.Rejected, SharingStatus.Undefined))
             {
                 AddError(VotingSystemErrors.InvalidSharingApprovalOperation);
                 return;
             }
 
-            if (SharingStatus.Rejected.Equals(newSharingStatus) && !SharingStatus.IsSome(SharingStatus.Requested, SharingStatus.Undefined))
+            if (SharingStatus.Rejected.Equals(newSharingStatus) &&
+                !SharingStatus.IsSome(SharingStatus.Requested, SharingStatus.Undefined))
             {
                 AddError(VotingSystemErrors.InvalidSharingRejectOperation);
                 return;
             }
 
-            if (SharingStatus.Requested.Equals(newSharingStatus) && !SharingStatus.IsSome(SharingStatus.Rejected, SharingStatus.Unshared, SharingStatus.Undefined))
+            if (SharingStatus.Requested.Equals(newSharingStatus) && !SharingStatus.IsSome(SharingStatus.Rejected,
+                    SharingStatus.Unshared, SharingStatus.Undefined))
             {
                 AddError(VotingSystemErrors.InvalidSharingRequestOperation);
                 return;
@@ -89,10 +93,12 @@ namespace PlanningPoker.Domain.Issues
             Description = description;
         }
 
-        public static VotingSystem New(int tenantId, string description, int userId, IList<string> possibleGrades, SharingStatus sharing = SharingStatus.Unshared)
+        public static VotingSystem New(int tenantId, string description, int userId, IList<string> possibleGrades,
+            SharingStatus sharing = SharingStatus.Unshared)
             => new(EntityId.AutoIncrement(), tenantId, description, userId, possibleGrades, sharing);
 
-        public static VotingSystem Load(int id, int tenantId, string description, int userId, IList<string> possibleGrades, SharingStatus sharing = SharingStatus.Unshared)
+        public static VotingSystem Load(int id, int tenantId, string description, int userId,
+            IList<string> possibleGrades, SharingStatus sharing = SharingStatus.Unshared)
             => new(id, tenantId, description, userId, possibleGrades, sharing);
     }
 }
