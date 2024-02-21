@@ -1,6 +1,6 @@
 ﻿using PlanningPoker.Application.Abstractions;
 using PlanningPoker.Application.Abstractions.Commands;
-using PlanningPoker.Application.Invitations.Shared;
+using PlanningPoker.Application.Invitations.Common;
 using PlanningPoker.Domain.Common.Extensions;
 
 namespace PlanningPoker.Application.Invitations.RenewInvitation

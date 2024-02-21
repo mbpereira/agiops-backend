@@ -1,6 +1,6 @@
 ﻿using PlanningPoker.Domain.Validation;
 
-namespace PlanningPoker.Application.Invitations.Shared;
+namespace PlanningPoker.Application.Invitations.Common;
 
 public static class ChangeInvitationErrors
 {
