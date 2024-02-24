@@ -11,7 +11,7 @@ public static class ValidationExtensions
     {
         return src is null;
     }
-    
+
     public static bool IsNullOrEmpty(this string? str)
     {
         return string.IsNullOrEmpty(str);

@@ -3,7 +3,6 @@
 using Bogus;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using NSubstitute;
 using PlanningPoker.Application.Abstractions.Commands;
 using PlanningPoker.Application.Abstractions.Security;
 using PlanningPoker.Application.Games.CreateGame;

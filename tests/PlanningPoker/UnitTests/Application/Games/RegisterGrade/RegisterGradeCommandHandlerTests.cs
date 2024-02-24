@@ -3,7 +3,6 @@
 using AutoBogus;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using NSubstitute;
 using PlanningPoker.Application.Abstractions.Commands;
 using PlanningPoker.Application.Games.RegisterGrade;
 using PlanningPoker.Application.Users;

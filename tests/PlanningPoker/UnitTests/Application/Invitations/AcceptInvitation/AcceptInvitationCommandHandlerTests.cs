@@ -16,8 +16,8 @@ namespace PlanningPoker.UnitTests.Application.Invitations.AcceptInvitation;
 
 public class AcceptInvitationCommandHandlerTests
 {
-    private readonly AcceptInvitationCommandHandler _handler;
     private readonly InvitationCommandHandlersFixture _fixture;
+    private readonly AcceptInvitationCommandHandler _handler;
 
     public AcceptInvitationCommandHandlerTests()
     {

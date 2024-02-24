@@ -1,15 +1,13 @@
-﻿using PlanningPoker.Domain.Abstractions.Clock;
+﻿#region
+
+using PlanningPoker.Domain.Abstractions.Clock;
+
+#endregion
 
 namespace PlanningPoker.Domain.Abstractions;
 
 public abstract class Entity : Validatable
 {
-    protected IDateTimeProvider DateTimeProvider { get; }
-
-    public EntityId Id { get; }
-    public DateTime CreatedAtUtc { get; private set; }
-    public DateTime? UpdatedAtUtc { get; private set; }
-
     protected Entity(string id, IDateTimeProvider dateTimeProvider)
     {
         Id = id;
@@ -21,6 +19,12 @@ public abstract class Entity : Validatable
         : this(id, DefaultDateTimeProvider.Instance)
     {
     }
+
+    protected IDateTimeProvider DateTimeProvider { get; }
+
+    public EntityId Id { get; }
+    public DateTime CreatedAtUtc { get; private set; }
+    public DateTime? UpdatedAtUtc { get; private set; }
 
     protected void Updated()
     {

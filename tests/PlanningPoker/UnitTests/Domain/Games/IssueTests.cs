@@ -13,7 +13,7 @@ namespace PlanningPoker.UnitTests.Domain.Games;
 public class IssueTests
 {
     private readonly Faker _faker = new();
-    
+
     [Theory]
     [InlineData(null)]
     [InlineData("")]

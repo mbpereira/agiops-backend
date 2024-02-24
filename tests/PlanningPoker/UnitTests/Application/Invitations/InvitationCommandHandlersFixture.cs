@@ -1,22 +1,26 @@
-﻿using PlanningPoker.Application.Tenants;
+﻿#region
+
+using PlanningPoker.Application.Tenants;
 using PlanningPoker.Application.Users;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Abstractions.Clock;
 using PlanningPoker.Domain.Invitations;
 using PlanningPoker.Domain.Users;
 
+#endregion
+
 namespace PlanningPoker.UnitTests.Application.Invitations;
 
 public class InvitationCommandHandlersFixture
 {
+    public readonly IDateTimeProvider DateTimeProvider;
     public readonly IAccessGrantsRepository Grants;
     public readonly IInvitationsRepository Invitations;
-    public readonly UserInformation UserInformation;
-    public readonly IDateTimeProvider DateTimeProvider;
-    public readonly IUnitOfWork Uow;
-    public readonly IUserContext UserContext;
     public readonly ITenantContext TenantContext;
     public readonly TenantInformation TenantInformation;
+    public readonly IUnitOfWork Uow;
+    public readonly IUserContext UserContext;
+    public readonly UserInformation UserInformation;
 
     public InvitationCommandHandlersFixture()
     {
