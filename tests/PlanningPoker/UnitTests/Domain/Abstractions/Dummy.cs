@@ -1,11 +1,14 @@
-﻿using PlanningPoker.Domain.Abstractions;
+﻿#region
 
-namespace PlanningPoker.UnitTests.Domain.Abstractions
+using PlanningPoker.Domain.Abstractions;
+
+#endregion
+
+namespace PlanningPoker.UnitTests.Domain.Abstractions;
+
+public class Dummy : TenantableAggregateRoot
 {
-    public class Dummy : TenantableAggregateRoot
+    public Dummy(string id, string tenantId) : base(id, tenantId)
     {
-        public Dummy(int id, int tenantId) : base(id, tenantId)
-        {
-        }
     }
 }

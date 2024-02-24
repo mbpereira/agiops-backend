@@ -1,9 +1,8 @@
-﻿namespace PlanningPoker.Application.Abstractions.Commands
+﻿namespace PlanningPoker.Application.Abstractions.Commands;
+
+public enum CommandStatus
 {
-    public enum CommandStatus
-    {
-        Success = 1,
-        ValidationFailed = 2,
-        RecordNotFound = 3
-    }
+    Success = 1,
+    ValidationFailed = 2,
+    RecordNotFound = 3
 }

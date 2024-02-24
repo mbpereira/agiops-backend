@@ -1,7 +1,6 @@
-﻿namespace PlanningPoker.Domain.Abstractions
+﻿namespace PlanningPoker.Domain.Abstractions;
+
+public interface ITenantable
 {
-    public interface ITenantable
-    {
-        public EntityId TenantId { get; }
-    }
+    public EntityId TenantId { get; }
 }

@@ -1,8 +1,7 @@
-﻿namespace PlanningPoker.Domain.Users
+﻿namespace PlanningPoker.Domain.Users;
+
+public enum Role
 {
-    public enum Role
-    {
-        Admin = 1,
-        Contributor = 2
-    }
+    Admin = 1,
+    Contributor = 2
 }

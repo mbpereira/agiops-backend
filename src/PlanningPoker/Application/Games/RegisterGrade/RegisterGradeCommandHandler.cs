@@ -1,33 +1,36 @@
-﻿using PlanningPoker.Application.Abstractions.Commands;
+﻿#region
+
+using PlanningPoker.Application.Abstractions.Commands;
 using PlanningPoker.Application.Users;
 using PlanningPoker.Domain.Abstractions;
 
-namespace PlanningPoker.Application.Games.RegisterGrade
+#endregion
+
+namespace PlanningPoker.Application.Games.RegisterGrade;
+
+public class RegisterGradeCommandHandler(IUnitOfWork uow, IUserContext authenticationContext)
+    : ICommandHandler<RegisterGradeCommand>
 {
-    public class RegisterGradeCommandHandler(IUnitOfWork uow, IUserContext authenticationContext)
-        : ICommandHandler<RegisterGradeCommand>
+    public async Task<CommandResult> HandleAsync(RegisterGradeCommand command)
     {
-        public async Task<CommandResult> HandleAsync(RegisterGradeCommand command)
-        {
-            if (!command.IsValid)
-                return CommandResult.Fail(command.Errors, CommandStatus.ValidationFailed);
+        if (!command.IsValid)
+            return CommandResult.Fail(command.Errors, CommandStatus.ValidationFailed);
 
-            var issue = await uow.Issues.GetByIdAsync(command.IssueId);
+        var issue = await uow.Issues.GetByIdAsync(command.IssueId);
 
-            if (issue is null)
-                return CommandResult.Fail(CommandStatus.RecordNotFound);
+        if (issue is null)
+            return CommandResult.Fail(CommandStatus.RecordNotFound);
 
-            var userInformation = await authenticationContext.GetCurrentUserAsync();
+        var userInformation = await authenticationContext.GetCurrentUserAsync();
 
-            issue.RegisterGrade(userInformation.Id, command.Grade);
+        issue.RegisterGrade(userInformation.Id, command.Grade);
 
-            if (!issue.IsValid)
-                return CommandResult.Fail(issue.Errors, CommandStatus.ValidationFailed);
+        if (!issue.IsValid)
+            return CommandResult.Fail(issue.Errors, CommandStatus.ValidationFailed);
 
-            await uow.Issues.ChangeAsync(issue);
-            await uow.SaveChangesAsync();
+        await uow.Issues.ChangeAsync(issue);
+        await uow.SaveChangesAsync();
 
-            return CommandResult.Success();
-        }
+        return CommandResult.Success();
     }
 }

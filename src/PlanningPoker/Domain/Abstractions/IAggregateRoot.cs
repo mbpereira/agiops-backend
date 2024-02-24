@@ -1,9 +1,8 @@
-﻿namespace PlanningPoker.Domain.Abstractions
-{
-    public interface IAggregateRoot
-    {
-        IReadOnlyList<IDomainEvent> GetDomainEvents();
+﻿namespace PlanningPoker.Domain.Abstractions;
 
-        void ClearDomainEvents();
-    }
+public interface IAggregateRoot
+{
+    IReadOnlyList<IDomainEvent> GetDomainEvents();
+
+    void ClearDomainEvents();
 }

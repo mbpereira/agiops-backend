@@ -1,15 +1,17 @@
-﻿namespace PlanningPoker.Domain.Games
+﻿namespace PlanningPoker.Domain.Games;
+
+public record GradeDetails
 {
-    public record GradeDetails
+    internal GradeDetails(IList<string> value)
     {
-        public IReadOnlyCollection<string> Values { get; private set; }
-        public bool IsQuantifiable => Values.All(item => decimal.TryParse(item, out var _));
+        Values = value.AsReadOnly();
+    }
 
-        internal GradeDetails(IList<string> value)
-        {
-            Values = value.AsReadOnly();
-        }
+    public IReadOnlyCollection<string> Values { get; }
+    public bool IsQuantifiable => Values.All(item => decimal.TryParse(item, out var _));
 
-        public static GradeDetails Empty() => new(new List<string>());
+    public static GradeDetails Empty()
+    {
+        return new GradeDetails(new List<string>());
     }
 }

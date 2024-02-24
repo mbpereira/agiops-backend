@@ -1,11 +1,10 @@
-﻿namespace PlanningPoker.Domain.Users
+﻿namespace PlanningPoker.Domain.Users;
+
+public enum GrantScopes
 {
-    public enum GrantScopes
-    {
-        Create = 1,
-        Edit = 2,
-        Archive = 3,
-        Delete = 4,
-        View = 5,
-    }
+    Create = 1,
+    Edit = 2,
+    Archive = 3,
+    Delete = 4,
+    View = 5
 }

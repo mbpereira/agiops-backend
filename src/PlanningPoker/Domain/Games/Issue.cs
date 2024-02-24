@@ -1,72 +1,76 @@
-﻿using PlanningPoker.Domain.Abstractions;
+﻿#region
+
+using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Common.Extensions;
 
-namespace PlanningPoker.Domain.Games
+#endregion
+
+namespace PlanningPoker.Domain.Games;
+
+public sealed class Issue : TenantableAggregateRoot
 {
-    public sealed class Issue : TenantableAggregateRoot
+    private readonly List<UserGrade> _grades;
+
+    private Issue(string id, string tenantId, string gameId, string name, string? description = null,
+        string? link = null,
+        List<UserGrade>? grades = null) : base(id, tenantId)
     {
-        public EntityId GameId { get; private set; } = EntityId.Blank();
-        public string Name { get; private set; } = string.Empty;
-        public string? Description { get; private set; }
-        public string? Link { get; private set; }
-        private readonly List<UserGrade> _grades;
-        public IReadOnlyCollection<UserGrade> UserGrades => _grades.AsReadOnly();
+        SetGame(gameId);
+        SetName(name);
+        Link = link;
+        Description = description;
+        _grades = grades ?? [];
+    }
 
-        private Issue(int id, int tenantId, int gameId, string name, string? description = null, string? link = null,
-            List<UserGrade>? grades = null) : base(id, tenantId)
+    public EntityId GameId { get; private set; } = EntityId.Empty;
+    public string Name { get; private set; } = string.Empty;
+    public string? Description { get; private set; }
+    public string? Link { get; private set; }
+    public IReadOnlyCollection<UserGrade> UserGrades => _grades.AsReadOnly();
+
+    public void RegisterGrade(string userId, string grade)
+    {
+        if (!userId.IsPresent())
         {
-            SetGame(gameId);
-            SetName(name);
-            Link = link;
-            Description = description;
-            _grades = grades ?? new List<UserGrade>();
+            AddError(IssueErrors.InvalidUserId);
+            return;
         }
 
-        public void RegisterGrade(int userId, string grade)
-        {
-            if (!userId.GreaterThan(0))
-            {
-                AddError(IssueErrors.InvalidUserId);
-                return;
-            }
+        _grades.RemoveAll(g => g.UserId.Value == userId);
+        _grades.Add(new UserGrade(userId, grade));
+    }
 
-            _grades.RemoveAll(g => g.UserId.Value == userId);
-            _grades.Add(new UserGrade(new EntityId(userId), grade));
+    public void SetName(string name)
+    {
+        if (!name.HasMinLength(3))
+        {
+            AddError(IssueErrors.InvalidName);
+            return;
         }
 
-        public void SetName(string name)
-        {
-            if (!name.HasMinLength(minLength: 3))
-            {
-                AddError(IssueErrors.InvalidName);
-                return;
-            }
+        Name = name;
+    }
 
-            Name = name;
+    public void SetGame(string gameId)
+    {
+        if (GameId.Value.IsPresent())
+        {
+            AddError(IssueErrors.ChangeIssueGame);
+            return;
         }
 
-        public void SetGame(int gameId)
+        if (!gameId.IsPresent())
         {
-            if (GameId.Value.GreaterThan(0))
-            {
-                AddError(IssueErrors.ChangeIssueGame);
-                return;
-            }
-
-            if (!gameId.GreaterThan(0))
-            {
-                AddError(IssueErrors.InvalidGameId);
-                return;
-            }
-
-            GameId = gameId;
+            AddError(IssueErrors.InvalidGameId);
+            return;
         }
 
-        public static Issue New(int tenantId, int gameId, string name, string? description = null, string? link = null)
-            => new(EntityId.AutoIncrement(), tenantId, gameId, name, description, link);
+        GameId = gameId;
+    }
 
-        public static Issue Load(int id, int tenantId, int gameId, string name, string? description = null,
-            string? link = null, List<UserGrade>? grades = null)
-            => new(id, tenantId, gameId, name, description, link, grades);
+    public static Issue New(string tenantId, string gameId, string name, string? description = null,
+        string? link = null)
+    {
+        return new Issue(EntityId.Generate(), tenantId, gameId, name, description, link);
     }
 }

@@ -1,61 +1,63 @@
-﻿using PlanningPoker.Application.Abstractions;
+﻿#region
+
 using PlanningPoker.Application.Abstractions.Commands;
 using PlanningPoker.Application.Users;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Tenants;
 using PlanningPoker.Domain.Users;
 
-namespace PlanningPoker.Application.Tenants.CreateTenant
+#endregion
+
+namespace PlanningPoker.Application.Tenants.CreateTenant;
+
+public class CreateTenantCommandHandler(IUnitOfWork uow, IUserContext userContext)
+    : ICommandHandler<CreateTenantCommand, CreateTenantResult>
 {
-    public class CreateTenantCommandHandler(IUnitOfWork uow, IUserContext userContext)
-        : ICommandHandler<CreateTenantCommand, CreateTenantResult>
+    public async Task<CommandResult<CreateTenantResult>> HandleAsync(CreateTenantCommand command)
     {
-        public async Task<CommandResult<CreateTenantResult>> HandleAsync(CreateTenantCommand command)
-        {
-            var tenant = Tenant.New(command.Name);
+        var tenant = Tenant.New(command.Name);
 
-            if (!tenant.IsValid)
-                return CommandResult<CreateTenantResult>.Fail(tenant.Errors, CommandStatus.ValidationFailed);
+        if (!tenant.IsValid)
+            return CommandResult<CreateTenantResult>.Fail(tenant.Errors, CommandStatus.ValidationFailed);
 
-            var tenantId = await CreateTenantAsync(tenant);
+        var tenantId = await CreateTenantAsync(tenant);
 
-            await CreateAccessGrantsAsync(tenantId);
+        await CreateAccessGrantsAsync(tenantId);
 
-            return CommandResult<CreateTenantResult>.Success(new CreateTenantResult(tenantId));
-        }
+        return CommandResult<CreateTenantResult>.Success(new CreateTenantResult(tenantId));
+    }
 
-        private async Task<int> GetCurrentUserIdAsync()
-        {
-            var user = await userContext.GetCurrentUserAsync();
-            return user.Id;
-        }
+    private async Task<string> GetCurrentUserIdAsync()
+    {
+        var user = await userContext.GetCurrentUserAsync();
+        return user.Id;
+    }
 
-        private async Task<int> CreateTenantAsync(Tenant tenant)
-        {
-            var createdTenant = await uow.Tenants.AddAsync(tenant);
+    private async Task<string> CreateTenantAsync(Tenant tenant)
+    {
+        var createdTenant = await uow.Tenants.AddAsync(tenant);
 
-            await uow.SaveChangesAsync();
+        await uow.SaveChangesAsync();
 
-            return createdTenant.Id.Value;
-        }
+        return createdTenant.Id.Value;
+    }
 
-        private async Task CreateAccessGrantsAsync(int tenantId)
-        {
-            var accessGrants = await GetAccessGrantsAsync(tenantId);
+    private async Task CreateAccessGrantsAsync(string tenantId)
+    {
+        var accessGrants = await GetAccessGrantsAsync(tenantId);
 
-            await uow.AccessGrants.AddAsync(accessGrants);
+        await uow.AccessGrants.AddAsync(accessGrants);
 
-            await uow.SaveChangesAsync();
-        }
+        await uow.SaveChangesAsync();
+    }
 
-        private async Task<IList<AccessGrant>> GetAccessGrantsAsync(int tenantId)
-        {
-            var userId = await GetCurrentUserIdAsync();
+    private async Task<IList<AccessGrant>> GetAccessGrantsAsync(string tenantId)
+    {
+        var userId = await GetCurrentUserIdAsync();
 
-            return TenantScopes
-                .GetByRole(Role.Admin)
-                .Select(scope => AccessGrant.New(userId, tenantId, Resources.Tenant, scope))
-                .ToList();
-        }
+        return TenantScopes
+            .GetByRole(Role.Admin)
+            .Select(scope => AccessGrant.New(userId, tenantId, Resources.Tenant, scope))
+            .ToList();
     }
 }

@@ -1,30 +1,33 @@
-﻿using PlanningPoker.Application.Abstractions.Commands;
+﻿#region
+
+using PlanningPoker.Application.Abstractions.Commands;
 using PlanningPoker.Domain.Common.Extensions;
 
-namespace PlanningPoker.Application.Games.CreateGame
+#endregion
+
+namespace PlanningPoker.Application.Games.CreateGame;
+
+public class CreateGameCommand : Command
 {
-    public class CreateGameCommand : Command
+    public CreateGameCommand(string name, string votingSystemId, string? password = null)
     {
-        public string Name { get; private set; }
-        public string? Password { get; private set; }
-        public int VotingSystemId { get; private set; }
+        Name = name;
+        Password = password;
+        SetVotingSystemId(votingSystemId);
+    }
 
-        public CreateGameCommand(string name, int votingSystemId, string? password = null)
+    public string Name { get; private set; }
+    public string? Password { get; private set; }
+    public string VotingSystemId { get; private set; } = string.Empty;
+
+    private void SetVotingSystemId(string votingSystemId)
+    {
+        if (!votingSystemId.IsPresent())
         {
-            Name = name;
-            Password = password;
-            SetVotingSystemId(votingSystemId);
+            AddError(CreateGameCommandErrors.InvalidVotingSystemId);
+            return;
         }
 
-        private void SetVotingSystemId(int votingSystemId)
-        {
-            if (!votingSystemId.GreaterThan(0))
-            {
-                AddError(CreateGameCommandErrors.InvalidVotingSystemId);
-                return;
-            }
-
-            VotingSystemId = votingSystemId;
-        }
+        VotingSystemId = votingSystemId;
     }
 }

@@ -1,18 +1,21 @@
-﻿using PlanningPoker.Domain.Abstractions;
+﻿#region
 
-namespace PlanningPoker.Domain.Users
+using PlanningPoker.Domain.Abstractions;
+
+#endregion
+
+namespace PlanningPoker.Domain.Users;
+
+public sealed record Grant
 {
-    public sealed record Grant
+    internal Grant(Resources resource, GrantScopes scope, EntityId? recordId = null)
     {
-        public Resources Resource { get; private set; }
-        public GrantScopes Scope { get; private set; }
-        public EntityId? RecordId { get; private set; }
-
-        internal Grant(Resources resource, GrantScopes scope, EntityId? recordId = null)
-        {
-            Resource = resource;
-            Scope = scope;
-            RecordId = recordId;
-        }
+        Resource = resource;
+        Scope = scope;
+        RecordId = recordId;
     }
+
+    public Resources Resource { get; private set; }
+    public GrantScopes Scope { get; private set; }
+    public EntityId? RecordId { get; private set; }
 }

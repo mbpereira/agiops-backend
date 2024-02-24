@@ -1,7 +1,6 @@
-﻿namespace PlanningPoker.Application.Abstractions.Security
+﻿namespace PlanningPoker.Application.Abstractions.Security;
+
+public interface ISecurityContext
 {
-    public interface ISecurityContext
-    {
-        Task<SecurityInformation> GetSecurityInformationAsync();
-    }
+    Task<SecurityInformation> GetSecurityInformationAsync();
 }

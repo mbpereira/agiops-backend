@@ -1,4 +1,3 @@
-﻿namespace PlanningPoker.Application.Tenants
-{
-    public record TenantInformation(int Id);
-}
+﻿namespace PlanningPoker.Application.Tenants;
+
+public record TenantInformation(string Id);

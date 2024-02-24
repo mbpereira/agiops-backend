@@ -1,9 +1,15 @@
-﻿using PlanningPoker.Domain.Validation;
+﻿#region
+
+using PlanningPoker.Domain.Validation;
+
+#endregion
 
 namespace PlanningPoker.Application.Invitations.Common;
 
 public static class ChangeInvitationErrors
 {
-    public static Error InvalidInvitationId(string command) =>
-        Error.GreaterThan(command, "InvitationId", value: 0);
+    public static Error InvalidInvitationId(string command)
+    {
+        return Error.GreaterThan(command, "InvitationId");
+    }
 }

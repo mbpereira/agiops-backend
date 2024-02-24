@@ -1,6 +1,9 @@
-﻿using PlanningPoker.Domain.Abstractions;
+﻿#region
 
-namespace PlanningPoker.Application.Abstractions.Commands
-{
-    public abstract class Command : Validatable;
-}
+using PlanningPoker.Domain.Abstractions;
+
+#endregion
+
+namespace PlanningPoker.Application.Abstractions.Commands;
+
+public abstract class Command : Validatable;

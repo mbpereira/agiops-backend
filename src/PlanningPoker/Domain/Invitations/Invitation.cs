@@ -1,122 +1,100 @@
-﻿using PlanningPoker.Domain.Abstractions;
+﻿#region
+
+using PlanningPoker.Domain.Abstractions;
+using PlanningPoker.Domain.Abstractions.Clock;
 using PlanningPoker.Domain.Common.Extensions;
 using PlanningPoker.Domain.Users;
 
-namespace PlanningPoker.Domain.Invitations
+#endregion
+
+namespace PlanningPoker.Domain.Invitations;
+
+public class Invitation : TenantableAggregateRoot
 {
-    public class Invitation : TenantableAggregateRoot
+    private Invitation(string id, string tenantId, string to, Role role, IDateTimeProvider dateTimeProvider)
+        : base(id, tenantId, dateTimeProvider)
     {
-        public Guid Token { get; private set; }
-        public Role Role { get; private set; }
-        public Email Receiver { get; private set; } = Email.Empty();
-        public DateTime CreatedAtUtc { get; private set; }
-        public DateTime SentAtUtc { get; private set; }
-        public DateTime ExpiresAtUtc { get; private set; }
-        public InvitationStatus Status { get; private set; }
-        public DateTime? UpdatedAtUtc { get; private set; }
-        public bool IsOpen => InvitationStatus.Sent.Equals(Status);
-        public bool HasExpired => DateTime.UtcNow > ExpiresAtUtc;
+        Role = role;
+        SetReceiver(to);
+        SentAtUtc = CreatedAtUtc;
+        ExpiresAtUtc = SentAtUtc.AddMinutes(InvitationConstants.ExpirationTimeInMinutes);
+        Status = InvitationStatus.Sent;
+        RaiseDomainEvent(new InvitationCreated(Id, Receiver, ExpiresAtUtc));
+    }
 
-        private Invitation(int id, int tenantId, string to, Role role)
-            : this(id, tenantId, to, role,
-                token: Guid.NewGuid(),
-                createdAtUtc: DateTime.UtcNow,
-                sentAtUtc: DateTime.UtcNow,
-                expiresAtUtc: DateTime.UtcNow.AddMinutes(InvitationConstants.ExpirationTimeInMinutes),
-                status: InvitationStatus.Sent)
+    public Role Role { get; private set; }
+    public Email Receiver { get; private set; } = Email.Empty();
+    public DateTime SentAtUtc { get; private set; }
+    public DateTime ExpiresAtUtc { get; private set; }
+    public InvitationStatus Status { get; private set; }
+    public bool IsOpen => InvitationStatus.Sent.Equals(Status);
+    public bool HasExpired => DateTime.UtcNow > ExpiresAtUtc;
+
+    private void SetReceiver(string email)
+    {
+        if (!email.IsEmail())
         {
-            RaiseDomainEvent(new InvitationCreated(Token, Receiver, ExpiresAtUtc));
+            AddError(InvitationErrors.InvalidReceiver);
+            return;
         }
 
-        public Invitation(
-            int id,
-            int tenantId,
-            string receiver,
-            Role role,
-            Guid token,
-            DateTime createdAtUtc,
-            DateTime sentAtUtc,
-            DateTime expiresAtUtc,
-            InvitationStatus status,
-            DateTime? updatedAtUtc = null)
-            : base(id, tenantId)
+        Receiver = new Email(email);
+    }
+
+    public void ChangeReceiver(string email)
+    {
+        SetReceiver(email);
+        Updated();
+    }
+
+    public void Renew()
+    {
+        if (!IsOpen)
         {
-            Token = token;
-            Role = role;
-            SetReceiver(receiver);
-            CreatedAtUtc = createdAtUtc;
-            SentAtUtc = sentAtUtc;
-            ExpiresAtUtc = expiresAtUtc;
-            Status = status;
-            UpdatedAtUtc = updatedAtUtc;
+            AddError(InvitationErrors.FinishedInvitation(nameof(Renew)));
+            return;
         }
 
-        public void SetReceiver(string email)
-        {
-            if (!email.IsEmail())
-            {
-                AddError(InvitationErrors.InvalidReceiver);
-                return;
-            }
+        SentAtUtc = DateTimeProvider.UtcNow();
+        ExpiresAtUtc = SentAtUtc.AddMinutes(InvitationConstants.ExpirationTimeInMinutes);
+        Updated();
+        RaiseDomainEvent(new InvitationRenewed(Id, Receiver, ExpiresAtUtc));
+    }
 
-            Receiver = new Email(email);
+    public void Cancel()
+    {
+        if (!IsOpen)
+        {
+            AddError(InvitationErrors.FinishedInvitation(nameof(Cancel)));
+            return;
         }
 
-        public void Renew()
-        {
-            if (!IsOpen)
-            {
-                AddError(InvitationErrors.AlreadyAcceptedInvitation(nameof(Renew)));
-                return;
-            }
+        Status = InvitationStatus.Cancelled;
+        Updated();
+    }
 
-            SentAtUtc = DateTime.UtcNow;
-            ExpiresAtUtc = SentAtUtc.AddMinutes(InvitationConstants.ExpirationTimeInMinutes);
-            RaiseDomainEvent(new InvitationRenewed(Token, Receiver, ExpiresAtUtc));
+    public void Accept()
+    {
+        if (!IsOpen)
+        {
+            AddError(InvitationErrors.FinishedInvitation(nameof(Accept)));
+            return;
         }
 
-        public void Accept()
+        if (HasExpired)
         {
-            if (!IsOpen)
-            {
-                AddError(InvitationErrors.AlreadyAcceptedInvitation(nameof(Accept)));
-                return;
-            }
-
-            if (HasExpired)
-            {
-                AddError(InvitationErrors.ExpiredInvitation);
-                return;
-            }
-
-            UpdatedAtUtc = DateTime.UtcNow;
-            Status = InvitationStatus.Accepted;
-            RaiseDomainEvent(new InvitationAccepted(Token, UpdatedAtUtc.GetValueOrDefault()));
+            AddError(InvitationErrors.ExpiredInvitation);
+            return;
         }
 
-        public static Invitation New(int tenantId, string to, Role role) =>
-            new(EntityId.AutoIncrement(), tenantId, to, role);
+        Status = InvitationStatus.Accepted;
+        Updated();
+        RaiseDomainEvent(new InvitationAccepted(Id, UpdatedAtUtc.GetValueOrDefault()));
+    }
 
-        public static Invitation Load(
-            int id,
-            int tenantId,
-            string to,
-            Role role,
-            Guid token,
-            DateTime createdAtUtc,
-            DateTime sentAtUtc,
-            DateTime expiresAtUtc,
-            InvitationStatus status,
-            DateTime? updatedAtUtc = null) =>
-            new(id,
-                tenantId,
-                to,
-                role,
-                token,
-                createdAtUtc,
-                sentAtUtc,
-                expiresAtUtc,
-                status,
-                updatedAtUtc);
+    public static Invitation New(string tenantId, string to, Role role, IDateTimeProvider? dateTimeProvider = null)
+    {
+        return new Invitation(EntityId.Generate(), tenantId, to, role,
+            dateTimeProvider ?? DefaultDateTimeProvider.Instance);
     }
 }

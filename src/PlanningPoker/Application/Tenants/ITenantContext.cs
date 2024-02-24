@@ -1,7 +1,6 @@
-﻿namespace PlanningPoker.Application.Tenants
+﻿namespace PlanningPoker.Application.Tenants;
+
+public interface ITenantContext
 {
-    public interface ITenantContext
-    {
-        Task<TenantInformation> GetCurrentTenantAsync();
-    }
+    Task<TenantInformation> GetCurrentTenantAsync();
 }

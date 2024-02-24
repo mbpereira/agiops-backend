@@ -1,16 +1,19 @@
-﻿using PlanningPoker.Domain.Abstractions;
+﻿#region
 
-namespace PlanningPoker.Domain.Games
+using PlanningPoker.Domain.Abstractions;
+
+#endregion
+
+namespace PlanningPoker.Domain.Games;
+
+public sealed record UserGrade
 {
-    public sealed record UserGrade
+    internal UserGrade(EntityId userId, string grade)
     {
-        public EntityId UserId { get; private set; }
-        public string Grade { get; private set; }
-
-        internal UserGrade(EntityId userId, string grade)
-        {
-            UserId = userId;
-            Grade = grade;
-        }
+        UserId = userId;
+        Grade = grade;
     }
+
+    public EntityId UserId { get; private set; }
+    public string Grade { get; private set; }
 }

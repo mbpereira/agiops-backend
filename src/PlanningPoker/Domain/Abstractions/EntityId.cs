@@ -1,18 +1,28 @@
-﻿namespace PlanningPoker.Domain.Abstractions
+﻿namespace PlanningPoker.Domain.Abstractions;
+
+public sealed record EntityId
 {
-    public sealed record EntityId
+    public static readonly EntityId Empty = new("");
+
+    internal EntityId(string value)
     {
-        public int Value { get; private set; }
+        Value = value;
+    }
 
-        internal EntityId(int value)
-        {
-            Value = value;
-        }
+    public string Value { get; }
 
-        public static EntityId AutoIncrement() => new(value: 0);
-        public static EntityId Blank() => new(value: -1);
+    public static EntityId Generate()
+    {
+        return new EntityId(Guid.NewGuid().ToString());
+    }
 
-        public static implicit operator EntityId(int value) => new(value: value);
-        public static implicit operator int(EntityId id) => id.Value;
+    public static implicit operator EntityId(string value)
+    {
+        return new EntityId(value);
+    }
+
+    public static implicit operator string(EntityId id)
+    {
+        return id.Value;
     }
 }

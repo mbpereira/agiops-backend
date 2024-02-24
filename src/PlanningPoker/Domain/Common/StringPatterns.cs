@@ -1,10 +1,13 @@
-﻿using System.Text.RegularExpressions;
+﻿#region
 
-namespace PlanningPoker.Domain.Common
+using System.Text.RegularExpressions;
+
+#endregion
+
+namespace PlanningPoker.Domain.Common;
+
+public static partial class StringPatterns
 {
-    public static partial class StringPatterns
-    {
-        [GeneratedRegex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")]
-        public static partial Regex Email();
-    }
+    [GeneratedRegex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")]
+    public static partial Regex Email();
 }

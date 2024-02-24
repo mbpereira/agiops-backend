@@ -1,13 +1,16 @@
-﻿using PlanningPoker.Domain.Validation;
+﻿#region
 
-namespace PlanningPoker.Domain.Users
+using PlanningPoker.Domain.Validation;
+
+#endregion
+
+namespace PlanningPoker.Domain.Users;
+
+public static class AccessGrantErrors
 {
-    public static class AccessGrantErrors
-    {
-        public static readonly Error InvalidUserId =
-            Error.GreaterThan(nameof(AccessGrant), nameof(AccessGrant.UserId), value: 0);
+    public static readonly Error InvalidUserId =
+        Error.GreaterThan(nameof(AccessGrant), nameof(AccessGrant.UserId));
 
-        public static readonly Error UserChange = new(nameof(AccessGrant), nameof(AccessGrant.UserId),
-            "You cannot change user id");
-    }
+    public static readonly Error UserChange = new(nameof(AccessGrant), nameof(AccessGrant.UserId),
+        "You cannot change user id");
 }

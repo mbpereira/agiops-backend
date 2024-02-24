@@ -1,28 +1,30 @@
-﻿using PlanningPoker.Application.Abstractions;
+﻿#region
+
 using PlanningPoker.Application.Abstractions.Commands;
 using PlanningPoker.Application.Invitations.Common;
 using PlanningPoker.Domain.Common.Extensions;
 
-namespace PlanningPoker.Application.Invitations.AcceptInvitation
+#endregion
+
+namespace PlanningPoker.Application.Invitations.AcceptInvitation;
+
+public class AcceptInvitationCommand : Command
 {
-    public class AcceptInvitationCommand : Command
+    public AcceptInvitationCommand(string invitationId)
     {
-        public int InvitationId { get; private set; }
+        SetInvitationId(invitationId);
+    }
 
-        public AcceptInvitationCommand(int invitationId)
+    public string InvitationId { get; private set; } = string.Empty;
+
+    private void SetInvitationId(string invitationId)
+    {
+        if (!invitationId.IsPresent())
         {
-            SetInvitationId(invitationId);
+            AddError(ChangeInvitationErrors.InvalidInvitationId(nameof(AcceptInvitationCommand)));
+            return;
         }
 
-        private void SetInvitationId(int invitationId)
-        {
-            if (!invitationId.GreaterThan(0))
-            {
-                AddError(ChangeInvitationErrors.InvalidInvitationId(nameof(AcceptInvitationCommand)));
-                return;
-            }
-
-            InvitationId = invitationId;
-        }
+        InvitationId = invitationId;
     }
 }

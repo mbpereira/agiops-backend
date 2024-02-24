@@ -1,131 +1,136 @@
-﻿using Bogus;
+﻿#region
+
 using FluentAssertions;
 using FluentAssertions.Execution;
+using PlanningPoker.Domain.Abstractions.Clock;
 using PlanningPoker.Domain.Invitations;
 using PlanningPoker.Domain.Users;
-using PlanningPoker.UnitTests.Domain.Common.Extensions;
 
-namespace PlanningPoker.UnitTests.Domain.Invitations
+#endregion
+
+namespace PlanningPoker.UnitTests.Domain.Invitations;
+
+public class InvitationTests
 {
-    public class InvitationTests
+    private readonly IDateTimeProvider _dateTimeProvider = Substitute.For<IDateTimeProvider>();
+
+    [Fact]
+    public void New_ShouldReturnExpectedErrorsWhenProvidedDataIsNotValid()
     {
-        private readonly Faker _faker = new();
+        var invitation = FakerInstance.NewInvalidInvitation();
 
-        [Fact]
-        public void New_ShouldReturnExpectedErrorsWhenProvidedDataIsNotValid()
+        var errors = invitation.Errors;
+
+        errors.Should().BeEquivalentTo([
+            new { Code = "Invitation.Receiver", Message = "Provided email is not valid." },
+            new { Code = "TenantId", Message = "Provided value cannot be null, empty or white space." }
+        ]);
+    }
+
+    [Fact]
+    public void New_ShouldSetExpiresAtUtcTo30MinutesAfterNow()
+    {
+        var invitation = GetNewValidInvitation();
+
+        var diff = (int)(invitation.ExpiresAtUtc - invitation.CreatedAtUtc).TotalMinutes;
+
+        diff.Should().Be(InvitationConstants.ExpirationTimeInMinutes);
+    }
+
+    [Fact]
+    public void New_ShouldRegisterInvitationCreatedEvent()
+    {
+        var invitation = GetNewValidInvitation();
+
+        invitation.GetDomainEvents().Should().BeEquivalentTo([
+            new InvitationCreated(invitation.Id, invitation.Receiver, invitation.ExpiresAtUtc)
+        ]);
+    }
+
+    [Fact]
+    public async Task Renew_ShouldRegisterInvitationRenewedEventAndRefreshExpiresAtUtcDate()
+    {
+        var invitation = FakerInstance.NewValidInvitation();
+        var expiresAt = invitation.ExpiresAtUtc;
+        var sentAt = invitation.SentAtUtc;
+        await Task.Delay(TimeSpan.FromSeconds(1));
+
+        invitation.Renew();
+
+        using var _ = new AssertionScope();
+        invitation.GetDomainEvents().Should().Contain(
+            new InvitationRenewed(invitation.Id, invitation.Receiver, invitation.ExpiresAtUtc)
+        );
+        invitation.SentAtUtc.Should().BeAfter(sentAt);
+        invitation.ExpiresAtUtc.Should().BeAfter(expiresAt);
+    }
+
+    [Theory]
+    [MemberData(nameof(InvitationFixture.GetAcceptedOrCancelledInvitations), MemberType = typeof(InvitationFixture))]
+    public void Renew_ShouldReturnFinalizedInvitationErrorWhenTryingToRenewAnAcceptedOrInactiveInvitation(
+        Invitation finishedInvitation)
+    {
+        var expectedErrors = new[]
         {
-            var invitation = _faker.NewInvalidInvitation();
-
-            var errors = invitation.Errors;
-
-            errors.Should().BeEquivalentTo(new[]
-                { new { Code = "Invitation.Receiver", Message = "Provided email is not valid." } });
-        }
-
-        [Fact]
-        public void New_ShouldSetExpiresAtUtcTo30MinutesAfterNow()
-        {
-            var invitation = GetNewValidInvitation();
-
-            var diff = (int)(invitation.ExpiresAtUtc - invitation.CreatedAtUtc).TotalMinutes;
-
-            diff.Should().Be(InvitationConstants.ExpirationTimeInMinutes);
-        }
-
-        [Fact]
-        public void New_ShouldRegisterInvitationCreatedEvent()
-        {
-            var invitation = GetNewValidInvitation();
-
-            invitation.GetDomainEvents().Should().BeEquivalentTo(new[]
-                { new InvitationCreated(invitation.Token, invitation.Receiver, invitation.ExpiresAtUtc) });
-        }
-
-        [Fact]
-        public async Task Renew_ShouldRegisterInvitationRenewedEventAndRefreshExpiresAtUtcDate()
-        {
-            var invitation = _faker.LoadValidInvitation();
-            var expiresAt = invitation.ExpiresAtUtc;
-            var sentAt = invitation.SentAtUtc;
-            await Task.Delay(TimeSpan.FromSeconds(1));
-
-            invitation.Renew();
-
-            using var _ = new AssertionScope();
-            invitation.GetDomainEvents().Should().BeEquivalentTo(new[]
-                { new InvitationRenewed(invitation.Token, invitation.Receiver, invitation.ExpiresAtUtc) });
-            invitation.SentAtUtc.Should().BeAfter(sentAt);
-            invitation.ExpiresAtUtc.Should().BeAfter(expiresAt);
-        }
-
-        [Theory]
-        [InlineData(InvitationStatus.Accepted)]
-        [InlineData(InvitationStatus.Cancelled)]
-        public void Renew_ShouldReturnFinalizedInvitationErrorWhenTryingToRenewAnAcceptedOrInactiveInvitation(
-            InvitationStatus status)
-        {
-            var expectedErrors = new[]
+            new
             {
-                new
-                {
-                    Code = "Invitation.Renew",
-                    Message = "This invitation has already been accepted or is inactive."
-                }
-            };
-            var invitation = _faker.LoadValidInvitation(status: status);
+                Code = "Invitation.Renew",
+                Message = "This invitation has already been accepted or is cancelled."
+            }
+        };
 
-            invitation.Renew();
+        finishedInvitation.Renew();
 
-            using var _ = new AssertionScope();
-            invitation.IsValid.Should().BeFalse();
-            invitation.Errors.Should().BeEquivalentTo(expectedErrors);
-        }
+        using var _ = new AssertionScope();
+        finishedInvitation.IsValid.Should().BeFalse();
+        finishedInvitation.Errors.Should().BeEquivalentTo(expectedErrors);
+    }
 
-        [Theory]
-        [InlineData(InvitationStatus.Accepted)]
-        [InlineData(InvitationStatus.Cancelled)]
-        public void Accept_ShouldReturnFinalizedInvitationErrorWhenTryingToAcceptAnAcceptedOrInactiveInvitation(
-            InvitationStatus status)
+    [Theory]
+    [MemberData(nameof(InvitationFixture.GetAcceptedOrCancelledInvitations), MemberType = typeof(InvitationFixture))]
+    public void Accept_ShouldReturnFinalizedInvitationErrorWhenTryingToAcceptAnAcceptedOrInactiveInvitation(
+        Invitation finishedInvitation)
+    {
+        var expectedErrors = new[]
         {
-            var expectedErrors = new[]
+            new
             {
-                new
-                {
-                    Code = "Invitation.Accept",
-                    Message = "This invitation has already been accepted or is inactive."
-                }
-            };
-            var invitation = _faker.LoadValidInvitation(status: status);
+                Code = "Invitation.Accept",
+                Message = "This invitation has already been accepted or is cancelled."
+            }
+        };
 
-            invitation.Accept();
+        finishedInvitation.Accept();
 
-            using var _ = new AssertionScope();
-            invitation.IsValid.Should().BeFalse();
-            invitation.Errors.Should().BeEquivalentTo(expectedErrors);
-        }
+        using var _ = new AssertionScope();
+        finishedInvitation.IsValid.Should().BeFalse();
+        finishedInvitation.Errors.Should().BeEquivalentTo(expectedErrors);
+    }
 
-        [Fact]
-        public void Accept_ShouldReturnExpiredInvitationErrorWhenTryingToAcceptExpiredInvitation()
+    [Fact]
+    public void Accept_ShouldReturnExpiredInvitationErrorWhenTryingToAcceptExpiredInvitation()
+    {
+        var expectedErrors = new[]
         {
-            var expectedErrors = new[]
+            new
             {
-                new
-                {
-                    Code = "Invitation.Accept",
-                    Message = "This invitation has expired."
-                }
-            };
-            var invitation = _faker.LoadValidInvitation(expiresAtUtc: DateTime.UtcNow.AddDays(-30));
+                Code = "Invitation.Accept",
+                Message = "This invitation has expired."
+            }
+        };
+        _dateTimeProvider.UtcNow().Returns(DateTime.Now.AddDays(-100));
+        var invitation = FakerInstance.NewValidInvitation(dateTimeProvider: _dateTimeProvider);
 
-            invitation.Accept();
+        invitation.Accept();
 
-            using var _ = new AssertionScope();
-            invitation.IsValid.Should().BeFalse();
-            invitation.Errors.Should().BeEquivalentTo(expectedErrors);
-        }
+        using var _ = new AssertionScope();
+        invitation.IsValid.Should().BeFalse();
+        invitation.Errors.Should().BeEquivalentTo(expectedErrors);
+    }
 
-        private Invitation GetNewValidInvitation()
-            => Invitation.New(tenantId: _faker.Random.Int(min: 1), to: _faker.Person.Email,
-                role: _faker.PickRandom<Role>());
+    private Invitation GetNewValidInvitation()
+    {
+        return Invitation.New(FakerInstance.ValidId(), FakerInstance.Person.Email,
+            FakerInstance.PickRandom<Role>(), DefaultDateTimeProvider.Instance);
     }
 }

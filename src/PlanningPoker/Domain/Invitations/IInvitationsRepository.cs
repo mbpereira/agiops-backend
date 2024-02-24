@@ -1,6 +1,9 @@
-﻿using PlanningPoker.Domain.Abstractions;
+﻿#region
 
-namespace PlanningPoker.Domain.Invitations
-{
-    public interface IInvitationsRepository : IRepository<Invitation>;
-}
+using PlanningPoker.Domain.Abstractions;
+
+#endregion
+
+namespace PlanningPoker.Domain.Invitations;
+
+public interface IInvitationsRepository : IRepository<Invitation>;

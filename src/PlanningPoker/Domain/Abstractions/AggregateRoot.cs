@@ -1,46 +1,72 @@
-﻿using PlanningPoker.Domain.Common.Extensions;
+﻿#region
+
+using PlanningPoker.Domain.Abstractions.Clock;
+using PlanningPoker.Domain.Common.Extensions;
 using PlanningPoker.Domain.Validation;
 
-namespace PlanningPoker.Domain.Abstractions
+#endregion
+
+namespace PlanningPoker.Domain.Abstractions;
+
+public abstract class AggregateRoot : Entity, IAggregateRoot
 {
-    public abstract class AggregateRoot(int id) : Entity(id), IAggregateRoot
+    private readonly IList<IDomainEvent> _domainEvents = new List<IDomainEvent>();
+
+    protected AggregateRoot(string id, IDateTimeProvider dateTimeProvider)
+        : base(id, dateTimeProvider)
     {
-        private readonly IList<IDomainEvent> _domainEvents = new List<IDomainEvent>();
-
-        public IReadOnlyList<IDomainEvent> GetDomainEvents()
-            => _domainEvents.ToList();
-
-        public void ClearDomainEvents()
-            => _domainEvents.Clear();
-
-        protected void RaiseDomainEvent(IDomainEvent domainEvent)
-            => _domainEvents.Add(domainEvent);
     }
 
-    public abstract class TenantableAggregateRoot : AggregateRoot, ITenantable
+    protected AggregateRoot(string id)
+        : base(id)
     {
-        public EntityId TenantId { get; private set; } = EntityId.Blank();
+    }
 
-        public TenantableAggregateRoot(int id, int tenantId) : base(id)
+    public IReadOnlyList<IDomainEvent> GetDomainEvents()
+    {
+        return _domainEvents.ToList();
+    }
+
+    public void ClearDomainEvents()
+    {
+        _domainEvents.Clear();
+    }
+
+    protected void RaiseDomainEvent(IDomainEvent domainEvent)
+    {
+        _domainEvents.Add(domainEvent);
+    }
+}
+
+public abstract class TenantableAggregateRoot : AggregateRoot, ITenantable
+{
+    protected TenantableAggregateRoot(string id, string tenantId, IDateTimeProvider dateTimeProvider) : base(id,
+        dateTimeProvider)
+    {
+        SetTenant(tenantId);
+    }
+
+    protected TenantableAggregateRoot(string id, string tenantId) : base(id)
+    {
+        SetTenant(tenantId);
+    }
+
+    public EntityId TenantId { get; private set; } = EntityId.Empty;
+
+    public void SetTenant(string tenantId)
+    {
+        if (TenantId.Value.IsPresent())
         {
-            SetTenant(tenantId);
+            AddError(new Error(nameof(TenantId), "Tenant id cannot be changed."));
+            return;
         }
 
-        public void SetTenant(int tenantId)
+        if (tenantId.IsEmpty())
         {
-            if (TenantId.Value.GreaterThan(0))
-            {
-                AddError(new Error(nameof(TenantId), "Tenant id cannot be changed."));
-                return;
-            }
-
-            if (!tenantId.GreaterThan(0))
-            {
-                AddError(Error.GreaterThan(code: nameof(TenantId), value: 0));
-                return;
-            }
-
-            TenantId = tenantId;
+            AddError(Error.NullOrEmpty(code: nameof(TenantId)));
+            return;
         }
+
+        TenantId = tenantId;
     }
 }

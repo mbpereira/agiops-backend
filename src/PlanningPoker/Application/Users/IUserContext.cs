@@ -1,7 +1,6 @@
-﻿namespace PlanningPoker.Application.Users
+﻿namespace PlanningPoker.Application.Users;
+
+public interface IUserContext
 {
-    public interface IUserContext
-    {
-        Task<UserInformation> GetCurrentUserAsync();
-    }
+    Task<UserInformation> GetCurrentUserAsync();
 }

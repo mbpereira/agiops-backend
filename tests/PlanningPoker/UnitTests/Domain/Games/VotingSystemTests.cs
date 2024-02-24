@@ -1,147 +1,152 @@
-﻿using Bogus;
+﻿#region
+
+using Bogus;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Games;
-using PlanningPoker.UnitTests.Domain.Common.Extensions;
 
-namespace PlanningPoker.UnitTests.Domain.Games
+#endregion
+
+namespace PlanningPoker.UnitTests.Domain.Games;
+
+public class VotingSystemTests
 {
-    public class VotingSystemTests
+    private readonly Faker _faker = new();
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("te")]
+    public void New_ShouldReturnExpectedErrors(string invalidDescription)
     {
-        private readonly Faker _faker = new();
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("te")]
-        public void New_ShouldReturnExpectedErrors(string invalidDescription)
+        var expectedErrors = new[]
         {
-            var expectedErrors = new[]
+            new { Code = "TenantId", Message = "Provided value cannot be null, empty or white space." },
+            new
             {
-                new { Code = "TenantId", Message = "Provided value must be greater than 0." },
-                new
-                {
-                    Code = "VotingSystem.Name",
-                    Message = "The provided string does not meet the minimum length requirement. Min length: 3."
-                },
-                new { Code = "VotingSystem.Grades", Message = "The list cannot be empty." },
-                new { Code = "VotingSystem.UserId", Message = "Provided value must be greater than 0." },
-            };
+                Code = "VotingSystem.Name",
+                Message = "The provided string does not meet the minimum length requirement. Min length: 3."
+            },
+            new { Code = "VotingSystem.Grades", Message = "The list cannot be empty." },
+            new { Code = "VotingSystem.UserId", Message = "Provided value cannot be null, empty or white space." }
+        };
 
-            var votingSystem = VotingSystem.New(tenantId: 0, invalidDescription, userId: 0, new List<string>());
+        var votingSystem = VotingSystem.New(EntityId.Empty, invalidDescription, EntityId.Empty,
+            []);
 
-            votingSystem.Errors.Should().BeEquivalentTo(expectedErrors);
-        }
+        votingSystem.Errors.Should().BeEquivalentTo(expectedErrors);
+    }
 
-        [Theory]
-        [InlineData(SharingStatus.Unshared)]
-        [InlineData(SharingStatus.Approved)]
-        public void SetSharingStatus_ShouldReturnErrorWhenTryingToApproveSharingOfNonValidVotingSystem(
-            SharingStatus invalidApprovalStatus)
+    [Theory]
+    [InlineData(SharingStatus.Unshared)]
+    [InlineData(SharingStatus.Approved)]
+    public void SetSharingStatus_ShouldReturnErrorWhenTryingToApproveSharingOfNonValidVotingSystem(
+        SharingStatus invalidApprovalStatus)
+    {
+        var votingSystem = GetValidVotingSystem(invalidApprovalStatus);
+
+        votingSystem.SetSharingStatus(SharingStatus.Approved);
+
+        votingSystem.Errors.Should().BeEquivalentTo(new[]
         {
-            var votingSystem = GetValidVotingSystem(invalidApprovalStatus);
-
-            votingSystem.SetSharingStatus(SharingStatus.Approved);
-
-            votingSystem.Errors.Should().BeEquivalentTo(new[]
+            new
             {
-                new
-                {
-                    Code = "VotingSystem.SharingStatus",
-                    Message = "Only the statuses 'requested' and 'rejected' can be approved."
-                }
-            });
-        }
+                Code = "VotingSystem.SharingStatus",
+                Message = "Only the statuses 'requested' and 'rejected' can be approved."
+            }
+        });
+    }
 
-        [Theory]
-        [InlineData(SharingStatus.Unshared)]
-        [InlineData(SharingStatus.Approved)]
-        [InlineData(SharingStatus.Rejected)]
-        public void SetSharingStatus_ShouldReturnErrorWhenTryingToRejectSharingOfNonValidVotingSystem(
-            SharingStatus invalidApprovalStatus)
+    [Theory]
+    [InlineData(SharingStatus.Unshared)]
+    [InlineData(SharingStatus.Approved)]
+    [InlineData(SharingStatus.Rejected)]
+    public void SetSharingStatus_ShouldReturnErrorWhenTryingToRejectSharingOfNonValidVotingSystem(
+        SharingStatus invalidApprovalStatus)
+    {
+        var votingSystem = GetValidVotingSystem(invalidApprovalStatus);
+
+        votingSystem.SetSharingStatus(SharingStatus.Rejected);
+
+        votingSystem.Errors.Should().BeEquivalentTo(new[]
         {
-            var votingSystem = GetValidVotingSystem(invalidApprovalStatus);
+            new { Code = "VotingSystem.SharingStatus", Message = "Only the status 'requested' can be rejected." }
+        });
+    }
 
-            votingSystem.SetSharingStatus(SharingStatus.Rejected);
+    [Theory]
+    [InlineData(SharingStatus.Requested)]
+    [InlineData(SharingStatus.Approved)]
+    public void SetSharingStatus_ShouldReturnErrorWhenTryingToRequestSharingOfNonValidVotingSystem(
+        SharingStatus invalidApprovalStatus)
+    {
+        var votingSystem = GetValidVotingSystem(invalidApprovalStatus);
 
-            votingSystem.Errors.Should().BeEquivalentTo(new[]
+        votingSystem.SetSharingStatus(SharingStatus.Requested);
+
+        votingSystem.Errors.Should().BeEquivalentTo([
+            new
             {
-                new { Code = "VotingSystem.SharingStatus", Message = "Only the status 'requested' can be rejected." }
-            });
-        }
+                Code = "VotingSystem.SharingStatus",
+                Message = "Only the statuses 'rejected' and 'unshared' can made a request sharing."
+            }
+        ]);
+    }
 
-        [Theory]
-        [InlineData(SharingStatus.Requested)]
-        [InlineData(SharingStatus.Approved)]
-        public void SetSharingStatus_ShouldReturnErrorWhenTryingToRequestSharingOfNonValidVotingSystem(
-            SharingStatus invalidApprovalStatus)
-        {
-            var votingSystem = GetValidVotingSystem(invalidApprovalStatus);
+    [Theory]
+    [InlineData(SharingStatus.Approved, SharingStatus.Requested)]
+    [InlineData(SharingStatus.Approved, SharingStatus.Rejected)]
+    [InlineData(SharingStatus.Rejected, SharingStatus.Requested)]
+    [InlineData(SharingStatus.Requested, SharingStatus.Unshared)]
+    [InlineData(SharingStatus.Requested, SharingStatus.Rejected)]
+    public void SetSharingStatus_ShouldReturnErrorWhenTryingToSetUndefinedAsSharingStatus(
+        SharingStatus nextSharingStatus, SharingStatus oldSharingStatus)
+    {
+        var votingSystem = GetValidVotingSystem(oldSharingStatus);
 
-            votingSystem.SetSharingStatus(SharingStatus.Requested);
+        votingSystem.SetSharingStatus(nextSharingStatus);
 
-            votingSystem.Errors.Should().BeEquivalentTo(new[]
-            {
-                new
-                {
-                    Code = "VotingSystem.SharingStatus",
-                    Message = "Only the statuses 'rejected' and 'unshared' can made a request sharing."
-                }
-            });
-        }
+        using var _ = new AssertionScope();
+        votingSystem.IsValid.Should().BeTrue();
+        votingSystem.SharingStatus.Should().Be(nextSharingStatus);
+    }
 
-        [Theory]
-        [InlineData(SharingStatus.Approved, SharingStatus.Requested)]
-        [InlineData(SharingStatus.Approved, SharingStatus.Rejected)]
-        [InlineData(SharingStatus.Rejected, SharingStatus.Requested)]
-        [InlineData(SharingStatus.Requested, SharingStatus.Unshared)]
-        [InlineData(SharingStatus.Requested, SharingStatus.Rejected)]
-        public void SetSharingStatus_ShouldReturnErrorWhenTryingToSetUndefinedAsSharingStatus(
-            SharingStatus nextSharingStatus, SharingStatus oldSharingStatus)
-        {
-            var votingSystem = GetValidVotingSystem(oldSharingStatus);
+    [Fact]
+    public void SetName_ShouldChangeName()
+    {
+        var newDescription = _faker.Random.String2(10);
+        var votingSystem = GetValidVotingSystem();
 
-            votingSystem.SetSharingStatus(nextSharingStatus);
+        votingSystem.SetName(newDescription);
 
-            using var _ = new AssertionScope();
-            votingSystem.IsValid.Should().BeTrue();
-            votingSystem.SharingStatus.Should().Be(nextSharingStatus);
-        }
+        votingSystem.Name.Should().Be(newDescription);
+    }
 
-        [Fact]
-        public void SetName_ShouldChangeName()
-        {
-            var newDescription = _faker.Random.String2(length: 10);
-            var votingSystem = GetValidVotingSystem();
+    [Fact]
+    public void GradeDetails_ShouldReturnIsQuantifiableAsFalseWhenExistsAnyNonNumericGrade()
+    {
+        var votingSystem = GetValidVotingSystem();
+        votingSystem.SetPossibleGrades(["P", "M", "G"]);
 
-            votingSystem.SetName(newDescription);
+        var gradeDetails = votingSystem.GradeDetails;
 
-            votingSystem.Name.Should().Be(newDescription);
-        }
+        gradeDetails.IsQuantifiable.Should().BeFalse();
+    }
 
-        [Fact]
-        public void GradeDetails_ShouldReturnIsQuantifiableAsFalseWhenExistsAnyNonNumericGrade()
-        {
-            var votingSystem = GetValidVotingSystem();
-            votingSystem.SetPossibleGrades(new[] { "P", "M", "G" });
+    [Fact]
+    public void GradeDetails_ShouldReturnIsQuantifiableAsTrueWhenAllGradesAreNumeric()
+    {
+        var votingSystem = GetValidVotingSystem();
+        votingSystem.SetPossibleGrades(["1", "2", "3"]);
 
-            var gradeDetails = votingSystem.GradeDetails;
+        var gradeDetails = votingSystem.GradeDetails;
 
-            gradeDetails.IsQuantifiable.Should().BeFalse();
-        }
+        gradeDetails.IsQuantifiable.Should().BeTrue();
+    }
 
-        [Fact]
-        public void GradeDetails_ShouldReturnIsQuantifiableAsTrueWhenAllGradesAreNumeric()
-        {
-            var votingSystem = GetValidVotingSystem();
-            votingSystem.SetPossibleGrades(new[] { "1", "2", "3" });
-
-            var gradeDetails = votingSystem.GradeDetails;
-
-            gradeDetails.IsQuantifiable.Should().BeTrue();
-        }
-
-        private VotingSystem GetValidVotingSystem(SharingStatus sharingStatus = SharingStatus.Unshared)
-            => _faker.NewValidVotingSystem(sharingStatus);
+    private VotingSystem GetValidVotingSystem(SharingStatus sharingStatus = SharingStatus.Unshared)
+    {
+        return _faker.NewValidVotingSystem(sharingStatus);
     }
 }

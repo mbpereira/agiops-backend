@@ -1,6 +1,9 @@
-﻿using PlanningPoker.Domain.Abstractions;
+﻿#region
 
-namespace PlanningPoker.Domain.Games
-{
-    public interface IIssuesRepository : IRepository<Issue>;
-}
+using PlanningPoker.Domain.Abstractions;
+
+#endregion
+
+namespace PlanningPoker.Domain.Games;
+
+public interface IIssuesRepository : IRepository<Issue>;

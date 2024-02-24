@@ -1,58 +1,63 @@
-﻿using PlanningPoker.Domain.Abstractions;
+﻿#region
+
+using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Common.Extensions;
 
-namespace PlanningPoker.Domain.Users
+#endregion
+
+namespace PlanningPoker.Domain.Users;
+
+public sealed class User : AggregateRoot
 {
-    public sealed class User : AggregateRoot
+    private User(string id, string name) : base(id)
     {
-        public string Name { get; private set; } = string.Empty;
-        public Email? Email { get; private set; }
-        public Guest? Guest { get; private set; }
+        SetName(name);
+        Guest = Guest.New();
+    }
 
-        public bool IsGuest => Guest is not null;
+    private User(string id, string name, string email) : base(id)
+    {
+        SetName(name);
+        SetEmail(email);
+    }
 
-        private User(int id, string name, string? email = null, string? sessionId = null) : base(id)
+    public string Name { get; private set; } = string.Empty;
+    public Email? Email { get; private set; }
+    public Guest? Guest { get; private set; }
+
+    public bool IsGuest => Guest is not null;
+
+
+    public void SetName(string name)
+    {
+        if (!name.HasMinLength(3))
         {
-            SetName(name);
-            IdentifyUser(email, sessionId);
+            AddError(UserErrors.InvalidName);
+            return;
         }
 
-        public void SetName(string name)
-        {
-            if (!name.HasMinLength(minLength: 3))
-            {
-                AddError(UserErrors.InvalidName);
-                return;
-            }
+        Name = name;
+    }
 
-            Name = name;
+    public void SetEmail(string? email)
+    {
+        if (email.IsEmail())
+        {
+            Email = new Email(email!);
+            Guest = null;
+            return;
         }
 
-        public void IdentifyUser(string? email, string? sessionId)
-        {
-            if (email.IsEmail())
-            {
-                Email = new Email(email!);
-                Guest = null;
-                return;
-            }
+        AddError(UserErrors.InvalidEmail);
+    }
 
-            if (sessionId is not null)
-            {
-                Guest = new Guest(sessionId);
-                return;
-            }
+    public static User New(string name, string email)
+    {
+        return new User(EntityId.Generate(), name, email);
+    }
 
-            AddError(UserErrors.InvalidIdentification);
-        }
-
-        public static User Load(int id, string name, string? email, string? sessionId) =>
-            new(id, name, email, sessionId);
-
-        public static User New(string name, string email) =>
-            new(EntityId.AutoIncrement(), name, email, sessionId: null);
-
-        public static User NewGuest(string name) => new(EntityId.AutoIncrement(), name, email: null,
-            sessionId: Guid.NewGuid().ToString());
+    public static User NewGuest(string name)
+    {
+        return new User(EntityId.Generate(), name);
     }
 }

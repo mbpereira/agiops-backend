@@ -1,45 +1,46 @@
-﻿using PlanningPoker.Domain.Abstractions;
+﻿#region
+
+using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Common.Extensions;
 
-namespace PlanningPoker.Domain.Users
+#endregion
+
+namespace PlanningPoker.Domain.Users;
+
+public sealed class AccessGrant : TenantableAggregateRoot
 {
-    public sealed class AccessGrant : TenantableAggregateRoot
+    private AccessGrant(
+        string id,
+        string userId,
+        string tenantId,
+        Grant grant) : base(id, tenantId)
     {
-        public EntityId UserId { get; private set; } = EntityId.Blank();
-        public Grant Grant { get; private set; }
+        SetUser(userId);
+        Grant = grant;
+    }
 
-        private AccessGrant(
-            int id,
-            int userId,
-            int tenantId,
-            Grant grant) : base(id, tenantId)
+    public EntityId UserId { get; private set; } = EntityId.Empty;
+    public Grant Grant { get; private set; }
+
+    public void SetUser(string userId)
+    {
+        if (UserId.Value.IsPresent())
         {
-            SetUser(userId);
-            Grant = grant;
+            AddError(AccessGrantErrors.UserChange);
+            return;
         }
 
-        public void SetUser(int userId)
+        if (!userId.IsPresent())
         {
-            if (UserId.Value.GreaterThan(0))
-            {
-                AddError(AccessGrantErrors.UserChange);
-                return;
-            }
-
-            if (!userId.GreaterThan(0))
-            {
-                AddError(AccessGrantErrors.InvalidUserId);
-                return;
-            }
-
-            UserId = new EntityId(userId);
+            AddError(AccessGrantErrors.InvalidUserId);
+            return;
         }
 
-        public static AccessGrant New(int userId, int tenantId, Resources resource, GrantScopes scope) =>
-            new(EntityId.AutoIncrement(), userId, tenantId, new(resource, scope));
+        UserId = userId;
+    }
 
-        public static AccessGrant Load(int id, int userId, int tenantId, Resources resource, GrantScopes scope,
-            int recordId) =>
-            new(id, userId, tenantId, new(resource, scope, new(recordId)));
+    public static AccessGrant New(string userId, string tenantId, Resources resource, GrantScopes scope)
+    {
+        return new AccessGrant(EntityId.Generate(), userId, tenantId, new Grant(resource, scope));
     }
 }

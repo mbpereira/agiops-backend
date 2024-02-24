@@ -1,65 +1,55 @@
-﻿using Bogus;
+﻿#region
+
 using FluentAssertions;
 using FluentAssertions.Execution;
-using NSubstitute;
 using PlanningPoker.Application.Abstractions.Commands;
 using PlanningPoker.Application.Invitations.SendInvitation;
-using PlanningPoker.Application.Tenants;
-using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Invitations;
 using PlanningPoker.Domain.Users;
-using PlanningPoker.UnitTests.Domain.Common.Extensions;
 
-namespace PlanningPoker.UnitTests.Application.Invitations.SendInvitation
+#endregion
+
+namespace PlanningPoker.UnitTests.Application.Invitations.SendInvitation;
+
+public class SendInvitationCommandHandlerTests
 {
-    public class SendInvitationCommandHandlerTests
+    private readonly InvitationCommandHandlersFixture _fixture;
+    private readonly SendInvitationCommandHandler _handler;
+
+    public SendInvitationCommandHandlerTests()
     {
-        private readonly Faker _faker;
-        private readonly IInvitationsRepository _invitations;
-        private readonly TenantInformation _tenant;
-        private readonly SendInvitationCommandHandler _handler;
+        _fixture = new InvitationCommandHandlersFixture();
+        _handler = new SendInvitationCommandHandler(_fixture.Uow, _fixture.TenantContext, _fixture.DateTimeProvider);
+    }
 
-        public SendInvitationCommandHandlerTests()
-        {
-            _faker = new();
-            _tenant = new TenantInformation(Id: _faker.Random.Int(min: 1));
-            _invitations = Substitute.For<IInvitationsRepository>();
-            var tenantContext = Substitute.For<ITenantContext>();
-            tenantContext.GetCurrentTenantAsync().Returns(_tenant);
-            var uow = Substitute.For<IUnitOfWork>();
-            uow.Invitations.Returns(_invitations);
-            _handler = new SendInvitationCommandHandler(uow, tenantContext);
-        }
+    [Theory]
+    [InlineData("")]
+    [InlineData(null)]
+    [InlineData("abc")]
+    public async Task HandleAsync_ShouldReturnValidationErrorWhenProvidedDataIsNotValid(string invalidEmail)
+    {
+        var command = new SendInvitationCommand(invalidEmail, FakerInstance.PickRandom<Role>());
 
-        [Theory]
-        [InlineData("")]
-        [InlineData(null)]
-        [InlineData("abc")]
-        public async Task HandleAsync_ShouldReturnValidationErrorWhenProvidedDataIsNotValid(string invalidEmail)
-        {
-            var command = new SendInvitationCommand(to: invalidEmail, _faker.PickRandom<Role>());
+        var result = await _handler.HandleAsync(command);
 
-            var result = await _handler.HandleAsync(command);
+        result.Status.Should().Be(CommandStatus.ValidationFailed);
+    }
 
-            result.Status.Should().Be(CommandStatus.ValidationFailed);
-        }
+    [Fact]
+    public async Task HandleAsync_ShouldAddInvitationAndReturnsSuccess()
+    {
+        var expectedInvitation = FakerInstance.NewValidInvitation(_fixture.TenantInformation.Id);
+        var command = new SendInvitationCommand(expectedInvitation.Receiver.Value, expectedInvitation.Role);
+        _fixture.Invitations.AddAsync(Arg.Any<Invitation>())
+            .Returns(expectedInvitation);
 
-        [Fact]
-        public async Task HandleAsync_ShouldAddInvitationAndReturnsSuccess()
-        {
-            var expectedInvitation = _faker.LoadValidInvitation(tenantId: _tenant.Id);
-            var command = new SendInvitationCommand(expectedInvitation.Receiver.Value, expectedInvitation.Role);
-            _invitations.AddAsync(Arg.Any<Invitation>())
-                .Returns(expectedInvitation);
+        var result = await _handler.HandleAsync(command);
 
-            var result = await _handler.HandleAsync(command);
-
-            using var _ = new AssertionScope();
-            result.Status.Should().Be(CommandStatus.Success);
-            await _invitations.Received().AddAsync(Arg.Is<Invitation>(i =>
-                i.Receiver.Value == expectedInvitation.Receiver.Value &&
-                i.TenantId.Value == expectedInvitation.TenantId.Value &&
-                i.Role == expectedInvitation.Role));
-        }
+        using var _ = new AssertionScope();
+        result.Status.Should().Be(CommandStatus.Success);
+        await _fixture.Invitations.Received().AddAsync(Arg.Is<Invitation>(i =>
+            i.Receiver.Value == command.To &&
+            i.TenantId.Value == _fixture.TenantInformation.Id &&
+            i.Role == command.Role));
     }
 }

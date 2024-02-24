@@ -1,8 +1,7 @@
-﻿namespace PlanningPoker.Domain.Users
+﻿namespace PlanningPoker.Domain.Users;
+
+public enum Resources
 {
-    public enum Resources
-    {
-        Tenant = 1,
-        Project = 2
-    }
+    Tenant = 1,
+    Project = 2
 }

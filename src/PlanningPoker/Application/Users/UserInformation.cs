@@ -1,4 +1,3 @@
-﻿namespace PlanningPoker.Application.Users
-{
-    public record UserInformation(int Id);
-}
+﻿namespace PlanningPoker.Application.Users;
+
+public record UserInformation(string Id);

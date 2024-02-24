@@ -1,4 +1,8 @@
+#region
+
 using PlanningPoker.WebApi.HealthChecks;
+
+#endregion
 
 var builder = WebApplication.CreateBuilder(args);
 

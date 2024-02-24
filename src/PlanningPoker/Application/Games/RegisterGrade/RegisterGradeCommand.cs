@@ -1,35 +1,38 @@
-﻿using PlanningPoker.Application.Abstractions.Commands;
+﻿#region
+
+using PlanningPoker.Application.Abstractions.Commands;
 using PlanningPoker.Domain.Common.Extensions;
 using PlanningPoker.Domain.Validation;
 
-namespace PlanningPoker.Application.Games.RegisterGrade
+#endregion
+
+namespace PlanningPoker.Application.Games.RegisterGrade;
+
+public static class RegisterGradeCommandErrors
 {
-    public static class RegisterGradeCommandErrors
+    public static readonly Error InvalidIssueId = Error.GreaterThan(nameof(RegisterGradeCommand),
+        nameof(RegisterGradeCommand.IssueId));
+}
+
+public class RegisterGradeCommand : Command
+{
+    public RegisterGradeCommand(string issueId, string grade)
     {
-        public static readonly Error InvalidIssueId = Error.GreaterThan(nameof(RegisterGradeCommand),
-            nameof(RegisterGradeCommand.IssueId), value: 0);
+        SetIssueId(issueId);
+        Grade = grade;
     }
 
-    public class RegisterGradeCommand : Command
+    public string IssueId { get; private set; } = string.Empty;
+    public string Grade { get; private set; }
+
+    public void SetIssueId(string issueId)
     {
-        public int IssueId { get; private set; }
-        public string Grade { get; private set; }
-
-        public RegisterGradeCommand(int issueId, string grade)
+        if (!issueId.IsPresent())
         {
-            SetIssueId(issueId);
-            Grade = grade;
+            AddError(RegisterGradeCommandErrors.InvalidIssueId);
+            return;
         }
 
-        public void SetIssueId(int issueId)
-        {
-            if (!issueId.GreaterThan(0))
-            {
-                AddError(RegisterGradeCommandErrors.InvalidIssueId);
-                return;
-            }
-
-            IssueId = issueId;
-        }
+        IssueId = issueId;
     }
 }

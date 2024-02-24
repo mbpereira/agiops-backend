@@ -1,86 +1,88 @@
-﻿using PlanningPoker.Domain.Abstractions;
+﻿#region
+
+using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Common.Extensions;
 
-namespace PlanningPoker.Domain.Games
+#endregion
+
+namespace PlanningPoker.Domain.Games;
+
+public sealed class Game : TenantableAggregateRoot
 {
-    public sealed class Game : TenantableAggregateRoot
+    private Game(string id, string tenantId, string name, string userId, VotingSystem votingSystem,
+        string? password = null)
+        : base(id, tenantId)
     {
-        public string Name { get; private set; } = string.Empty;
-        public EntityId UserId { get; private set; } = EntityId.Blank();
-        public GameCredentials? Credentials { get; private set; }
-        public GradeDetails GradeDetails { get; private set; } = GradeDetails.Empty();
+        SetName(name);
+        SetOwner(userId);
+        SetPassword(password);
+        SetVotingSystem(votingSystem);
+    }
 
-        private Game(int id, int tenantId, string name, int userId, VotingSystem votingSystem, string? password = null)
-            : base(id, tenantId)
+    public string Name { get; private set; } = string.Empty;
+    public EntityId UserId { get; private set; } = EntityId.Empty;
+    public GameCredentials? Credentials { get; private set; }
+    public GradeDetails GradeDetails { get; private set; } = GradeDetails.Empty();
+
+    public void SetVotingSystem(VotingSystem votingSystem)
+    {
+        if (votingSystem.IsNull() || !votingSystem.IsValid)
         {
-            SetName(name);
-            SetOwner(userId);
-            SetPassword(password);
-            SetVotingSystem(votingSystem);
+            AddError(GameErrors.InvalidVotingSystem);
+            return;
         }
 
-        public void SetVotingSystem(VotingSystem votingSystem)
-        {
-            if (votingSystem is null || !votingSystem.IsValid)
-            {
-                AddError(GameErrors.InvalidVotingSystem);
-                return;
-            }
+        GradeDetails = votingSystem.GradeDetails;
+    }
 
-            GradeDetails = votingSystem.GradeDetails;
+    public void SetOwner(string userId)
+    {
+        if (UserId.Value.IsPresent())
+        {
+            AddError(GameErrors.OwnerAlreadySet);
+            return;
         }
 
-        public void SetOwner(int userId)
+        if (!userId.IsPresent())
         {
-            if (UserId.Value.GreaterThan(0))
-            {
-                AddError(GameErrors.OwnerAlreadySet);
-                return;
-            }
-
-            if (!userId.GreaterThan(0))
-            {
-                AddError(GameErrors.InvalidUserId);
-                return;
-            }
-
-            UserId = userId;
+            AddError(GameErrors.InvalidUserId);
+            return;
         }
 
-        public void SetName(string name)
-        {
-            if (!name.HasMinLength(minLength: 1))
-            {
-                AddError(GameErrors.InvalidName);
-                return;
-            }
+        UserId = userId;
+    }
 
-            Name = name;
+    public void SetName(string name)
+    {
+        if (!name.HasMinLength(1))
+        {
+            AddError(GameErrors.InvalidName);
+            return;
         }
 
-        public void SetPassword(string? password = null)
+        Name = name;
+    }
+
+    public void SetPassword(string? password = null)
+    {
+        if (password.IsNullOrEmpty())
         {
-            if (password.IsNullOrEmpty())
-            {
-                Credentials = null;
-                return;
-            }
-
-            if (!password.HasMinLength(minLength: 6))
-            {
-                AddError(GameErrors.InvalidPassword);
-                return;
-            }
-
-            Credentials = new GameCredentials(password!);
+            Credentials = null;
+            return;
         }
 
-        public static Game New(int tenantId, string name, int userId, VotingSystem votingSystem,
-            string? password = null)
-            => new(EntityId.AutoIncrement(), tenantId, name, userId, votingSystem, password);
+        if (!password.HasMinLength(6))
+        {
+            AddError(GameErrors.InvalidPassword);
+            return;
+        }
 
-        public static Game Load(int id, int tenantId, string name, int userId, VotingSystem votingSystem,
-            string? password = null)
-            => new(id, tenantId, name, userId, votingSystem, password);
+        Credentials = new GameCredentials(password!);
+    }
+
+    public static Game New(string tenantId, string name, string userId, VotingSystem votingSystem,
+        string? password = null)
+    {
+        return new Game(EntityId.Generate(), tenantId, name, userId, votingSystem, password);
     }
 }
