@@ -8,19 +8,21 @@ namespace PlanningPoker.Domain.Abstractions;
 
 public abstract class Entity : Validatable
 {
-    protected Entity(string id, IDateTimeProvider dateTimeProvider)
-        : this(id)
-    {
-        DateTimeProvider = dateTimeProvider;
-    }
+    private IDateTimeProvider? _dateTimeProvider;
 
-    protected Entity(string id)
+    protected Entity(string id, IDateTimeProvider dateTimeProvider)
     {
         Id = id;
+        _dateTimeProvider = dateTimeProvider;
         CreatedAtUtc = DateTimeProvider.UtcNow();
     }
 
-    protected IDateTimeProvider DateTimeProvider { get; } = DefaultDateTimeProvider.Instance;
+    protected Entity(string id)
+        : this(id, DefaultDateTimeProvider.Instance)
+    {
+    }
+
+    protected IDateTimeProvider DateTimeProvider => _dateTimeProvider ??= DefaultDateTimeProvider.Instance;
 
     public EntityId Id { get; }
     public DateTime CreatedAtUtc { get; private set; }

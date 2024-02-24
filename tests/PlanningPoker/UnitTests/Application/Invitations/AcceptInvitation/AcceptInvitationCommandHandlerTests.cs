@@ -39,7 +39,7 @@ public class AcceptInvitationCommandHandlerTests
     public async Task HandleAsync_ShouldReturnErrorWhenInvitationHasExpired()
     {
         var command = new AcceptInvitationCommand(FakerInstance.ValidId());
-        _fixture.DateTimeProvider.UtcNow().Returns(DateTime.UtcNow.AddDays(-15));
+        _fixture.DateTimeProvider.UtcNow().Returns(DateTime.UtcNow.AddDays(-100));
         var invitation = FakerInstance.NewValidInvitation(dateTimeProvider: _fixture.DateTimeProvider);
         _fixture.Invitations.GetByIdAsync(Arg.Any<EntityId>())
             .Returns(invitation);
