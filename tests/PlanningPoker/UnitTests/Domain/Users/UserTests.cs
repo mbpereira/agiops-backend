@@ -16,7 +16,7 @@ public class UserTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void New_ShouldReturnExpectedErrors(string invalidName)
+    public void New_InvalidProperties_ReturnsErrorsWithPropertyDetails(string invalidName)
     {
         var expectedErrors = new[]
         {
@@ -35,7 +35,7 @@ public class UserTests
     }
 
     [Fact]
-    public void NewGuest_ShouldSetEmailAsNullAndSetSessionIdWhenCreatingGuest()
+    public void NewGuest_ValidData_SetEmailAsNullAndCreateSessionId()
     {
         var user = User.NewGuest(Faker.Random.String2(10));
 
@@ -46,7 +46,7 @@ public class UserTests
     }
 
     [Fact]
-    public void New_ShouldSetGuestAsNullWhenCreatingUser()
+    public void New_ValidEmail_SetGuestAsNullAndReturnsIsValidTrue()
     {
         var email = Faker.Internet.Email();
 
@@ -56,10 +56,11 @@ public class UserTests
         user.Guest.Should().BeNull();
         user.IsGuest.Should().BeFalse();
         user.Email!.Value.Should().Be(email);
+        user.IsValid.Should().BeTrue();
     }
 
     [Fact]
-    public void New_ShouldReturnsErrorWhenEmailIsNotSet()
+    public void New_InvalidEmail_dReturnsError()
     {
         var name = Faker.Random.String2(5);
 

@@ -15,7 +15,7 @@ public class GameTests
     private readonly Faker _faker = new();
 
     [Fact]
-    public void New_ShouldReturnCredentialsAsNullWhenPasswordIsNotSet()
+    public void New_PasswordNotSet_ReturnsNullCredentials()
     {
         var game = _faker.NewValidGame();
 
@@ -23,7 +23,7 @@ public class GameTests
     }
 
     [Fact]
-    public void New_ShouldReturnProvidedPassword()
+    public void New_PasswordSet_ReturnsCredentialsWithPassword()
     {
         var password = _faker.Random.String2(25);
 
@@ -37,7 +37,7 @@ public class GameTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void New_ProvidedInformationIsNotValid_ReturnsValidationErrors(string? name)
+    public void New_InvalidData_ReturnsValidationErrors(string? name)
     {
         var expectedErrors = new[]
         {
@@ -77,7 +77,7 @@ public class GameTests
     }
 
     [Fact]
-    public void SetVotingSystem_ShouldReturnErrorWhenProvidedVotingSystemIsNotValid()
+    public void SetVotingSystem_InvalidVotingSystem_ReturnsError()
     {
         var game = _faker.NewValidGame();
 
@@ -89,20 +89,19 @@ public class GameTests
     }
 
     [Fact]
-    public void SetOwner_ShouldReturnErrorWhenTryingToChangeGameOwner()
+    public void SetOwner_AttemptToChangeOwner_ReturnsError()
     {
         var game = _faker.NewValidGame();
 
         game.SetOwner(_faker.ValidId());
 
-        game.Errors.Should().BeEquivalentTo(new[]
-        {
+        game.Errors.Should().BeEquivalentTo([
             new { Code = "Game.UserId", Message = "You cannot change the game owner, as it has already been set." }
-        });
+        ]);
     }
 
     [Fact]
-    public void New_ShouldReturnIsValidAsTrueWhenProvidedDataIsValid()
+    public void New_ValidData_ReturnsIsValidTrue()
     {
         var game = _faker.NewValidGame(_faker.Random.String2(6));
 

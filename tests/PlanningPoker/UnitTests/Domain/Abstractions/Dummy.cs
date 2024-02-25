@@ -6,9 +6,4 @@ using PlanningPoker.Domain.Abstractions;
 
 namespace PlanningPoker.UnitTests.Domain.Abstractions;
 
-public class Dummy : TenantableAggregateRoot
-{
-    public Dummy(string id, string tenantId) : base(id, tenantId)
-    {
-    }
-}
+public class Dummy(string id, string tenantId) : TenantableAggregateRoot(id, tenantId);

@@ -17,7 +17,7 @@ public class IssueTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void New_ShouldReturnExpectedErrorsWhenProvidedDataIsNotValid(string name)
+    public void New_InvalidData_ReturnsErrorsWithPropertyDetails(string name)
     {
         var expectedErrors = new[]
         {
@@ -46,24 +46,23 @@ public class IssueTests
     }
 
     [Fact]
-    public void SetGame_ShouldReturnErrorWhenTryingChangeIssueGame()
+    public void SetGame_AttemptToChangeIssueGame_ReturnsError()
     {
         var issue = GetValidIssue();
 
         issue.SetGame(_faker.ValidId());
 
-        issue.Errors.Should().BeEquivalentTo(new[]
-        {
+        issue.Errors.Should().BeEquivalentTo([
             new
             {
                 Code = "Issue.GameId",
                 Message = "You cannot change the issue game, as it has already been set."
             }
-        });
+        ]);
     }
 
     [Fact]
-    public void RegisterGrade_ShouldReturnsErrorWhenProvidedUserIdIsNotValid()
+    public void RegisterGrade_InvalidUserId_ReturnsError()
     {
         var issue = GetValidIssue();
 
@@ -71,18 +70,17 @@ public class IssueTests
 
         using var _ = new AssertionScope();
         issue.IsValid.Should().BeFalse();
-        issue.Errors.Should().BeEquivalentTo(new[]
-        {
+        issue.Errors.Should().BeEquivalentTo([
             new
             {
                 Code = "Issue.UserId",
                 Message = "Provided value cannot be null, empty or white space."
             }
-        });
+        ]);
     }
 
     [Fact]
-    public void RegisterGrade_ShouldRemoveExistingUserIdBeforeRegisterGradeToPreventDuplication()
+    public void RegisterGrade_UserIdDuplication_RemoveExistingUserIdBeforeRegisteringNewUserGrade()
     {
         var issue = GetValidIssue();
         var userId = EntityId.Generate();

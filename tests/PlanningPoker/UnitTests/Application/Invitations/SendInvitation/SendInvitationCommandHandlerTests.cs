@@ -26,7 +26,7 @@ public class SendInvitationCommandHandlerTests
     [InlineData("")]
     [InlineData(null)]
     [InlineData("abc")]
-    public async Task HandleAsync_ShouldReturnValidationErrorWhenProvidedDataIsNotValid(string invalidEmail)
+    public async Task HandleAsync_InvalidData_ReturnsValidationFailed(string invalidEmail)
     {
         var command = new SendInvitationCommand(invalidEmail, FakerInstance.PickRandom<Role>());
 
@@ -36,7 +36,7 @@ public class SendInvitationCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldAddInvitationAndReturnsSuccess()
+    public async Task HandleAsync_ValidData_CreateInvitationAndReturnsSuccess()
     {
         var expectedInvitation = FakerInstance.NewValidInvitation(_fixture.TenantInformation.Id);
         var command = new SendInvitationCommand(expectedInvitation.Receiver.Value, expectedInvitation.Role);
@@ -51,5 +51,7 @@ public class SendInvitationCommandHandlerTests
             i.Receiver.Value == command.To &&
             i.TenantId.Value == _fixture.TenantInformation.Id &&
             i.Role == command.Role));
+        expectedInvitation.GetDomainEvents().Should().Contain(new InvitationCreated(expectedInvitation.Id,
+            expectedInvitation.Receiver, expectedInvitation.ExpiresAtUtc));
     }
 }

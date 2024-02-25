@@ -46,7 +46,7 @@ public class CreateGameCommandHandlerTests
     [Theory]
     [InlineData("", null)]
     [InlineData(null, "abcde")]
-    public async Task HandleAsync_ShouldReturnValidationFailedWhenProvidedDataIsNotValid(string invalidName,
+    public async Task HandleAsync_InvalidDataProvided_ReturnsValidationFailed(string invalidName,
         string invalidPassword)
     {
         var validVotingSystem = _faker.NewValidVotingSystem();
@@ -61,7 +61,7 @@ public class CreateGameCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnValidationFailedWhenProvidedVotingSystemIdIsNotValid()
+    public async Task HandleAsync_InvalidVotingSystemIdProvided_ReturnsValidationFailed()
     {
         var command = new CreateGameCommand(_faker.Random.String2(10),
             password: _faker.Random.String2(10), votingSystemId: EntityId.Empty);
@@ -72,7 +72,7 @@ public class CreateGameCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnRecordNotFoundWhenProvidedVotingSystemDoesNotExists()
+    public async Task HandleAsync_VotingSystemDoesNotExist_ReturnsRecordNotFound()
     {
         var expectedGame = _faker.NewValidGame();
         var command = new CreateGameCommand(
@@ -86,7 +86,7 @@ public class CreateGameCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnGeneratedIdWhenGameWasCreated()
+    public async Task HandleAsync_SuccessfulGameCreation_ReturnsGeneratedId()
     {
         var validVotingSystem = _faker.NewValidVotingSystem();
         var expectedGame = _faker.NewValidGame(votingSystem: validVotingSystem);

@@ -26,7 +26,7 @@ public class AcceptInvitationCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnErrorWhenInvitationIdIsNotValid()
+    public async Task HandleAsync_InvalidInvitationId_ReturnsValidationFailed()
     {
         var command = new AcceptInvitationCommand(FakerInstance.InvalidId());
 
@@ -36,7 +36,7 @@ public class AcceptInvitationCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnErrorWhenInvitationHasExpired()
+    public async Task HandleAsync_ExpiredInvitation_ReturnsValidationFailed()
     {
         var command = new AcceptInvitationCommand(FakerInstance.ValidId());
         _fixture.DateTimeProvider.UtcNow().Returns(DateTime.UtcNow.AddDays(-100));
@@ -50,7 +50,7 @@ public class AcceptInvitationCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnRecordNotFoundWhenInvitationWasNotFound()
+    public async Task HandleAsync_NonExistentInvitation_ReturnsRecordNotFound()
     {
         var command = new AcceptInvitationCommand(FakerInstance.ValidId());
 
@@ -62,7 +62,7 @@ public class AcceptInvitationCommandHandlerTests
     [Theory]
     [MemberData(nameof(InvitationFixture.GetAcceptedOrCancelledInvitations),
         MemberType = typeof(InvitationFixture))]
-    public async Task HandleAsync_ShouldReturnValidationErrorWhenInvitationAlreadyBeenAcceptedOrCancelled(
+    public async Task HandleAsync_FinishedInvitation_ReturnsValidationFailed(
         Invitation finishedInvitation)
     {
         var command = new AcceptInvitationCommand(FakerInstance.ValidId());
@@ -75,7 +75,7 @@ public class AcceptInvitationCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnSuccessWhenInvitationIsAcceptedWithoutErrors()
+    public async Task HandleAsync_AcceptedInvitation_ChangeInvitationStatusAndReturnsSuccess()
     {
         var expectedInvitation = FakerInstance.NewValidInvitation();
         var updatedAt = expectedInvitation.UpdatedAtUtc.GetValueOrDefault();
@@ -99,7 +99,7 @@ public class AcceptInvitationCommandHandlerTests
     [Theory]
     [InlineData(Role.Admin)]
     [InlineData(Role.Contributor)]
-    public async Task HandleAsync_ShouldRegisterUserThatAcceptedInvitationInInvitationTenant(Role role)
+    public async Task HandleAsync_AcceptedInvitation_RegistersUserInInvitationTenant(Role role)
     {
         var expectedScopes = TenantScopes.GetByRole(role);
         var expectedInvitation = FakerInstance.NewValidInvitation(role: role);

@@ -27,7 +27,7 @@ public class RegisterGradeCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnsNotFoundWhenIssueDoesNotExists()
+    public async Task HandleAsync_NonExistentIssue_ReturnsRecordNotFound()
     {
         var command = new RegisterGradeCommand(FakerInstance.ValidId(), GetValidGrade());
 
@@ -37,7 +37,7 @@ public class RegisterGradeCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnValidationFailedWhenProvidedDataIsNotValid()
+    public async Task HandleAsync_InvalidData_ReturnsValidationFailed()
     {
         var command = new RegisterGradeCommand(FakerInstance.InvalidId(), GetValidGrade());
 
@@ -47,7 +47,7 @@ public class RegisterGradeCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnsErrorWhenCurrentUserIdIsNotValid()
+    public async Task HandleAsync_InvalidCurrentUserId_ReturnsValidationFailed()
     {
         var expectedIssue = GetValidIssue();
         _uow.Issues.GetByIdAsync(Arg.Any<EntityId>())
@@ -60,14 +60,13 @@ public class RegisterGradeCommandHandlerTests
 
         using var _ = new AssertionScope();
         result.Status.Should().Be(CommandStatus.ValidationFailed);
-        result.Details.Should().BeEquivalentTo(new[]
-        {
+        result.Details.Should().BeEquivalentTo([
             new { Code = "Issue.UserId", Message = "Provided value cannot be null, empty or white space." }
-        });
+        ]);
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnsSuccessWhenGradeIsRegistered()
+    public async Task HandleAsync_SuccessfulGradeRegistration_ReturnsSuccess()
     {
         var expectedIssue = GetValidIssue();
         _uow.Issues.GetByIdAsync(Arg.Any<EntityId>())

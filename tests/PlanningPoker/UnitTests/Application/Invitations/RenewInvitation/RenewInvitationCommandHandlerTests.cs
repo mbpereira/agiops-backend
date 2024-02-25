@@ -24,7 +24,7 @@ public class RenewInvitationCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnValidationErrorWhenInvitationIdIsNotValid()
+    public async Task HandleAsync_InvalidInvitationId_ReturnsValidationFailed()
     {
         var command = new RenewInvitationCommand(FakerInstance.InvalidId());
 
@@ -36,7 +36,7 @@ public class RenewInvitationCommandHandlerTests
     [Theory]
     [MemberData(nameof(InvitationFixture.GetAcceptedOrCancelledInvitations),
         MemberType = typeof(InvitationFixture))]
-    public async Task HandleAsync_ShouldReturnValidationErrorWhenInvitationAlreadyBeenAcceptedOrCancelled(
+    public async Task HandleAsync_AlreadyAcceptedOrCancelledInvitation_ReturnsValidationFailed(
         Invitation finishedInvitation)
     {
         var command = new RenewInvitationCommand(finishedInvitation.Id.Value);
@@ -52,7 +52,7 @@ public class RenewInvitationCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldUpdateSentAtUtcAndExpiresAtUtcDate()
+    public async Task HandleAsync_RenewedInvitation_UpdatesSentAndExpiresDates()
     {
         var expectedInvitation = FakerInstance.NewValidInvitation();
         var command = new RenewInvitationCommand(expectedInvitation.Id.Value);

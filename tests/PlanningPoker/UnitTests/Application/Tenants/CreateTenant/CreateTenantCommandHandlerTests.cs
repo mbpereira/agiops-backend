@@ -38,7 +38,7 @@ public class CreateTenantCommandHandlerTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData("ab")]
-    public async Task HandleAsync_ShouldReturnValidationErrorWhenProvidedDataIsNotValid(string invalidName)
+    public async Task HandleAsync_InvalidData_ReturnsValidationFailed(string invalidName)
     {
         var command = new CreateTenantCommand(invalidName);
 
@@ -48,7 +48,7 @@ public class CreateTenantCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnSuccessAndSetAllAvailableTenantPermissionsToCurrentUser()
+    public async Task HandleAsync_ValidData_SetAllAvailableTenantPermissionsToCurrentUserAndReturnsSuccess()
     {
         var expectedUser = new UserInformation(FakerInstance.ValidId());
         var expectedTenant = Tenant.Load(FakerInstance.ValidId(), _faker.Random.String2(3));

@@ -15,7 +15,7 @@ public class InvitationTests
     private readonly IDateTimeProvider _dateTimeProvider = Substitute.For<IDateTimeProvider>();
 
     [Fact]
-    public void New_ShouldReturnExpectedErrorsWhenProvidedDataIsNotValid()
+    public void New_InvalidData_ReturnsErrorsWithInvalidPropertyDetails()
     {
         var invitation = FakerInstance.NewInvalidInvitation();
 
@@ -28,7 +28,7 @@ public class InvitationTests
     }
 
     [Fact]
-    public void New_ShouldSetExpiresAtUtcTo30MinutesAfterNow()
+    public void New_ValidData_SetExpiresAtUtcTo30MinutesAfterNow()
     {
         var invitation = GetNewValidInvitation();
 
@@ -38,7 +38,7 @@ public class InvitationTests
     }
 
     [Fact]
-    public void New_ShouldRegisterInvitationCreatedEvent()
+    public void New_ValidData_RegisterInvitationCreatedEvent()
     {
         var invitation = GetNewValidInvitation();
 
@@ -48,12 +48,17 @@ public class InvitationTests
     }
 
     [Fact]
-    public async Task Renew_ShouldRegisterInvitationRenewedEventAndRefreshExpiresAtUtcDate()
+    public void Renew_NonFinishedInvitation_RegisterEventAndRefreshExpiresAtUtc()
     {
-        var invitation = FakerInstance.NewValidInvitation();
-        var expiresAt = invitation.ExpiresAtUtc;
+        var dates = new Queue<DateTime>([
+            DateTime.UtcNow.AddDays(-100),
+            DateTime.UtcNow,
+            DateTime.UtcNow
+        ]);
+        _dateTimeProvider.UtcNow().Returns(_ => dates.Dequeue());
+        var invitation = FakerInstance.NewValidInvitation(dateTimeProvider: _dateTimeProvider);
+        var oldExpiresAt = invitation.ExpiresAtUtc;
         var sentAt = invitation.SentAtUtc;
-        await Task.Delay(TimeSpan.FromSeconds(1));
 
         invitation.Renew();
 
@@ -62,12 +67,12 @@ public class InvitationTests
             new InvitationRenewed(invitation.Id, invitation.Receiver, invitation.ExpiresAtUtc)
         );
         invitation.SentAtUtc.Should().BeAfter(sentAt);
-        invitation.ExpiresAtUtc.Should().BeAfter(expiresAt);
+        invitation.ExpiresAtUtc.Should().BeAfter(oldExpiresAt);
     }
 
     [Theory]
     [MemberData(nameof(InvitationFixture.GetAcceptedOrCancelledInvitations), MemberType = typeof(InvitationFixture))]
-    public void Renew_ShouldReturnFinalizedInvitationErrorWhenTryingToRenewAnAcceptedOrInactiveInvitation(
+    public void Renew_AcceptedOrCancelledInvitation_ReturnsFinishedInvitationError(
         Invitation finishedInvitation)
     {
         var expectedErrors = new[]
@@ -88,7 +93,7 @@ public class InvitationTests
 
     [Theory]
     [MemberData(nameof(InvitationFixture.GetAcceptedOrCancelledInvitations), MemberType = typeof(InvitationFixture))]
-    public void Accept_ShouldReturnFinalizedInvitationErrorWhenTryingToAcceptAnAcceptedOrInactiveInvitation(
+    public void Accept_AcceptedOrCancelledInvitation_ReturnsFinishedInvitationError(
         Invitation finishedInvitation)
     {
         var expectedErrors = new[]
@@ -108,7 +113,7 @@ public class InvitationTests
     }
 
     [Fact]
-    public void Accept_ShouldReturnExpiredInvitationErrorWhenTryingToAcceptExpiredInvitation()
+    public void Accept_ExpiredInvitation_ReturnsExpiredInvitationError()
     {
         var expectedErrors = new[]
         {

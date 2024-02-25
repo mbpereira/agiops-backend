@@ -18,7 +18,7 @@ public class VotingSystemTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData("te")]
-    public void New_ShouldReturnExpectedErrors(string invalidDescription)
+    public void New_InvalidData_ReturnsValidationErrors(string invalidDescription)
     {
         var expectedErrors = new[]
         {
@@ -41,47 +41,45 @@ public class VotingSystemTests
     [Theory]
     [InlineData(SharingStatus.Unshared)]
     [InlineData(SharingStatus.Approved)]
-    public void SetSharingStatus_ShouldReturnErrorWhenTryingToApproveSharingOfNonValidVotingSystem(
+    public void SetSharingStatus_ApprovalAttemptOfInvalidStatus_ShouldReturnsApprovalError(
         SharingStatus invalidApprovalStatus)
     {
         var votingSystem = GetValidVotingSystem(invalidApprovalStatus);
 
         votingSystem.SetSharingStatus(SharingStatus.Approved);
 
-        votingSystem.Errors.Should().BeEquivalentTo(new[]
-        {
+        votingSystem.Errors.Should().BeEquivalentTo([
             new
             {
                 Code = "VotingSystem.SharingStatus",
                 Message = "Only the statuses 'requested' and 'rejected' can be approved."
             }
-        });
+        ]);
     }
 
     [Theory]
     [InlineData(SharingStatus.Unshared)]
     [InlineData(SharingStatus.Approved)]
     [InlineData(SharingStatus.Rejected)]
-    public void SetSharingStatus_ShouldReturnErrorWhenTryingToRejectSharingOfNonValidVotingSystem(
-        SharingStatus invalidApprovalStatus)
+    public void SetSharingStatus_RejectAttemptOfInvalidStatus_ReturnsRejectError(
+        SharingStatus invalidStatus)
     {
-        var votingSystem = GetValidVotingSystem(invalidApprovalStatus);
+        var votingSystem = GetValidVotingSystem(invalidStatus);
 
         votingSystem.SetSharingStatus(SharingStatus.Rejected);
 
-        votingSystem.Errors.Should().BeEquivalentTo(new[]
-        {
+        votingSystem.Errors.Should().BeEquivalentTo([
             new { Code = "VotingSystem.SharingStatus", Message = "Only the status 'requested' can be rejected." }
-        });
+        ]);
     }
 
     [Theory]
     [InlineData(SharingStatus.Requested)]
     [InlineData(SharingStatus.Approved)]
-    public void SetSharingStatus_ShouldReturnErrorWhenTryingToRequestSharingOfNonValidVotingSystem(
-        SharingStatus invalidApprovalStatus)
+    public void SetSharingStatus_SharingAttemptOfInvalidStatus_ReturnsSharingError(
+        SharingStatus invalidStatus)
     {
-        var votingSystem = GetValidVotingSystem(invalidApprovalStatus);
+        var votingSystem = GetValidVotingSystem(invalidStatus);
 
         votingSystem.SetSharingStatus(SharingStatus.Requested);
 
@@ -100,20 +98,20 @@ public class VotingSystemTests
     [InlineData(SharingStatus.Rejected, SharingStatus.Requested)]
     [InlineData(SharingStatus.Requested, SharingStatus.Unshared)]
     [InlineData(SharingStatus.Requested, SharingStatus.Rejected)]
-    public void SetSharingStatus_ShouldReturnErrorWhenTryingToSetUndefinedAsSharingStatus(
-        SharingStatus nextSharingStatus, SharingStatus oldSharingStatus)
+    public void SetSharingStatus_ValidStatusChange_ReturnsIsValidTrue(
+        SharingStatus nextStatus, SharingStatus oldStatus)
     {
-        var votingSystem = GetValidVotingSystem(oldSharingStatus);
+        var votingSystem = GetValidVotingSystem(oldStatus);
 
-        votingSystem.SetSharingStatus(nextSharingStatus);
+        votingSystem.SetSharingStatus(nextStatus);
 
         using var _ = new AssertionScope();
         votingSystem.IsValid.Should().BeTrue();
-        votingSystem.SharingStatus.Should().Be(nextSharingStatus);
+        votingSystem.SharingStatus.Should().Be(nextStatus);
     }
 
     [Fact]
-    public void SetName_ShouldChangeName()
+    public void SetName_ValidName_ChangeName()
     {
         var newDescription = _faker.Random.String2(10);
         var votingSystem = GetValidVotingSystem();
@@ -124,7 +122,7 @@ public class VotingSystemTests
     }
 
     [Fact]
-    public void GradeDetails_ShouldReturnIsQuantifiableAsFalseWhenExistsAnyNonNumericGrade()
+    public void GradeDetails_NonNumericGrades_ReturnsIsQuantifiableFalse()
     {
         var votingSystem = GetValidVotingSystem();
         votingSystem.SetPossibleGrades(["P", "M", "G"]);
@@ -135,7 +133,7 @@ public class VotingSystemTests
     }
 
     [Fact]
-    public void GradeDetails_ShouldReturnIsQuantifiableAsTrueWhenAllGradesAreNumeric()
+    public void GradeDetails_NumericGrades_ReturnsIsQuantifiableTrue()
     {
         var votingSystem = GetValidVotingSystem();
         votingSystem.SetPossibleGrades(["1", "2", "3"]);

@@ -16,7 +16,7 @@ public class TenantTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData("ab")]
-    public void New_ShouldReturnExpectedErrorsWhenProvidedDataIsNotValid(string invalidName)
+    public void New_InvalidData_ReturnsErrorsWithPropertyDetails(string invalidName)
     {
         var expectedErrors = new[]
         {
@@ -33,7 +33,7 @@ public class TenantTests
     }
 
     [Fact]
-    public void New_ShouldReturnSuccessWhenProvidedDataIsValid()
+    public void New_ValidData_ReturnsIsValidTrue()
     {
         var tenant = Tenant.New(_faker.Random.String2(3));
 

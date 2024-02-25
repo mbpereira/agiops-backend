@@ -33,7 +33,7 @@ public class CreateIssueCommandHandlerTests
     [InlineData("")]
     [InlineData(null)]
     [InlineData("ab")]
-    public async Task HandleAsync_ShouldReturnsValidationFailedWhenProvidedDataIsNotValid(string? invalidName)
+    public async Task HandleAsync_InvalidDataProvided_ReturnsValidationFailed(string? invalidName)
     {
         var command = new CreateIssueCommand(
             EntityId.Empty,
@@ -46,7 +46,7 @@ public class CreateIssueCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnGeneratedIdWhenIssueWasCreated()
+    public async Task HandleAsync_SuccessfulIssueCreation_ReturnsGeneratedId()
     {
         var expectedIssue = GetValidIssue();
         var command = new CreateIssueCommand(
