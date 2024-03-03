@@ -51,7 +51,7 @@ public class CreateTenantCommandHandlerTests
     public async Task HandleAsync_ValidData_SetAllAvailableTenantPermissionsToCurrentUserAndReturnsSuccess()
     {
         var expectedUser = new UserInformation(FakerInstance.ValidId());
-        var expectedTenant = Tenant.Load(FakerInstance.ValidId(), _faker.Random.String2(3));
+        var expectedTenant = Tenant.New(_faker.Random.String2(3));
         var command = new CreateTenantCommand(expectedTenant.Name);
         _tenants.AddAsync(Arg.Any<Tenant>())
             .Returns(expectedTenant);

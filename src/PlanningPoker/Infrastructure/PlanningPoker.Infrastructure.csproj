@@ -10,8 +10,4 @@
         <ProjectReference Include="..\Domain\PlanningPoker.Domain.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Clock\"/>
-    </ItemGroup>
-
 </Project>

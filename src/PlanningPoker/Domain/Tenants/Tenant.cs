@@ -28,11 +28,6 @@ public class Tenant : AggregateRoot
         Name = name;
     }
 
-    public static Tenant Load(string id, string name)
-    {
-        return new Tenant(id, name);
-    }
-
     public static Tenant New(string name)
     {
         return new Tenant(EntityId.Generate(), name);
