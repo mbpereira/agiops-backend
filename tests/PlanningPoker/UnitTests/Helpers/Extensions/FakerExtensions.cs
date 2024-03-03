@@ -53,14 +53,15 @@ public static class FakerExtensions
             dateTimeProvider ?? DefaultDateTimeProvider.Instance);
     }
 
-    public static Game NewValidGame(this Faker faker, string? password = null, VotingSystem? votingSystem = null)
+    public static Game NewValidGame(this Faker faker, string? password = null, VotingSystem? votingSystem = null, string? teamId = null)
     {
         return Game.New(
             faker.ValidId(),
             faker.Random.String2(5),
             faker.ValidId(),
             password: password,
-            votingSystem: votingSystem ?? faker.NewValidVotingSystem());
+            votingSystem: votingSystem ?? faker.NewValidVotingSystem(),
+            teamId: teamId);
     }
 
     public static VotingSystem InvalidVotingSystem(this Faker faker)

@@ -40,7 +40,6 @@
     <ItemGroup>
         <Folder Include="Application\Tenants\"/>
         <Folder Include="Application\Users\"/>
-        <Folder Include="Domain\Common\"/>
     </ItemGroup>
 
 </Project>

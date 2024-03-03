@@ -1,9 +1,9 @@
 ﻿#region
 
-using Bogus;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using PlanningPoker.Domain.Abstractions;
+using PlanningPoker.Domain.Common.Extensions;
 using PlanningPoker.Domain.Games;
 
 #endregion
@@ -12,12 +12,10 @@ namespace PlanningPoker.UnitTests.Domain.Games;
 
 public class GameTests
 {
-    private readonly Faker _faker = new();
-
     [Fact]
     public void New_PasswordNotSet_ReturnsNullCredentials()
     {
-        var game = _faker.NewValidGame();
+        var game = FakerInstance.NewValidGame();
 
         game.Credentials.Should().BeNull();
     }
@@ -25,9 +23,9 @@ public class GameTests
     [Fact]
     public void New_PasswordSet_ReturnsCredentialsWithPassword()
     {
-        var password = _faker.Random.String2(25);
+        var password = FakerInstance.Random.String2(25);
 
-        var game = _faker.NewValidGame(password);
+        var game = FakerInstance.NewValidGame(password);
 
         using var _ = new AssertionScope();
         game.Credentials!.Password.Should().Be(password);
@@ -68,7 +66,7 @@ public class GameTests
             }
         };
 
-        var game = Game.New(EntityId.Empty, name!, EntityId.Empty, password: _faker.Random.String2(2),
+        var game = Game.New(EntityId.Empty, name!, EntityId.Empty, password: FakerInstance.Random.String2(2),
             votingSystem: null!);
 
         using var _ = new AssertionScope();
@@ -79,9 +77,9 @@ public class GameTests
     [Fact]
     public void SetVotingSystem_InvalidVotingSystem_ReturnsError()
     {
-        var game = _faker.NewValidGame();
+        var game = FakerInstance.NewValidGame();
 
-        game.SetVotingSystem(_faker.InvalidVotingSystem());
+        game.SetVotingSystem(FakerInstance.InvalidVotingSystem());
 
         game.Errors.Should().BeEquivalentTo([
             new { Code = "Game.SetVotingSystem", Message = "Provided voting system is not valid." }
@@ -91,9 +89,9 @@ public class GameTests
     [Fact]
     public void SetOwner_AttemptToChangeOwner_ReturnsError()
     {
-        var game = _faker.NewValidGame();
+        var game = FakerInstance.NewValidGame();
 
-        game.SetOwner(_faker.ValidId());
+        game.SetOwner(FakerInstance.ValidId());
 
         game.Errors.Should().BeEquivalentTo([
             new { Code = "Game.UserId", Message = "You cannot change the game owner, as it has already been set." }
@@ -103,10 +101,34 @@ public class GameTests
     [Fact]
     public void New_ValidData_ReturnsIsValidTrue()
     {
-        var game = _faker.NewValidGame(_faker.Random.String2(6));
+        var game = FakerInstance.NewValidGame(FakerInstance.Random.String2(6));
 
         using var _ = new AssertionScope();
         game.IsValid.Should().BeTrue();
         game.Errors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void SetTeamId_PresentTeamId_ReturnsNotNullTeamId()
+    {
+        var game = FakerInstance.NewValidGame();
+        var teamId = Guid.NewGuid().ToString();
+
+        game.SetTeamId(teamId);
+
+        game.TeamId!.Value.IsPresent().Should().BeTrue();
+    }
+
+    [Theory]
+    [InlineData(" ")]
+    [InlineData("")]
+    [InlineData(null)]
+    public void SetTeamId_NullEmptyOrWhiteSpaceTeamId_ReturnsNullTeamId(string invalidTeamId)
+    {
+        var game = FakerInstance.NewValidGame();
+
+        game.SetTeamId(invalidTeamId);
+
+        game.TeamId.Should().BeNull();
     }
 }

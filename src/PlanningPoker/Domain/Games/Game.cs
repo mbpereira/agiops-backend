@@ -9,20 +9,28 @@ namespace PlanningPoker.Domain.Games;
 
 public sealed class Game : TenantableAggregateRoot
 {
-    private Game(string id, string tenantId, string name, string userId, VotingSystem votingSystem,
-        string? password = null)
+    private Game(
+        string id,
+        string tenantId,
+        string name,
+        string userId,
+        VotingSystem votingSystem,
+        string? password = null,
+        string? teamId = null)
         : base(id, tenantId)
     {
         SetName(name);
         SetOwner(userId);
         SetPassword(password);
         SetVotingSystem(votingSystem);
+        SetTeamId(teamId);
     }
 
     public string Name { get; private set; } = string.Empty;
     public EntityId UserId { get; private set; } = EntityId.Empty;
     public GameCredentials? Credentials { get; private set; }
     public GradeDetails GradeDetails { get; private set; } = GradeDetails.Empty();
+    public EntityId? TeamId { get; set; }
 
     public void SetVotingSystem(VotingSystem votingSystem)
     {
@@ -80,9 +88,22 @@ public sealed class Game : TenantableAggregateRoot
         Credentials = new GameCredentials(password!);
     }
 
-    public static Game New(string tenantId, string name, string userId, VotingSystem votingSystem,
-        string? password = null)
+    public void SetTeamId(string? teamId = null)
     {
-        return new Game(EntityId.Generate(), tenantId, name, userId, votingSystem, password);
+        if (teamId.IsPresent())
+        {
+            TeamId = teamId!;
+        }
+    }
+
+    public static Game New(
+        string tenantId,
+        string name,
+        string userId,
+        VotingSystem votingSystem,
+        string? password = null,
+        string? teamId = null)
+    {
+        return new Game(EntityId.Generate(), tenantId, name, userId, votingSystem, password, teamId);
     }
 }
