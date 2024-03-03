@@ -24,7 +24,8 @@ public class CreateGameCommandHandler(IUnitOfWork uow, ISecurityContext authenti
 
         var context = await authenticationContext.GetSecurityInformationAsync();
 
-        var game = Game.New(context.Tenant.Id, command.Name, context.User.Id, votingSystem, command.Password);
+        var game = Game.New(context.Tenant.Id, command.Name, context.User.Id, votingSystem, command.Password,
+            command.TeamId);
 
         if (!game.IsValid)
             return CommandResult<CreateGameResult>.Fail(game.Errors, CommandStatus.ValidationFailed);
