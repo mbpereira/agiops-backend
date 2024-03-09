@@ -13,7 +13,7 @@ public class PluginTests
     public void NewWithApiToken_InvalidData_ReturnsErrors(string invalidName)
     {
         var pmProvider = Plugin.NewWithApiToken(FakerInstance.ValidId(), invalidName,
-            FakerInstance.Random.String2(length: 20));
+            FakerInstance.PickRandom<PluginType>(), FakerInstance.Random.String2(length: 20));
 
         pmProvider.Errors.Should().BeEquivalentTo([
             new
@@ -28,7 +28,8 @@ public class PluginTests
     public void NewWithApiToken_ValidData_ReturnsIsValidTrue()
     {
         var pmProvider = Plugin.NewWithApiToken(EntityId.Generate(),
-            FakerInstance.Random.String2(length: 9), FakerInstance.Random.String2(length: 100));
+            FakerInstance.Random.String2(length: 9), FakerInstance.PickRandom<PluginType>(),
+            FakerInstance.Random.String2(length: 100));
 
         pmProvider.IsValid.Should().BeTrue();
     }
