@@ -12,10 +12,10 @@ public class PluginTests
     [InlineData("ab")]
     public void NewWithApiToken_InvalidData_ReturnsErrors(string invalidName)
     {
-        var pmProvider = Plugin.NewWithApiToken(FakerInstance.ValidId(), invalidName,
+        var plugin = Plugin.NewWithApiToken(FakerInstance.ValidId(), invalidName,
             FakerInstance.PickRandom<PluginType>(), FakerInstance.Random.String2(length: 20));
 
-        pmProvider.Errors.Should().BeEquivalentTo([
+        plugin.Errors.Should().BeEquivalentTo([
             new
             {
                 Code = "ProjectManagementProvider.Name",
@@ -27,10 +27,10 @@ public class PluginTests
     [Fact]
     public void NewWithApiToken_ValidData_ReturnsIsValidTrue()
     {
-        var pmProvider = Plugin.NewWithApiToken(EntityId.Generate(),
+        var plugin = Plugin.NewWithApiToken(EntityId.Generate(),
             FakerInstance.Random.String2(length: 9), FakerInstance.PickRandom<PluginType>(),
             FakerInstance.Random.String2(length: 100));
 
-        pmProvider.IsValid.Should().BeTrue();
+        plugin.IsValid.Should().BeTrue();
     }
 }
