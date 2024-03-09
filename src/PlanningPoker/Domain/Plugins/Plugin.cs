@@ -28,7 +28,6 @@ public sealed class Plugin : TenantableAggregateRoot
         Name = name;
     }
 
-
     public static Plugin NewWithApiToken(string tenantId, string name, PluginType type, string apiToken)
     {
         return new Plugin(EntityId.Generate(), tenantId, name, type, new ApiTokenCredentials(apiToken));
