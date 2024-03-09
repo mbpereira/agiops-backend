@@ -1,10 +1,10 @@
 using FluentAssertions;
 using PlanningPoker.Domain.Abstractions;
-using PlanningPoker.Domain.ProjectManagementProviders;
+using PlanningPoker.Domain.Plugins;
 
 namespace PlanningPoker.UnitTests.ProjectManagementProviders;
 
-public class ProjectManagementProviderTest
+public class PluginTests
 {
     [Theory]
     [InlineData("")]
@@ -12,7 +12,7 @@ public class ProjectManagementProviderTest
     [InlineData("ab")]
     public void NewWithApiToken_InvalidData_ReturnsErrors(string invalidName)
     {
-        var pmProvider = ProjectManagementProvider.NewWithApiToken(FakerInstance.ValidId(), invalidName,
+        var pmProvider = Plugin.NewWithApiToken(FakerInstance.ValidId(), invalidName,
             FakerInstance.Random.String2(length: 20));
 
         pmProvider.Errors.Should().BeEquivalentTo([
@@ -27,7 +27,7 @@ public class ProjectManagementProviderTest
     [Fact]
     public void NewWithApiToken_ValidData_ReturnsIsValidTrue()
     {
-        var pmProvider = ProjectManagementProvider.NewWithApiToken(EntityId.Generate(),
+        var pmProvider = Plugin.NewWithApiToken(EntityId.Generate(),
             FakerInstance.Random.String2(length: 9), FakerInstance.Random.String2(length: 100));
 
         pmProvider.IsValid.Should().BeTrue();

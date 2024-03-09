@@ -1,4 +1,4 @@
-namespace PlanningPoker.Domain.ProjectManagementProviders;
+namespace PlanningPoker.Domain.Plugins;
 
 public record Credentials;
 
