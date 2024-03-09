@@ -30,7 +30,7 @@ public sealed class Game : TenantableAggregateRoot
     public EntityId UserId { get; private set; } = EntityId.Empty;
     public GameCredentials? Credentials { get; private set; }
     public GradeDetails GradeDetails { get; private set; } = GradeDetails.Empty();
-    public EntityId? TeamId { get; set; }
+    public EntityId? TeamId { get; private set; }
 
     public void SetVotingSystem(VotingSystem votingSystem)
     {
