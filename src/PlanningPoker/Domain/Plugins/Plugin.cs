@@ -7,11 +7,13 @@ public sealed class Plugin : TenantableAggregateRoot
 {
     public string Name { get; private set; } = string.Empty;
     public Credentials? Credentials { get; private set; }
+    public PluginType Type { get; set; }
 
-    private Plugin(string id, string tenantId, string name, Credentials credentials) : base(id,
+    private Plugin(string id, string tenantId, string name, PluginType type, Credentials credentials) : base(id,
         tenantId)
     {
         SetName(name);
+        Type = type;
         Credentials = credentials;
     }
 
@@ -27,8 +29,8 @@ public sealed class Plugin : TenantableAggregateRoot
     }
 
 
-    public static Plugin NewWithApiToken(string tenantId, string name, string apiToken)
+    public static Plugin NewWithApiToken(string tenantId, string name, PluginType type, string apiToken)
     {
-        return new Plugin(EntityId.Generate(), tenantId, name, new ApiTokenCredentials(apiToken));
+        return new Plugin(EntityId.Generate(), tenantId, name, type, new ApiTokenCredentials(apiToken));
     }
 }
