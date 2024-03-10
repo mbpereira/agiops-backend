@@ -18,7 +18,7 @@ public class PluginTests
         plugin.Errors.Should().BeEquivalentTo([
             new
             {
-                Code = "ProjectManagementProvider.Name",
+                Code = "Plugin.Name",
                 Message = $"The provided string does not meet the minimum length requirement. Min length: 3."
             }
         ]);

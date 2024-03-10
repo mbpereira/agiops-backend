@@ -53,7 +53,8 @@ public static class FakerExtensions
             dateTimeProvider ?? DefaultDateTimeProvider.Instance);
     }
 
-    public static Game NewValidGame(this Faker faker, string? password = null, VotingSystem? votingSystem = null, string? teamId = null)
+    public static Game NewValidGame(this Faker faker, string? password = null, VotingSystem? votingSystem = null,
+        string? teamId = null)
     {
         return Game.New(
             faker.ValidId(),
@@ -73,14 +74,12 @@ public static class FakerExtensions
             new List<string>());
     }
 
-    public static VotingSystem NewValidVotingSystem(this Faker faker,
-        SharingStatus sharingStatus = SharingStatus.Requested)
+    public static VotingSystem NewValidVotingSystem(this Faker faker)
     {
         return VotingSystem.New(
             faker.ValidId(),
             faker.Random.String2(10),
             faker.ValidId(),
-            faker.Make(3, () => faker.Random.Int().ToString()),
-            sharingStatus);
+            faker.Make(3, () => faker.Random.Int().ToString()));
     }
 }
