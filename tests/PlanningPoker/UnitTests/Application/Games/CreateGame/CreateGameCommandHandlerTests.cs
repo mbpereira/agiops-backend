@@ -1,6 +1,5 @@
 ﻿#region
 
-using Bogus;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using PlanningPoker.Application.Abstractions.Commands;
@@ -19,8 +18,8 @@ public class CreateGameCommandHandlerTests
 {
     private readonly IGamesRepository _games;
     private readonly CreateGameCommandHandler _handler;
-    private readonly IVotingSystemsRepository _votingSystems;
     private readonly SecurityInformation _securityInformation;
+    private readonly IVotingSystemsRepository _votingSystems;
 
     public CreateGameCommandHandlerTests()
     {
@@ -90,7 +89,7 @@ public class CreateGameCommandHandlerTests
     {
         var validVotingSystem = FakerInstance.NewValidVotingSystem();
         var expectedGame = FakerInstance.NewValidGame(votingSystem: validVotingSystem,
-            password: FakerInstance.Random.String2(length: 20));
+            password: FakerInstance.Random.String2(20));
         var command = new CreateGameCommand(
             expectedGame.Name,
             password: expectedGame.Credentials?.Password,

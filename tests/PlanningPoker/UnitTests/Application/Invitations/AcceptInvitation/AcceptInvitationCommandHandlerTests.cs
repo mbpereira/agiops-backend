@@ -21,8 +21,8 @@ public class AcceptInvitationCommandHandlerTests
 
     public AcceptInvitationCommandHandlerTests()
     {
-        _fixture = new();
-        _handler = new(_fixture.Uow, _fixture.UserContext);
+        _fixture = new InvitationCommandHandlersFixture();
+        _handler = new AcceptInvitationCommandHandler(_fixture.Uow, _fixture.UserContext);
     }
 
     [Fact]

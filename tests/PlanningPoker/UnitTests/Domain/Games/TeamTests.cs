@@ -1,7 +1,11 @@
-﻿using FluentAssertions;
+﻿#region
+
+using FluentAssertions;
 using FluentAssertions.Execution;
 using PlanningPoker.Domain.Games;
 using PlanningPoker.Domain.Validation;
+
+#endregion
 
 namespace PlanningPoker.UnitTests.Domain.Games;
 
@@ -10,7 +14,7 @@ public class TeamTests
     [Fact]
     public void New_ValidaData_ReturnsIsValidTrue()
     {
-        var team = Team.New(tenantId: FakerInstance.ValidId(), name: FakerInstance.Random.String2(length: 10));
+        var team = Team.New(FakerInstance.ValidId(), FakerInstance.Random.String2(10));
 
         team.IsValid.Should().BeTrue();
     }

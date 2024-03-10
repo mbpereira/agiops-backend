@@ -9,16 +9,19 @@ namespace PlanningPoker.Domain.Games;
 
 public sealed class VotingSystem : TenantableAggregateRoot
 {
-    private VotingSystem(string id, string tenantId, string name, string userId, IList<string> grades) : base(id,
+    private VotingSystem(string id, string tenantId, string name, string userId, IList<string> grades,
+        string? description = null) : base(id,
         tenantId)
     {
         SetName(name);
         SetOwner(userId);
         SetPossibleGrades(grades);
+        SetDescription(description);
     }
 
     public EntityId UserId { get; private set; } = EntityId.Empty;
     public string Name { get; private set; } = string.Empty;
+    public string? Description { get; private set; }
     public GradeDetails GradeDetails { get; private set; } = GradeDetails.Empty();
 
     public void SetOwner(string userId)
@@ -36,6 +39,11 @@ public sealed class VotingSystem : TenantableAggregateRoot
         }
 
         UserId = new EntityId(userId);
+    }
+
+    private void SetDescription(string? description)
+    {
+        Description = description;
     }
 
     public void SetPossibleGrades(IList<string> grades)
@@ -62,8 +70,9 @@ public sealed class VotingSystem : TenantableAggregateRoot
         Name = name;
     }
 
-    public static VotingSystem New(string tenantId, string description, string userId, IList<string> possibleGrades)
+    public static VotingSystem New(string tenantId, string name, string userId, IList<string> possibleGrades,
+        string? description = null)
     {
-        return new VotingSystem(EntityId.Generate(), tenantId, description, userId, possibleGrades);
+        return new VotingSystem(EntityId.Generate(), tenantId, name, userId, possibleGrades, description);
     }
 }

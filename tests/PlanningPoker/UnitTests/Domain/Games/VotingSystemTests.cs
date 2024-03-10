@@ -2,7 +2,6 @@
 
 using Bogus;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Games;
 

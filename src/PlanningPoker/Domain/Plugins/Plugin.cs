@@ -1,14 +1,14 @@
+#region
+
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Common.Extensions;
+
+#endregion
 
 namespace PlanningPoker.Domain.Plugins;
 
 public sealed class Plugin : TenantableAggregateRoot
 {
-    public string Name { get; private set; } = string.Empty;
-    public Credentials? Credentials { get; private set; }
-    public PluginType Type { get; set; }
-
     private Plugin(string id, string tenantId, string name, PluginType type, Credentials credentials) : base(id,
         tenantId)
     {
@@ -17,9 +17,13 @@ public sealed class Plugin : TenantableAggregateRoot
         Credentials = credentials;
     }
 
+    public string Name { get; private set; } = string.Empty;
+    public Credentials? Credentials { get; private set; }
+    public PluginType Type { get; set; }
+
     public void SetName(string name)
     {
-        if (!name.HasMinLength(minLength: 3))
+        if (!name.HasMinLength(3))
         {
             AddError(PluginErrors.InvalidName);
             return;

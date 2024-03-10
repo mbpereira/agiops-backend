@@ -1,20 +1,24 @@
-﻿using PlanningPoker.Domain.Abstractions;
+﻿#region
+
+using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Common.Extensions;
+
+#endregion
 
 namespace PlanningPoker.Domain.Games;
 
 public class Team : TenantableAggregateRoot
 {
-    public string Name { get; private set; } = string.Empty;
-
     private Team(string id, string tenantId, string name) : base(id, tenantId)
     {
         SetName(name);
     }
 
+    public string Name { get; private set; } = string.Empty;
+
     private void SetName(string name)
     {
-        if (!name.HasMinLength(minLength: 3))
+        if (!name.HasMinLength(3))
         {
             AddError(TeamErrors.InvalidName);
             return;

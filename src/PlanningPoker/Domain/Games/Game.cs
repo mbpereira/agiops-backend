@@ -90,10 +90,7 @@ public sealed class Game : TenantableAggregateRoot
 
     public void SetTeamId(string? teamId = null)
     {
-        if (teamId.IsPresent())
-        {
-            TeamId = teamId!;
-        }
+        if (teamId.IsPresent()) TeamId = teamId!;
     }
 
     public static Game New(
