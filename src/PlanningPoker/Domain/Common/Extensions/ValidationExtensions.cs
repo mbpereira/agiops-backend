@@ -24,14 +24,12 @@ public static class ValidationExtensions
 
     public static bool IsEmail(this string? str)
     {
-        if (str.IsNullOrEmpty()) return false;
-        return StringPatterns.Email().IsMatch(str!);
+        return str.IsPresent() && StringPatterns.Email().IsMatch(str!);
     }
 
     public static bool HasMinLength(this string? str, int minLength)
     {
-        if (str.IsNullOrEmpty()) return false;
-        return str!.Length >= minLength;
+        return str.IsPresent() && str!.Length >= minLength;
     }
 
     public static bool IsEmpty<T>(this IEnumerable<T> enumerable)
