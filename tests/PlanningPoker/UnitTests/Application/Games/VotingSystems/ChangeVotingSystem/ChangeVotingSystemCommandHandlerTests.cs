@@ -38,7 +38,7 @@ public class ChangeVotingSystemCommandHandlerTests
         result.Details.Should().BeEquivalentTo([
             new
             {
-                Code = "UpdateVotingSystemCommand.Id",
+                Code = "ChangeVotingSystemCommand.Id",
                 Message = "Provided value cannot be null, empty or white space."
             }
         ]);
