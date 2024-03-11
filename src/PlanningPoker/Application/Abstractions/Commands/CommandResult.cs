@@ -6,7 +6,8 @@ using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Application.Abstractions.Commands;
 
-public record CommandResult<TResponse>(TResponse? Data, CommandStatus Status, IEnumerable<Error> Details) : BaseCommandResult(Status, Details) where TResponse : class
+public record CommandResult<TResponse>(TResponse? Data, CommandStatus Status, IEnumerable<Error> Details)
+    : BaseCommandResult(Status, Details) where TResponse : class
 {
     public static CommandResult<TResponse> Success(TResponse data)
     {
