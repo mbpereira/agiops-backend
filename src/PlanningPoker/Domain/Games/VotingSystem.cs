@@ -41,7 +41,7 @@ public sealed class VotingSystem : TenantableAggregateRoot
         UserId = new EntityId(userId);
     }
 
-    private void SetDescription(string? description)
+    public void SetDescription(string? description)
     {
         Description = description;
     }

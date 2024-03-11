@@ -80,6 +80,7 @@ public static class FakerExtensions
             faker.ValidId(),
             faker.Random.String2(10),
             faker.ValidId(),
-            faker.Make(3, () => faker.Random.Int().ToString()));
+            faker.Make(3, () => faker.Random.Int().ToString()),
+            faker.Random.Words());
     }
 }

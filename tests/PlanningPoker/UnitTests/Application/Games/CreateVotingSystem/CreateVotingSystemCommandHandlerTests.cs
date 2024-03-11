@@ -44,8 +44,7 @@ public class CreateVotingSystemCommandHandlerTests
     [Fact]
     public async Task HandleAsync_ValidData_ReturnsGeneratedId()
     {
-        var expectedVotingSystem = VotingSystem.New(FakerInstance.ValidId(), FakerInstance.Random.String2(10),
-            FakerInstance.ValidId(), ["P", "M", "G"], FakerInstance.Random.Words());
+        var expectedVotingSystem = FakerInstance.NewValidVotingSystem();
         var command = new CreateVotingSystemCommand(expectedVotingSystem.Name,
             expectedVotingSystem.GradeDetails.Values.ToList(), expectedVotingSystem.Description);
         _votingSystems.AddAsync(Arg.Any<VotingSystem>())

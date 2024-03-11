@@ -33,6 +33,21 @@ public record CommandResult<TResponse> : BaseCommandResult where TResponse : cla
     {
         return new CommandResult<TResponse>(null, status, Enumerable.Empty<Error>());
     }
+
+    public static implicit operator CommandResult<TResponse>((IEnumerable<Error>, CommandStatus) tuple)
+    {
+        return Fail(tuple.Item1, tuple.Item2);
+    }
+
+    public static implicit operator CommandResult<TResponse>(TResponse data)
+    {
+        return Success(data);
+    }
+
+    public static implicit operator CommandResult<TResponse>(CommandStatus status)
+    {
+        return Fail(status);
+    }
 }
 
 public record CommandResult : BaseCommandResult

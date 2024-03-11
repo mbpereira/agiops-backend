@@ -28,7 +28,7 @@ public abstract class Entity : Validatable
     public DateTime CreatedAtUtc { get; private set; }
     public DateTime? UpdatedAtUtc { get; private set; }
 
-    protected void Updated()
+    public void Updated()
     {
         UpdatedAtUtc = DateTimeProvider.UtcNow();
     }
