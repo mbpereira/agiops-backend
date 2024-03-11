@@ -1,7 +1,7 @@
 #region
 
 using PlanningPoker.Application.Abstractions.Commands;
-using PlanningPoker.Application.Common.Helpers;
+using static PlanningPoker.Application.Common.Helpers.Actions;
 using PlanningPoker.Domain.Common.Extensions;
 using PlanningPoker.Domain.Games;
 using PlanningPoker.Domain.Validation;
@@ -36,9 +36,9 @@ public class ChangeVotingSystemCommand : Command
     {
         var hasAnyChange = false;
 
-        hasAnyChange |= Actions.ExecuteIfNotNull(Data.Name, votingSystem.SetName);
-        hasAnyChange |= Actions.ExecuteIfNotNull(Data.Description, votingSystem.SetDescription);
-        hasAnyChange |= Actions.ExecuteIfNotNull(Data.PossibleGrades, votingSystem.SetPossibleGrades);
+        hasAnyChange |= ExecuteIfNotNull(Data.Name, votingSystem.SetName);
+        hasAnyChange |= ExecuteIfNotNull(Data.Description, votingSystem.SetDescription);
+        hasAnyChange |= ExecuteIfNotNull(Data.PossibleGrades, votingSystem.SetPossibleGrades);
 
         return hasAnyChange;
     }
