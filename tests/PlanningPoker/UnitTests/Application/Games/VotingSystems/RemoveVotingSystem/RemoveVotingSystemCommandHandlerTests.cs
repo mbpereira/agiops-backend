@@ -6,6 +6,7 @@ using PlanningPoker.Application.Abstractions.Commands;
 using PlanningPoker.Application.Games.VotingSystems.RemoveVotingSystem;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Games;
+using PlanningPoker.UnitTests.Common.Extensions;
 
 #endregion
 

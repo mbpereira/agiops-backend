@@ -6,6 +6,7 @@ using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Abstractions.Clock;
 using PlanningPoker.Domain.Invitations;
 using PlanningPoker.Domain.Users;
+using PlanningPoker.UnitTests.Common.Extensions;
 
 #endregion
 

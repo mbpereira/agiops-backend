@@ -8,6 +8,7 @@ using PlanningPoker.Application.Games.Issues.AddIssue;
 using PlanningPoker.Application.Tenants;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Games;
+using PlanningPoker.UnitTests.Common.Extensions;
 
 #endregion
 

@@ -5,6 +5,7 @@ using FluentAssertions.Execution;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Common.Extensions;
 using PlanningPoker.Domain.Games;
+using PlanningPoker.UnitTests.Common.Extensions;
 
 #endregion
 

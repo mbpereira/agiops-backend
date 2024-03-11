@@ -4,6 +4,7 @@ using Bogus;
 using FluentAssertions;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Games;
+using PlanningPoker.UnitTests.Common.Extensions;
 
 #endregion
 

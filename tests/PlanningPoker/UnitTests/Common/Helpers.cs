@@ -4,9 +4,9 @@ using Bogus;
 
 #endregion
 
-namespace PlanningPoker.UnitTests.Helpers;
+namespace PlanningPoker.UnitTests.Common;
 
-public static class Common
+public static class Helpers
 {
     public static readonly Faker FakerInstance = new();
 }

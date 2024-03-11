@@ -1,8 +1,7 @@
 #region
 
 global using Xunit;
-global using static PlanningPoker.UnitTests.Helpers.Common;
-global using PlanningPoker.UnitTests.Helpers.Extensions;
+global using static PlanningPoker.UnitTests.Common.Helpers;
 global using NSubstitute;
 
 #endregion

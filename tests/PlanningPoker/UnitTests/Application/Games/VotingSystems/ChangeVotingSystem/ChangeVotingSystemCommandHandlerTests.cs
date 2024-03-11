@@ -6,6 +6,7 @@ using PlanningPoker.Application.Abstractions.Commands;
 using PlanningPoker.Application.Games.VotingSystems.ChangeVotingSystem;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Games;
+using PlanningPoker.UnitTests.Common.Extensions;
 
 #endregion
 
@@ -27,6 +28,7 @@ public class ChangeVotingSystemCommandHandlerTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
+    [InlineData(" ")]
     public async Task HandleAsync_InvalidId_ReturnsInvalidIdError(string invalidId)
     {
         var data = new ChangeVotingSystemData(FakerInstance.Random.String2(10),

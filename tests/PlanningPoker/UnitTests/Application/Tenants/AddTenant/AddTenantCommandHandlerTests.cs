@@ -9,6 +9,7 @@ using PlanningPoker.Application.Users;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Tenants;
 using PlanningPoker.Domain.Users;
+using PlanningPoker.UnitTests.Common.Extensions;
 
 #endregion
 

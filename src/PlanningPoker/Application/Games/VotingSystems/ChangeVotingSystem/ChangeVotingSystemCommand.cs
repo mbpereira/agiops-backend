@@ -23,7 +23,7 @@ public class ChangeVotingSystemCommand : Command
 
     private void SetId(string id)
     {
-        if (id.IsNullOrEmpty())
+        if (!id.IsPresent())
         {
             AddError(Error.NullOrEmpty(nameof(ChangeVotingSystemCommand), nameof(Id)));
             return;

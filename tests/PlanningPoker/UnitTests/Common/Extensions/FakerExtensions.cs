@@ -9,7 +9,7 @@ using PlanningPoker.Domain.Users;
 
 #endregion
 
-namespace PlanningPoker.UnitTests.Helpers.Extensions;
+namespace PlanningPoker.UnitTests.Common.Extensions;
 
 public static class FakerExtensions
 {

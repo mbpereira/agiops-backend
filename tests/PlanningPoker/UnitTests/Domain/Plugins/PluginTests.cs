@@ -3,10 +3,11 @@
 using FluentAssertions;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Plugins;
+using PlanningPoker.UnitTests.Common.Extensions;
 
 #endregion
 
-namespace PlanningPoker.UnitTests.ProjectManagementProviders;
+namespace PlanningPoker.UnitTests.Domain.Plugins;
 
 public class PluginTests
 {

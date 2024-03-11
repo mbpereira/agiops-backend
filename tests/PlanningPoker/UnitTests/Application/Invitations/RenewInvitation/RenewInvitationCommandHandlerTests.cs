@@ -6,6 +6,7 @@ using PlanningPoker.Application.Abstractions.Commands;
 using PlanningPoker.Application.Invitations.RenewInvitation;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Invitations;
+using PlanningPoker.UnitTests.Common.Extensions;
 using PlanningPoker.UnitTests.Domain.Invitations;
 
 #endregion

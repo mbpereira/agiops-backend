@@ -1,4 +1,6 @@
-﻿namespace PlanningPoker.UnitTests.Domain.Invitations;
+﻿using PlanningPoker.UnitTests.Common.Extensions;
+
+namespace PlanningPoker.UnitTests.Domain.Invitations;
 
 public class InvitationFixture
 {

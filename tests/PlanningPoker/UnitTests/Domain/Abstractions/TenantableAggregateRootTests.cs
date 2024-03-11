@@ -2,6 +2,7 @@
 
 using Bogus;
 using FluentAssertions;
+using PlanningPoker.UnitTests.Common.Extensions;
 
 #endregion
 

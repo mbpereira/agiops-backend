@@ -8,6 +8,7 @@ using PlanningPoker.Application.Games.Issues.AddUserGradeToIssue;
 using PlanningPoker.Application.Users;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Games;
+using PlanningPoker.UnitTests.Common.Extensions;
 
 #endregion
 
