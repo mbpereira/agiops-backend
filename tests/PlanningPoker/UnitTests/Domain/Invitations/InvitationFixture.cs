@@ -1,4 +1,8 @@
-﻿using PlanningPoker.UnitTests.Common.Extensions;
+﻿#region
+
+using PlanningPoker.UnitTests.Common.Extensions;
+
+#endregion
 
 namespace PlanningPoker.UnitTests.Domain.Invitations;
 

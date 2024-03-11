@@ -14,23 +14,23 @@ public class AddUserGradeToIssueCommandHandler(IUnitOfWork uow, IUserContext aut
     public async Task<CommandResult> HandleAsync(AddUserGradeToIssueCommand toIssueCommand)
     {
         if (!toIssueCommand.IsValid)
-            return CommandResult.Fail(toIssueCommand.Errors, CommandStatus.ValidationFailed);
+            return (toIssueCommand.Errors, CommandStatus.ValidationFailed);
 
         var issue = await uow.Issues.GetByIdAsync(toIssueCommand.IssueId);
 
         if (issue is null)
-            return CommandResult.Fail(CommandStatus.RecordNotFound);
+            return CommandStatus.RecordNotFound;
 
         var userInformation = await authenticationContext.GetCurrentUserAsync();
 
         issue.RegisterGrade(userInformation.Id, toIssueCommand.Grade);
 
         if (!issue.IsValid)
-            return CommandResult.Fail(issue.Errors, CommandStatus.ValidationFailed);
+            return (issue.Errors, CommandStatus.ValidationFailed);
 
         await uow.Issues.ChangeAsync(issue);
         await uow.SaveChangesAsync();
 
-        return CommandResult.Success();
+        return CommandStatus.Success;
     }
 }

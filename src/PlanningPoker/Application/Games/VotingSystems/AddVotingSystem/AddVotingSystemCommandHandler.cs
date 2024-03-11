@@ -20,10 +20,10 @@ public class AddVotingSystemCommandHandler(ISecurityContext securityContext, IUn
             command.PossibleGrades, command.Description);
 
         if (!votingSystem.IsValid)
-            return CommandResult<AddVotingSystemResult>.Fail(votingSystem.Errors, CommandStatus.ValidationFailed);
+            return (votingSystem.Errors, CommandStatus.ValidationFailed);
 
         var created = await uow.VotingSystems.AddAsync(votingSystem);
 
-        return CommandResult<AddVotingSystemResult>.Success(new AddVotingSystemResult(created.Id));
+        return new AddVotingSystemResult(created.Id);
     }
 }

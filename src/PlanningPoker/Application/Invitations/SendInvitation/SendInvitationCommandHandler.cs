@@ -23,11 +23,11 @@ public class SendInvitationCommandHandler(
         var invitation = Invitation.New(tenant.Id, command.To, command.Role, dateTimeProvider);
 
         if (!invitation.IsValid)
-            return CommandResult.Fail(invitation.Errors, CommandStatus.ValidationFailed);
+            return (invitation.Errors, CommandStatus.ValidationFailed);
 
         await uow.Invitations.AddAsync(invitation);
         await uow.SaveChangesAsync();
 
-        return CommandResult.Success();
+        return CommandStatus.Success;
     }
 }

@@ -18,13 +18,13 @@ public class AddTenantCommandHandler(IUnitOfWork uow, IUserContext userContext)
         var tenant = Tenant.New(command.Name);
 
         if (!tenant.IsValid)
-            return CommandResult<AddTenantResult>.Fail(tenant.Errors, CommandStatus.ValidationFailed);
+            return (tenant.Errors, CommandStatus.ValidationFailed);
 
         var tenantId = await CreateTenantAsync(tenant);
 
         await AddAccessGrantsAsync(tenantId);
 
-        return CommandResult<AddTenantResult>.Success(new AddTenantResult(tenantId));
+        return new AddTenantResult(tenantId);
     }
 
     private async Task<string> GetCurrentUserIdAsync()

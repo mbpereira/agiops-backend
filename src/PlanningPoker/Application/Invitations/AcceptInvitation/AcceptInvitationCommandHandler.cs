@@ -17,17 +17,17 @@ public class AcceptInvitationCommandHandler(IUnitOfWork uow, IUserContext userCo
     public async Task<CommandResult> HandleAsync(AcceptInvitationCommand command)
     {
         if (!command.IsValid)
-            return CommandResult.Fail(command.Errors, CommandStatus.ValidationFailed);
+            return (command.Errors, CommandStatus.ValidationFailed);
 
         var invitation = await uow.Invitations.GetByIdAsync(command.InvitationId);
 
         if (invitation is null)
-            return CommandResult.Fail(CommandStatus.RecordNotFound);
+            return CommandStatus.RecordNotFound;
 
         invitation.Accept();
 
         if (!invitation.IsValid)
-            return CommandResult.Fail(invitation.Errors, CommandStatus.ValidationFailed);
+            return (invitation.Errors, CommandStatus.ValidationFailed);
 
         var accessGrants = await GetAccessGrantsAsync(invitation);
 
@@ -36,7 +36,7 @@ public class AcceptInvitationCommandHandler(IUnitOfWork uow, IUserContext userCo
 
         await uow.SaveChangesAsync();
 
-        return CommandResult.Success();
+        return CommandStatus.Success;
     }
 
     private async Task<IList<AccessGrant>> GetAccessGrantsAsync(Invitation invitation)
