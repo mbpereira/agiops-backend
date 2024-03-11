@@ -1,15 +1,13 @@
+#region
+
 using PlanningPoker.Domain.Games;
+
+#endregion
 
 namespace PlanningPoker.Application.Games.ChangeVotingSystem;
 
 public record ChangeVotingSystemResult
 {
-    public string Id { get; }
-    public string Name { get; }
-    public string? Description { get; }
-    public IEnumerable<string> PossibleGrades { get; }
-    public DateTime? UpdatedAt { get; }
-
     public ChangeVotingSystemResult(VotingSystem votingSystem)
     {
         Id = votingSystem.Id;
@@ -18,4 +16,10 @@ public record ChangeVotingSystemResult
         PossibleGrades = votingSystem.GradeDetails.Values;
         UpdatedAt = votingSystem.UpdatedAtUtc;
     }
+
+    public string Id { get; }
+    public string Name { get; }
+    public string? Description { get; }
+    public IEnumerable<string> PossibleGrades { get; }
+    public DateTime? UpdatedAt { get; }
 }

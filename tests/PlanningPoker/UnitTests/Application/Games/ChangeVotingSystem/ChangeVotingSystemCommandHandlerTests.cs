@@ -1,3 +1,5 @@
+#region
+
 using FluentAssertions;
 using FluentAssertions.Execution;
 using PlanningPoker.Application.Abstractions.Commands;
@@ -5,12 +7,14 @@ using PlanningPoker.Application.Games.ChangeVotingSystem;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Games;
 
+#endregion
+
 namespace PlanningPoker.UnitTests.Application.Games.ChangeVotingSystem;
 
 public class ChangeVotingSystemCommandHandlerTests
 {
-    private readonly IVotingSystemsRepository _votingSystems;
     private readonly ChangeVotingSystemCommandHandler _handler;
+    private readonly IVotingSystemsRepository _votingSystems;
 
     public ChangeVotingSystemCommandHandlerTests()
     {
@@ -88,8 +92,8 @@ public class ChangeVotingSystemCommandHandlerTests
         result.Data.Should().BeEquivalentTo(new
         {
             Id = existingVotingSystem.Id.Value,
-            Name = existingVotingSystem.Name,
-            Description = existingVotingSystem.Description,
+            existingVotingSystem.Name,
+            existingVotingSystem.Description,
             PossibleGrades = existingVotingSystem.GradeDetails.Values,
             UpdatedAt = existingVotingSystem.UpdatedAtUtc
         });
@@ -104,7 +108,7 @@ public class ChangeVotingSystemCommandHandlerTests
         var oldDescription = existingVotingSystem.Description;
         var oldUserId = existingVotingSystem.UserId;
         var oldUpdateDate = existingVotingSystem.UpdatedAtUtc.GetValueOrDefault();
-        var data = new ChangeVotingSystemData(Name: FakerInstance.Random.String2(100));
+        var data = new ChangeVotingSystemData(FakerInstance.Random.String2(100));
         var command = new ChangeVotingSystemCommand(existingVotingSystem.Id, data);
         _votingSystems.GetByIdAsync(Arg.Any<EntityId>())
             .Returns(existingVotingSystem);
