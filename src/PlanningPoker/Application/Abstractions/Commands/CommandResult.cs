@@ -73,7 +73,7 @@ public record CommandResult : BaseCommandResult
     {
         return new CommandResult(status, Enumerable.Empty<Error>());
     }
-    
+
     public static implicit operator CommandResult((IEnumerable<Error>, CommandStatus) tuple)
     {
         return Fail(tuple.Item1, tuple.Item2);

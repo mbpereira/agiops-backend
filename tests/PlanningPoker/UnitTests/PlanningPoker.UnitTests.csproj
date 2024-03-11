@@ -39,6 +39,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Folder Include="Application\Games\Issues\"/>
+        <Folder Include="Application\Games\VotingSystems\"/>
         <Folder Include="Application\Tenants\"/>
     </ItemGroup>
 
