@@ -37,8 +37,8 @@ public class ChangeVotingSystemCommand : Command
         var hasAnyChange = false;
 
         hasAnyChange |= ExecuteIfNotNull(Data.Name, votingSystem.SetName);
-        hasAnyChange |= ExecuteIfNotNull(Data.Description, votingSystem.SetDescription);
         hasAnyChange |= ExecuteIfNotNull(Data.PossibleGrades, votingSystem.SetPossibleGrades);
+        hasAnyChange |= ExecuteIfNotNull(Data.Description, votingSystem.SetDescription);
 
         return hasAnyChange;
     }

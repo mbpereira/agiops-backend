@@ -109,7 +109,8 @@ public class ChangeVotingSystemCommandHandlerTests
         var oldDescription = existingVotingSystem.Description;
         var oldUserId = existingVotingSystem.UserId;
         var oldUpdateDate = existingVotingSystem.UpdatedAtUtc.GetValueOrDefault();
-        var data = new ChangeVotingSystemData(FakerInstance.Random.String2(100));
+        var data = new ChangeVotingSystemData(FakerInstance.Random.String2(100),
+            Description: FakerInstance.Random.Words(20));
         var command = new ChangeVotingSystemCommand(existingVotingSystem.Id, data);
         _votingSystems.GetByIdAsync(Arg.Any<EntityId>())
             .Returns(existingVotingSystem);
@@ -118,10 +119,9 @@ public class ChangeVotingSystemCommandHandlerTests
 
         using var _ = new AssertionScope();
         await _votingSystems.Received().ChangeAsync(Arg.Is<VotingSystem>(v =>
-            v.Name == data.Name &&
-            v.Name != oldName &&
+            (v.Name == data.Name && v.Name != oldName) &&
             v.GradeDetails == oldGradeDetails &&
-            v.Description == oldDescription &&
+            (v.Description == data.Description && v.Description != oldDescription) &&
             v.UserId == oldUserId &&
             v.UpdatedAtUtc > oldUpdateDate
         ));
