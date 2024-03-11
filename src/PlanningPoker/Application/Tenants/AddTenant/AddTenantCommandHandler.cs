@@ -8,23 +8,23 @@ using PlanningPoker.Domain.Users;
 
 #endregion
 
-namespace PlanningPoker.Application.Tenants.CreateTenant;
+namespace PlanningPoker.Application.Tenants.AddTenant;
 
-public class CreateTenantCommandHandler(IUnitOfWork uow, IUserContext userContext)
-    : ICommandHandler<CreateTenantCommand, CreateTenantResult>
+public class AddTenantCommandHandler(IUnitOfWork uow, IUserContext userContext)
+    : ICommandHandler<AddTenantCommand, AddTenantResult>
 {
-    public async Task<CommandResult<CreateTenantResult>> HandleAsync(CreateTenantCommand command)
+    public async Task<CommandResult<AddTenantResult>> HandleAsync(AddTenantCommand command)
     {
         var tenant = Tenant.New(command.Name);
 
         if (!tenant.IsValid)
-            return CommandResult<CreateTenantResult>.Fail(tenant.Errors, CommandStatus.ValidationFailed);
+            return CommandResult<AddTenantResult>.Fail(tenant.Errors, CommandStatus.ValidationFailed);
 
         var tenantId = await CreateTenantAsync(tenant);
 
-        await CreateAccessGrantsAsync(tenantId);
+        await AddAccessGrantsAsync(tenantId);
 
-        return CommandResult<CreateTenantResult>.Success(new CreateTenantResult(tenantId));
+        return CommandResult<AddTenantResult>.Success(new AddTenantResult(tenantId));
     }
 
     private async Task<string> GetCurrentUserIdAsync()
@@ -42,7 +42,7 @@ public class CreateTenantCommandHandler(IUnitOfWork uow, IUserContext userContex
         return createdTenant.Id.Value;
     }
 
-    private async Task CreateAccessGrantsAsync(string tenantId)
+    private async Task AddAccessGrantsAsync(string tenantId)
     {
         var accessGrants = await GetAccessGrantsAsync(tenantId);
 

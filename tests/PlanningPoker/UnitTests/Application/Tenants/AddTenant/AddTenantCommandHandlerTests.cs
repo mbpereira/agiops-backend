@@ -4,7 +4,7 @@ using Bogus;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using PlanningPoker.Application.Abstractions.Commands;
-using PlanningPoker.Application.Tenants.CreateTenant;
+using PlanningPoker.Application.Tenants.AddTenant;
 using PlanningPoker.Application.Users;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Tenants;
@@ -12,17 +12,17 @@ using PlanningPoker.Domain.Users;
 
 #endregion
 
-namespace PlanningPoker.UnitTests.Application.Tenants.CreateTenant;
+namespace PlanningPoker.UnitTests.Application.Tenants.AddTenant;
 
-public class CreateTenantCommandHandlerTests
+public class AddTenantCommandHandlerTests
 {
     private readonly IAccessGrantsRepository _accessGrants;
     private readonly Faker _faker;
-    private readonly CreateTenantCommandHandler _handler;
+    private readonly AddTenantCommandHandler _handler;
     private readonly ITenantsRepository _tenants;
     private readonly IUserContext _userContext;
 
-    public CreateTenantCommandHandlerTests()
+    public AddTenantCommandHandlerTests()
     {
         _faker = new Faker();
         _userContext = Substitute.For<IUserContext>();
@@ -31,7 +31,7 @@ public class CreateTenantCommandHandlerTests
         var uow = Substitute.For<IUnitOfWork>();
         uow.Tenants.Returns(_tenants);
         uow.AccessGrants.Returns(_accessGrants);
-        _handler = new CreateTenantCommandHandler(uow, _userContext);
+        _handler = new AddTenantCommandHandler(uow, _userContext);
     }
 
     [Theory]
@@ -40,7 +40,7 @@ public class CreateTenantCommandHandlerTests
     [InlineData("ab")]
     public async Task HandleAsync_InvalidData_ReturnsValidationFailed(string invalidName)
     {
-        var command = new CreateTenantCommand(invalidName);
+        var command = new AddTenantCommand(invalidName);
 
         var result = await _handler.HandleAsync(command);
 
@@ -52,7 +52,7 @@ public class CreateTenantCommandHandlerTests
     {
         var expectedUser = new UserInformation(FakerInstance.ValidId());
         var expectedTenant = Tenant.New(_faker.Random.String2(3));
-        var command = new CreateTenantCommand(expectedTenant.Name);
+        var command = new AddTenantCommand(expectedTenant.Name);
         _tenants.AddAsync(Arg.Any<Tenant>())
             .Returns(expectedTenant);
         _userContext.GetCurrentUserAsync()

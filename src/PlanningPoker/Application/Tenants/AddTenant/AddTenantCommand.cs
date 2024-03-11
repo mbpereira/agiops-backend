@@ -4,9 +4,9 @@ using PlanningPoker.Application.Abstractions.Commands;
 
 #endregion
 
-namespace PlanningPoker.Application.Tenants.CreateTenant;
+namespace PlanningPoker.Application.Tenants.AddTenant;
 
-public class CreateTenantCommand(string name) : Command
+public class AddTenantCommand(string name) : Command
 {
     public string Name { get; private set; } = name;
 }
