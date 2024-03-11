@@ -83,19 +83,18 @@ public class ChangeVotingSystemCommandHandlerTests
         using var _ = new AssertionScope();
         existingVotingSystem.UpdatedAtUtc.Should().BeNull();
         await _votingSystems.DidNotReceive().ChangeAsync(Arg.Any<VotingSystem>());
-        AssertEquivalent(result, existingVotingSystem);
+        AssertEquivalent(existingVotingSystem, result);
     }
 
-    private static void AssertEquivalent(CommandResult<ChangeVotingSystemResult> result,
-        VotingSystem existingVotingSystem)
+    private static void AssertEquivalent(VotingSystem expected, CommandResult<ChangeVotingSystemResult> actual)
     {
-        result.Data.Should().BeEquivalentTo(new
+        actual.Data.Should().BeEquivalentTo(new
         {
-            Id = existingVotingSystem.Id.Value,
-            existingVotingSystem.Name,
-            existingVotingSystem.Description,
-            PossibleGrades = existingVotingSystem.GradeDetails.Values,
-            UpdatedAt = existingVotingSystem.UpdatedAtUtc
+            Id = expected.Id.Value,
+            expected.Name,
+            expected.Description,
+            PossibleGrades = expected.GradeDetails.Values,
+            UpdatedAt = expected.UpdatedAtUtc
         });
     }
 
@@ -124,6 +123,6 @@ public class ChangeVotingSystemCommandHandlerTests
             v.UserId == oldUserId &&
             v.UpdatedAtUtc > oldUpdateDate
         ));
-        AssertEquivalent(result, existingVotingSystem);
+        AssertEquivalent(existingVotingSystem, result);
     }
 }
