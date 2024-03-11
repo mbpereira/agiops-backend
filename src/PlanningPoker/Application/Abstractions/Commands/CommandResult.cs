@@ -6,16 +6,8 @@ using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Application.Abstractions.Commands;
 
-public record CommandResult<TResponse> : BaseCommandResult where TResponse : class
+public record CommandResult<TResponse>(TResponse? Data, CommandStatus Status, IEnumerable<Error> Details) : BaseCommandResult(Status, Details) where TResponse : class
 {
-    private CommandResult(TResponse? data, CommandStatus status, IEnumerable<Error> details) : base(status,
-        details)
-    {
-        Data = data;
-    }
-
-    public TResponse? Data { get; private set; }
-
     public static CommandResult<TResponse> Success(TResponse data)
     {
         return new CommandResult<TResponse>(data, CommandStatus.Success, Enumerable.Empty<Error>());
@@ -50,13 +42,8 @@ public record CommandResult<TResponse> : BaseCommandResult where TResponse : cla
     }
 }
 
-public record CommandResult : BaseCommandResult
+public record CommandResult(CommandStatus Status, IEnumerable<Error> Details) : BaseCommandResult(Status, Details)
 {
-    private CommandResult(CommandStatus status, IEnumerable<Error> errors)
-        : base(status, errors)
-    {
-    }
-
     public static CommandResult Success()
     {
         return new CommandResult(CommandStatus.Success, Enumerable.Empty<Error>());
@@ -85,9 +72,4 @@ public record CommandResult : BaseCommandResult
     }
 }
 
-public abstract record BaseCommandResult(CommandStatus Status, IEnumerable<Error> Details)
-{
-    public CommandStatus Status { get; private set; } = Status;
-
-    public IEnumerable<Error> Details { get; private set; } = Details;
-}
+public abstract record BaseCommandResult(CommandStatus Status, IEnumerable<Error> Details);
