@@ -2,7 +2,7 @@
 
 public interface ICommandHandler<in TCommand>
 {
-    Task<CommandResult> HandleAsync(TCommand request);
+    Task<CommandResult> HandleAsync(TCommand command);
 }
 
 public interface ICommandHandler<in TCommand, TCommandResult> where TCommandResult : class

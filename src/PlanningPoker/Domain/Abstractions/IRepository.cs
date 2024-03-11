@@ -6,4 +6,5 @@ public interface IRepository<T>
     Task<T> AddAsync(IList<T> entities);
     Task<T?> GetByIdAsync(EntityId id);
     Task ChangeAsync(T issue);
+    Task RemoveAsync(T entity);
 }
