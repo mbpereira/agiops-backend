@@ -1,5 +1,9 @@
+#region
+
 using PlanningPoker.Application.Abstractions.Commands;
 using PlanningPoker.Domain.Abstractions;
+
+#endregion
 
 namespace PlanningPoker.Application.Games.Issues.ChangeIssue;
 

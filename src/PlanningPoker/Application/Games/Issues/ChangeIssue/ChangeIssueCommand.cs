@@ -1,21 +1,25 @@
+#region
+
 using PlanningPoker.Application.Abstractions.Commands;
 using PlanningPoker.Domain.Common.Extensions;
 using PlanningPoker.Domain.Games;
 using PlanningPoker.Domain.Validation;
 using static PlanningPoker.Application.Common.Helpers.Actions;
 
+#endregion
+
 namespace PlanningPoker.Application.Games.Issues.ChangeIssue;
 
 public class ChangeIssueCommand : Command
 {
-    public string Id { get; private set; } = string.Empty;
-    private ChangeIssueCommandPayload Payload { get; }
-
     public ChangeIssueCommand(string id, ChangeIssueCommandPayload payload)
     {
         Payload = payload;
         SetId(id);
     }
+
+    public string Id { get; private set; } = string.Empty;
+    private ChangeIssueCommandPayload Payload { get; }
 
     private void SetId(string id)
     {

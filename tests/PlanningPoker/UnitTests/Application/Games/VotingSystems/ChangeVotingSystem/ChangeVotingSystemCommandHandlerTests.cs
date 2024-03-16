@@ -107,15 +107,15 @@ public class ChangeVotingSystemCommandHandlerTests
 
         using var _ = new AssertionScope();
         await _votingSystems.Received().ChangeAsync(Arg.Is<VotingSystem>(v =>
-            (v.Name == payload.Name && v.Name != oldName) &&
+            v.Name == payload.Name && v.Name != oldName &&
             v.GradeDetails == oldGradeDetails &&
-            (v.Description == payload.Description && v.Description != oldDescription) &&
+            v.Description == payload.Description && v.Description != oldDescription &&
             v.UserId == oldUserId &&
             v.UpdatedAtUtc > oldUpdateDate
         ));
         AssertEquivalent(existingVotingSystem, result);
     }
-    
+
     private static void AssertEquivalent(VotingSystem expected, CommandResult<ChangeVotingSystemResult> actual)
     {
         actual.Payload.Should().BeEquivalentTo(new

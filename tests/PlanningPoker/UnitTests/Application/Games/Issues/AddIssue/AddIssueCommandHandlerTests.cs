@@ -62,6 +62,4 @@ public class AddIssueCommandHandlerTests
         result.Payload!.Id.Should().Be(expectedIssue.Id.Value);
         result.Status.Should().Be(CommandStatus.Success);
     }
-
-
 }

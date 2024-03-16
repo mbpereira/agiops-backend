@@ -1,3 +1,5 @@
+#region
+
 using FluentAssertions;
 using FluentAssertions.Execution;
 using PlanningPoker.Application.Abstractions.Commands;
@@ -6,12 +8,14 @@ using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Games;
 using PlanningPoker.UnitTests.Common.Extensions;
 
+#endregion
+
 namespace PlanningPoker.UnitTests.Application.Games.Issues.ChangeIssue;
 
 public class ChangeIssueCommandHandlerTests
 {
-    private readonly IIssuesRepository _issues;
     private readonly ChangeIssueCommandHandler _handler;
+    private readonly IIssuesRepository _issues;
 
     public ChangeIssueCommandHandlerTests()
     {
@@ -36,12 +40,12 @@ public class ChangeIssueCommandHandlerTests
             }
         ]);
     }
-    
+
     [Fact]
     public async Task HandleAsync_IssueNotExists_ReturnsRecordNotFound()
     {
         var command = new ChangeIssueCommand(FakerInstance.ValidId(), new ChangeIssueCommandPayload());
-        
+
         var result = await _handler.HandleAsync(command);
 
         result.Status.Should().Be(CommandStatus.RecordNotFound);
@@ -54,12 +58,12 @@ public class ChangeIssueCommandHandlerTests
     public async Task HandleAsync_InvalidData_ReturnsValidationFailed(string invalidName)
     {
         var expectedIssue = FakerInstance.NewValidIssue();
-        var command = new ChangeIssueCommand(expectedIssue.Id, new ChangeIssueCommandPayload(Name: invalidName));
+        var command = new ChangeIssueCommand(expectedIssue.Id, new ChangeIssueCommandPayload(invalidName));
         _issues.GetByIdAsync(Arg.Any<EntityId>())
             .Returns(expectedIssue);
-        
+
         var result = await _handler.HandleAsync(command);
-    
+
         result.Status.Should().Be(CommandStatus.ValidationFailed);
     }
 
@@ -89,7 +93,7 @@ public class ChangeIssueCommandHandlerTests
         var oldDescription = oldIssue.Description;
         var oldUpdateDate = oldIssue.UpdatedAtUtc.GetValueOrDefault();
         var payload = new ChangeIssueCommandPayload(FakerInstance.Random.String2(100),
-            Description: FakerInstance.Random.Words(20));
+            FakerInstance.Random.Words(20));
         var command = new ChangeIssueCommand(oldIssue.Id, payload);
         _issues.GetByIdAsync(Arg.Any<EntityId>())
             .Returns(oldIssue);
@@ -98,13 +102,13 @@ public class ChangeIssueCommandHandlerTests
 
         using var _ = new AssertionScope();
         await _issues.Received().ChangeAsync(Arg.Is<Issue>(i =>
-            (i.Name == payload.Name && i.Name != oldName) &&
-            (i.Description == payload.Description && i.Description != oldDescription) &&
+            i.Name == payload.Name && i.Name != oldName &&
+            i.Description == payload.Description && i.Description != oldDescription &&
             i.UpdatedAtUtc > oldUpdateDate
         ));
         AssertEquivalent(oldIssue, result);
     }
-    
+
     private static void AssertEquivalent(Issue expected, CommandResult<ChangeIssueResult> actual)
     {
         actual.Payload.Should().BeEquivalentTo(new
