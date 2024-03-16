@@ -1,15 +1,15 @@
 using PlanningPoker.Application.Abstractions.Commands;
-using PlanningPoker.Application.Common.Helpers;
 using PlanningPoker.Domain.Common.Extensions;
 using PlanningPoker.Domain.Games;
 using PlanningPoker.Domain.Validation;
+using static PlanningPoker.Application.Common.Helpers.Actions;
 
 namespace PlanningPoker.Application.Games.Issues.ChangeIssue;
 
 public class ChangeIssueCommand : Command
 {
-    public ChangeIssueCommandPayload Payload { get; }
     public string Id { get; private set; } = string.Empty;
+    private ChangeIssueCommandPayload Payload { get; }
 
     public ChangeIssueCommand(string id, ChangeIssueCommandPayload payload)
     {
@@ -32,12 +32,12 @@ public class ChangeIssueCommand : Command
     {
         var hasAnyChange = false;
 
-        hasAnyChange |= Actions.ExecuteIfNotNull(Payload?.Name, issue.SetName);
-        hasAnyChange |= Actions.ExecuteIfNotNull(Payload?.Description, issue.SetDescription);
-        hasAnyChange |= Actions.ExecuteIfNotNull(Payload?.Name, issue.SetLink);
+        hasAnyChange |= ExecuteIfNotNull(Payload.Name, issue.SetName);
+        hasAnyChange |= ExecuteIfNotNull(Payload.Description, issue.SetDescription);
+        hasAnyChange |= ExecuteIfNotNull(Payload.Link, issue.SetLink);
+
+        if (hasAnyChange) issue.Updated();
 
         return hasAnyChange;
     }
 }
-
-public record ChangeIssueCommandPayload(string? Name = null, string? Description = null, string? Link = null);

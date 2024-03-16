@@ -14,12 +14,12 @@ public record ChangeVotingSystemResult
         Name = votingSystem.Name;
         Description = votingSystem.Description;
         PossibleGrades = votingSystem.GradeDetails.Values;
-        UpdatedAt = votingSystem.UpdatedAtUtc;
+        UpdatedAtUtc = votingSystem.UpdatedAtUtc;
     }
 
     public string Id { get; }
     public string Name { get; }
     public string? Description { get; }
     public IEnumerable<string> PossibleGrades { get; }
-    public DateTime? UpdatedAt { get; }
+    public DateTime? UpdatedAtUtc { get; }
 }

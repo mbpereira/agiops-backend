@@ -40,6 +40,8 @@ public class ChangeVotingSystemCommand : Command
         hasAnyChange |= ExecuteIfNotNull(Payload.PossibleGrades, votingSystem.SetPossibleGrades);
         hasAnyChange |= ExecuteIfNotNull(Payload.Description, votingSystem.SetDescription);
 
+        if (hasAnyChange) votingSystem.Updated();
+
         return hasAnyChange;
     }
 }

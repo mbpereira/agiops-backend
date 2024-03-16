@@ -124,7 +124,7 @@ public class ChangeVotingSystemCommandHandlerTests
             expected.Name,
             expected.Description,
             PossibleGrades = expected.GradeDetails.Values,
-            UpdatedAt = expected.UpdatedAtUtc
+            expected.UpdatedAtUtc
         });
     }
 }
