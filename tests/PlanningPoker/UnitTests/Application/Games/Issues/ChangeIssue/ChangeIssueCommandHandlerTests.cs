@@ -67,7 +67,6 @@ public class ChangeIssueCommandHandlerTests
         result.Status.Should().Be(CommandStatus.ValidationFailed);
     }
 
-
     [Fact]
     public async Task HandleAsync_NoDataProvided_DoNotUpdate()
     {
