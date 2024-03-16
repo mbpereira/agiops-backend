@@ -61,7 +61,7 @@ public class AddUserGradeToIssueCommandHandlerTests
 
         using var _ = new AssertionScope();
         result.Status.Should().Be(CommandStatus.ValidationFailed);
-        result.Details.Should().BeEquivalentTo([
+        result.Errors.Should().BeEquivalentTo([
             new { Code = "Issue.UserId", Message = "Provided value cannot be null, empty or white space." }
         ]);
     }

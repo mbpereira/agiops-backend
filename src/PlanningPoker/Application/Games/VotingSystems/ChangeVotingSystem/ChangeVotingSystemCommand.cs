@@ -1,10 +1,10 @@
 #region
 
 using PlanningPoker.Application.Abstractions.Commands;
-using static PlanningPoker.Application.Common.Helpers.Actions;
 using PlanningPoker.Domain.Common.Extensions;
 using PlanningPoker.Domain.Games;
 using PlanningPoker.Domain.Validation;
+using static PlanningPoker.Application.Common.Helpers.Actions;
 
 #endregion
 
@@ -12,14 +12,14 @@ namespace PlanningPoker.Application.Games.VotingSystems.ChangeVotingSystem;
 
 public class ChangeVotingSystemCommand : Command
 {
-    public ChangeVotingSystemCommand(string id, ChangeVotingSystemData data)
+    public ChangeVotingSystemCommand(string id, ChangeVotingSystemCommandPayload payload)
     {
         SetId(id);
-        Data = data;
+        Payload = payload;
     }
 
     public string Id { get; private set; } = string.Empty;
-    private ChangeVotingSystemData Data { get; }
+    private ChangeVotingSystemCommandPayload Payload { get; }
 
     private void SetId(string id)
     {
@@ -36,9 +36,9 @@ public class ChangeVotingSystemCommand : Command
     {
         var hasAnyChange = false;
 
-        hasAnyChange |= ExecuteIfNotNull(Data.Name, votingSystem.SetName);
-        hasAnyChange |= ExecuteIfNotNull(Data.PossibleGrades, votingSystem.SetPossibleGrades);
-        hasAnyChange |= ExecuteIfNotNull(Data.Description, votingSystem.SetDescription);
+        hasAnyChange |= ExecuteIfNotNull(Payload.Name, votingSystem.SetName);
+        hasAnyChange |= ExecuteIfNotNull(Payload.PossibleGrades, votingSystem.SetPossibleGrades);
+        hasAnyChange |= ExecuteIfNotNull(Payload.Description, votingSystem.SetDescription);
 
         return hasAnyChange;
     }

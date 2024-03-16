@@ -47,7 +47,7 @@ public class RenewInvitationCommandHandlerTests
 
         using var _ = new AssertionScope();
         result.Status.Should().Be(CommandStatus.ValidationFailed);
-        result.Details.Should().BeEquivalentTo([
+        result.Errors.Should().BeEquivalentTo([
             new { Code = "Invitation.Renew", Message = "This invitation has already been accepted or is cancelled." }
         ]);
     }

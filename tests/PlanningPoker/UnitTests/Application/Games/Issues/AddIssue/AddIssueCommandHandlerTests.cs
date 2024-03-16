@@ -1,6 +1,5 @@
 ﻿#region
 
-using Bogus;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using PlanningPoker.Application.Abstractions.Commands;
@@ -16,13 +15,11 @@ namespace PlanningPoker.UnitTests.Application.Games.Issues.AddIssue;
 
 public class AddIssueCommandHandlerTests
 {
-    private readonly Faker _faker;
     private readonly AddIssueCommandHandler _handler;
     private readonly IUnitOfWork _uow;
 
     public AddIssueCommandHandlerTests()
     {
-        _faker = new Faker();
         var tenantContext = Substitute.For<ITenantContext>();
         _uow = Substitute.For<IUnitOfWork>();
         tenantContext.GetCurrentTenantAsync()
@@ -49,7 +46,7 @@ public class AddIssueCommandHandlerTests
     [Fact]
     public async Task HandleAsync_SuccessfulIssueCreation_ReturnsGeneratedId()
     {
-        var expectedIssue = GetValidIssue();
+        var expectedIssue = FakerInstance.NewValidIssue();
         var command = new AddIssueCommand(
             expectedIssue.GameId,
             expectedIssue.Name,
@@ -62,17 +59,9 @@ public class AddIssueCommandHandlerTests
         var result = await _handler.HandleAsync(command);
 
         using var _ = new AssertionScope();
-        result.Data!.Id.Should().Be(expectedIssue.Id.Value);
+        result.Payload!.Id.Should().Be(expectedIssue.Id.Value);
         result.Status.Should().Be(CommandStatus.Success);
     }
 
-    private Issue GetValidIssue()
-    {
-        return Issue.New(
-            FakerInstance.ValidId(),
-            FakerInstance.ValidId(),
-            _faker.Random.String2(10),
-            _faker.Random.Word(),
-            _faker.Internet.Url());
-    }
+
 }

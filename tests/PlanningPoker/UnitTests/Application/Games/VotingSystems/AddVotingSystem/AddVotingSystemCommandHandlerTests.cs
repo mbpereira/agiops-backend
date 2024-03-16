@@ -53,6 +53,6 @@ public class AddVotingSystemCommandHandlerTests
 
         var result = await _handler.HandleAsync(command);
 
-        result.Data!.Id.Should().Be(expectedVotingSystem.Id.Value);
+        result.Payload!.Id.Should().Be(expectedVotingSystem.Id.Value);
     }
 }

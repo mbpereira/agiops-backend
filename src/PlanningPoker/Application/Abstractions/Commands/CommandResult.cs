@@ -6,12 +6,12 @@ using PlanningPoker.Domain.Validation;
 
 namespace PlanningPoker.Application.Abstractions.Commands;
 
-public record CommandResult<TResponse>(TResponse? Data, CommandStatus Status, IEnumerable<Error> Details)
-    : BaseCommandResult(Status, Details) where TResponse : class
+public record CommandResult<TResponse>(TResponse? Payload, CommandStatus Status, IEnumerable<Error> Errors)
+    : BaseCommandResult(Status, Errors) where TResponse : class
 {
-    public static CommandResult<TResponse> Success(TResponse data)
+    public static CommandResult<TResponse> Success(TResponse payload)
     {
-        return new CommandResult<TResponse>(data, CommandStatus.Success, Enumerable.Empty<Error>());
+        return new CommandResult<TResponse>(payload, CommandStatus.Success, Enumerable.Empty<Error>());
     }
 
     public static CommandResult<TResponse> Fail(
@@ -32,9 +32,9 @@ public record CommandResult<TResponse>(TResponse? Data, CommandStatus Status, IE
         return Fail(tuple.Item1, tuple.Item2);
     }
 
-    public static implicit operator CommandResult<TResponse>(TResponse data)
+    public static implicit operator CommandResult<TResponse>(TResponse payload)
     {
-        return Success(data);
+        return Success(payload);
     }
 
     public static implicit operator CommandResult<TResponse>(CommandStatus status)
@@ -43,7 +43,7 @@ public record CommandResult<TResponse>(TResponse? Data, CommandStatus Status, IE
     }
 }
 
-public record CommandResult(CommandStatus Status, IEnumerable<Error> Details) : BaseCommandResult(Status, Details)
+public record CommandResult(CommandStatus Status, IEnumerable<Error> Errors) : BaseCommandResult(Status, Errors)
 {
     public static CommandResult Success()
     {
@@ -73,4 +73,4 @@ public record CommandResult(CommandStatus Status, IEnumerable<Error> Details) : 
     }
 }
 
-public abstract record BaseCommandResult(CommandStatus Status, IEnumerable<Error> Details);
+public abstract record BaseCommandResult(CommandStatus Status, IEnumerable<Error> Errors);

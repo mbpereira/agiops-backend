@@ -17,8 +17,8 @@ public sealed class Issue : TenantableAggregateRoot
     {
         SetGame(gameId);
         SetName(name);
-        Link = link;
-        Description = description;
+        SetLink(link);
+        SetDescription(description);
         _grades = grades ?? [];
     }
 
@@ -66,6 +66,16 @@ public sealed class Issue : TenantableAggregateRoot
         }
 
         GameId = gameId;
+    }
+
+    public void SetDescription(string? description)
+    {
+        Description = description;
+    }
+
+    public void SetLink(string? link)
+    {
+        Link = link;
     }
 
     public static Issue New(string tenantId, string gameId, string name, string? description = null,

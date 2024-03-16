@@ -35,7 +35,7 @@ public class RemoveVotingSystemCommandHandlerTests
 
         var result = await _handler.HandleAsync(command);
 
-        result.Details.Should().BeEquivalentTo([
+        result.Errors.Should().BeEquivalentTo([
             new
             {
                 Code = "RemoveVotingSystemCommand.Id",

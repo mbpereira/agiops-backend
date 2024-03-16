@@ -83,4 +83,14 @@ public static class FakerExtensions
             faker.Make(3, () => faker.Random.Int().ToString()),
             faker.Random.Words());
     }
+
+    public static Issue NewValidIssue(this Faker faker)
+    {
+        return Issue.New(
+            faker.ValidId(),
+            faker.ValidId(),
+            faker.Random.String2(10),
+            faker.Random.Word(),
+            faker.Internet.Url());
+    }
 }

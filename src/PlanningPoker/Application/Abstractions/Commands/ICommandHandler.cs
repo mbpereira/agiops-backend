@@ -1,6 +1,6 @@
 ﻿namespace PlanningPoker.Application.Abstractions.Commands;
 
-public interface ICommandHandler<in TCommand>
+public interface ICommandHandler<in TCommand> where TCommand : Command
 {
     Task<CommandResult> HandleAsync(TCommand command);
 }

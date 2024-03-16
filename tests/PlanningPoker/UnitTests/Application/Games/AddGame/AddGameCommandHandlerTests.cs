@@ -110,6 +110,6 @@ public class AddGameCommandHandlerTests
             g.UserId.Value == _securityInformation.User.Id &&
             g.Credentials!.Password == command.Password));
         commandResult.Status.Should().Be(CommandStatus.Success);
-        commandResult.Data!.Id.Should().Be(expectedGame.Id.Value);
+        commandResult.Payload!.Id.Should().Be(expectedGame.Id.Value);
     }
 }
