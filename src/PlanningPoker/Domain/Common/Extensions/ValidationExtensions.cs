@@ -2,11 +2,6 @@
 
 public static class ValidationExtensions
 {
-    public static bool GreaterThan(this int a, int value)
-    {
-        return a > value;
-    }
-
     public static bool IsNull<T>(this T? src)
     {
         return src is null;
@@ -40,12 +35,5 @@ public static class ValidationExtensions
     public static bool IsSome<T>(this T e, params T[] values) where T : Enum
     {
         return values.Contains(e);
-    }
-
-    public static IEnumerable<string> OnlyNotNullOrEmpty(this IEnumerable<string> strings)
-    {
-        return strings
-            .Select(s => s.Trim())
-            .Where(s => !string.IsNullOrEmpty(s));
     }
 }
