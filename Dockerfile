@@ -1,6 +1,4 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-EXPOSE 80
-EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
@@ -15,4 +13,7 @@ RUN dotnet publish PlanningPoker.WebApi.csproj -c Release -o /app/publish /p:Use
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "PlanningPoker.WebApi.dll", "--urls", "http://0.0.0.0:80", "https://0.0.0.0:443"]
+
+ENV PORT=8080
+
+CMD ASPNETCORE_URLS="http://*:$PORT" dotnet PlanningPoker.WebApi.dll
