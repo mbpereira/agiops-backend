@@ -17,5 +17,6 @@ COPY --from=publish /app/publish .
 ENV PORT=80
 
 # CMD ASPNETCORE_URLS="http://*:$PORT" dotnet PlanningPoker.WebApi.dll
+
 ENTRYPOINT ["dotnet", "PlanningPoker.WebApi.dll", "--urls", "http://*:$PORT"]
 
