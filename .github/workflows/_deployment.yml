@@ -61,6 +61,7 @@ jobs:
         with:
           service: ${{ vars.SERVICE_NAME }}
           image: ${{ env.IMAGE_NAME }}:${{ inputs.ref }}
+          flags: '--allow-unauthenticated'
 
       - name: Show Deployed URL
         run: echo "${{ steps.deploy.outputs.url }}"
