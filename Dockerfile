@@ -14,9 +14,9 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-ENV PORT=80
+ENV PORT=8080
 
-# CMD ASPNETCORE_URLS="http://*:$PORT" dotnet PlanningPoker.WebApi.dll
+CMD ASPNETCORE_URLS="http://*:$PORT" dotnet PlanningPoker.WebApi.dll
 
-ENTRYPOINT ["dotnet", "PlanningPoker.WebApi.dll", "--urls", "http://*:$PORT"]
+#ENTRYPOINT ["dotnet", "PlanningPoker.WebApi.dll", "--urls", "http://*:$PORT"]
 
