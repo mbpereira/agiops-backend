@@ -1,0 +1,24 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  id-token: write
+
+jobs:
+  prod:
+    if: ${{ github.ref == 'refs/head/main' || github.base_ref == 'main' }}
+    uses: ./shared/_deployment.yml
+    permissions: 
+      id-token: write
+      contents: read
+    with:
+      env: prod
+      ref: ${{ github.sha }}
+    secrets: inherit
+    
