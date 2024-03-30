@@ -45,6 +45,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     if: needs.build.result == 'success'
     needs: [build]
     steps:
@@ -54,5 +55,5 @@ jobs:
           service: ${{ vars.SERVICE_NAME }}
           image: ${{ env.IMAGE_NAME }}:${{ inputs.ref }}
 
-      - name: Shoy Deployed URL
+      - name: Show Deployed URL
         run: echo "${{ steps.deploy.outputs.url }}"
