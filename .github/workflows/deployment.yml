@@ -19,4 +19,3 @@ jobs:
       environment: prod
       ref: ${{ github.sha }}
     secrets: inherit
-    
