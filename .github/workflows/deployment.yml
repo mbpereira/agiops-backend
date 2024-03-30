@@ -13,7 +13,7 @@ permissions:
 jobs:
   prod:
     if: ${{ github.ref == 'refs/head/main' || github.base_ref == 'main' }}
-    uses: ./.github/workflows/shared/_deployment.yml@main
+    uses: ./.github/workflows/shared/_deployment.yml
     permissions: 
       id-token: write
       contents: read
