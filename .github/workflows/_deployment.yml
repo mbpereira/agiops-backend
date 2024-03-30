@@ -45,7 +45,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-      
+    if: steps.build.outcome == 'success'
     steps:
       - id: deploy
         uses: google-github-actions/deploy-cloudrun@v2
