@@ -1,8 +1,10 @@
 name: Deploy
 
 on:
-  push:
-  pull_request:
+  workflow_run:
+    workflows: [ Test ]
+    types: [ completed ]
+
 
 permissions:
   contents: read
@@ -12,9 +14,9 @@ permissions:
 
 jobs:
   prod:
-    if: ${{ github.ref == 'refs/heads/main' || github.base_ref == 'main' }}
+    if: ${{ (github.ref == 'refs/heads/main' || github.base_ref == 'main') && github.event.workflow_run.conclusion == 'success' }}
     uses: ./.github/workflows/_deployment.yml
-    permissions: 
+    permissions:
       id-token: write
       contents: read
     with:
