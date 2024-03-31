@@ -10,7 +10,8 @@ on:
         required: true
         description: The tag or SHA to checkout
 env:
-  IMAGE_NAME: ${{ vars.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ vars.ARTIFACT_REPO }}/${{ vars.SERVICE_NAME }}
+  REGISTRY: ${{ vars.REGION }}-docker.pkg.dev 
+  IMAGE_NAME: ${{ env.REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ vars.ARTIFACT_REPO }}/${{ vars.SERVICE_NAME }}
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,7 +32,7 @@ jobs:
         with:
           username: oauth2accesstoken
           password: ${{ steps.auth.outputs.access_token }}
-          registry: ${{ vars.REGION }}-docker.pkg.dev
+          registry: ${{ env.REGISTRY }}
       - name: Build, tag and push container
         id: build-image
         uses: docker/build-push-action@v3
@@ -58,6 +59,6 @@ jobs:
         with:
           service: ${{ vars.SERVICE_NAME }}
           image: ${{ env.IMAGE_NAME }}:${{ inputs.ref }}
-          flags: '--platform managed --allow-unauthenticated'
+          flags: --platform managed --allow-unauthenticated
       - name: Show Deployed URL
         run: echo "${{ steps.deploy.outputs.url }}"
