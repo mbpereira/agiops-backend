@@ -6,7 +6,7 @@ on:
 jobs:
   prod:
     if: ${{ (github.ref == 'refs/heads/main' || github.base_ref == 'main') && github.event.workflow_run.conclusion == 'success' }}
-    uses: ./.github/workflows/_deployment.yml
+    uses: ./.github/workflows/_gcp-cloud-run-deploy.yml
     permissions:
       id-token: write
       contents: read
