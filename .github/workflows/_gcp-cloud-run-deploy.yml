@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     if: needs.build.result == 'success'
-    needs: [build]
+    needs: [ build ]
     steps:
       - name: Google Auth
         id: auth

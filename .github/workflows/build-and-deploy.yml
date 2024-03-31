@@ -1,8 +1,8 @@
 name: Deploy
 on:
   workflow_run:
-    workflows: [Test]
-    types: [completed]
+    workflows: [ Test ]
+    types: [ completed ]
 jobs:
   prod:
     if: ${{ (github.ref == 'refs/heads/main' || github.base_ref == 'main') && github.event.workflow_run.conclusion == 'success' }}
