@@ -6,12 +6,12 @@ public static class Actions
     {
         preCondition ??= _ => true;
 
-        if (src is not null && preCondition(src))
-        {
-            fn(src);
-            return true;
-        }
+        var canExecute = src is not null && preCondition(src);
 
-        return false;
+        if (!canExecute) return false;
+
+        fn(src!);
+
+        return true;
     }
 }

@@ -3,8 +3,8 @@
 using FluentAssertions;
 using FluentAssertions.Execution;
 using PlanningPoker.Application.Abstractions.Commands;
-using PlanningPoker.Application.Abstractions.Security;
 using PlanningPoker.Application.Games.AddGame;
+using PlanningPoker.Application.Security;
 using PlanningPoker.Application.Tenants;
 using PlanningPoker.Application.Users;
 using PlanningPoker.Domain.Abstractions;

@@ -1,4 +1,4 @@
-﻿namespace PlanningPoker.Application.Abstractions.Security;
+﻿namespace PlanningPoker.Application.Security;
 
 public interface ISecurityContext
 {

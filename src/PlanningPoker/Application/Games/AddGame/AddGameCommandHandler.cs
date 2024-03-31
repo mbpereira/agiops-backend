@@ -1,7 +1,7 @@
 ﻿#region
 
 using PlanningPoker.Application.Abstractions.Commands;
-using PlanningPoker.Application.Abstractions.Security;
+using PlanningPoker.Application.Security;
 using PlanningPoker.Domain.Abstractions;
 using PlanningPoker.Domain.Games;
 

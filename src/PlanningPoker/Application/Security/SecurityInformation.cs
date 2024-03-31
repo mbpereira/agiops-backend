@@ -5,6 +5,6 @@ using PlanningPoker.Application.Users;
 
 #endregion
 
-namespace PlanningPoker.Application.Abstractions.Security;
+namespace PlanningPoker.Application.Security;
 
 public record SecurityInformation(TenantInformation Tenant, UserInformation User);
